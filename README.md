@@ -1,5 +1,5 @@
 # ZoomPhant Monitoring Solution
-ZoomPhant devotes to create enterprise level monitoring solutions for customers from small to large. This repository hosting all the files you might want to start your monitoring in your business in just one step: pull the single all-in-one docker image and start rolling!
+ZoomPhant devotes to create enterprise level monitoring solutions for customers from small to large. This repository will be hosting all the files you might want to start your monitoring your business **FOR FREE** in just one step!
 
 ## Instruction
 1. Find a Linux host with engough space (recommended 40+G free disk and 8G+ memory)
