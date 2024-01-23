@@ -15,7 +15,7 @@ MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
 ##
 ## Labels
 ##
-LABEL name="ZoomPhant AIO" image="zoomphant-aio" vendor="Zervice"
+LABEL name="ZoomPhant AIO" image="aio" vendor="ZoomPhant"
 
 RUN mkdir -p /usr/local/zoomphant
 
