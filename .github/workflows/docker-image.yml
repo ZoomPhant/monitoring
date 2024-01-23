@@ -11,7 +11,7 @@ env:
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-  REPO_BASE: ${{ secrets.REPO_BASE }}
+  REPO_BASE: ${{ vars.REPO_BASE }}
 
 jobs:
   build:
