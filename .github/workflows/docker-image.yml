@@ -11,17 +11,17 @@ env:
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
+  REPO_BASE: ${{ secrets.REPO_BASE }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: Build
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Show base
-      env:
-          REPO_BASE: ${{ secrets.REPO_BASE }}
       run: echo "$GITHUB_CONTEXT"
 
     - name: Log in to Docker Hub
@@ -31,6 +31,4 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build the Docker image
-      env:
-          REPO_BASE: ${{ secrets.REPO_BASE }}
       run: ./k8s/build.sh v1.0.0
