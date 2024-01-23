@@ -33,7 +33,7 @@ jobs:
     - name: Login ZP Registry
       uses: docker/login-action@v3
       with:
-        registry: ${{ secrets.ZPDOCKER_REGISTRY }}
+        registry: ${{ vars.REPO_BASE }}
         username: ${{ secrets.ZPDOCKER_USERNAME }}
         password: ${{ secrets.ZPDOCKER_PASSWORD }}
           
