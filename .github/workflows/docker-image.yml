@@ -23,14 +23,14 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
+        username: ${{ vars.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Login ZP Registry
       uses: docker/login-action@v3
       with:
         registry: ${{ vars.ZPDOCKER_REGISTRY }}
-        username: ${{ secrets.ZPDOCKER_USERNAME }}
+        username: ${{ vars.ZPDOCKER_USERNAME }}
         password: ${{ secrets.ZPDOCKER_PASSWORD }}
           
     - name: Build the Docker image
