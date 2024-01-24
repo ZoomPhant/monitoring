@@ -34,4 +34,4 @@ jobs:
         password: ${{ secrets.ZPDOCKER_PASSWORD }}
           
     - name: Build the Docker image
-      run: ./k8s/build.sh v1.0.0
+      run: ./k8s/build.sh
