@@ -34,17 +34,17 @@ done
 # remove option arguments
 shift $((OPTIND-1))
 
+# ROOT points to start build.sh, i.e. <repo>/k8s
+ROOT=$(cd "$(dirname ${BASH_SOURCE[0]})" && pwd)
 
 if [ "$#" -eq 1 ]; then
   TAG="$1";
 else
   # echo "Please give version tag like v2.3.4 or latest to build"
   # exit 1;
-  TAG="v$(head -1 ../RELEASE)"
+  TAG="v$(head -1 $ROOT/../RELEASE)"
 fi
 
-# ROOT points to start of zp
-ROOT=$(cd "$(dirname ${BASH_SOURCE[0]})" && pwd)
 
 cd ${ROOT}
 
