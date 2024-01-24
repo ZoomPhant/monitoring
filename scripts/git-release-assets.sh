@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # if we shall try to delete an asset before uploading
 delete=0
@@ -15,8 +15,8 @@ do
     case $opt in
     (c) create=1 ;;
     (d) delete=1 ;;
-    (m) message=${OPTARG};;
-    (t) token=${OPTARG};;
+    (m) message="${OPTARG}";;
+    (t) token="${OPTARG}";;
     (h|?)
     echo "Usage: git-release-assets.sh [-d] [-h|?] <owner> <repo> [<tag> [<file>]]"
     echo "    -c           Create a release if it is not existing"
@@ -64,10 +64,10 @@ fi
 # best effort, if already exists, ignore
 create_tag() {
   tag=$1
-  message=$2
+  msg="$2"
 
   echo "Creating tag $tag ..."
-  git tag -a $tag -m "$message"
+  git tag -a $tag -m "$msg"
   git push --tags
   echo "Tag $tag created."
 }
@@ -94,8 +94,11 @@ get_release() {
       "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag"
   )
 
-  http_code=$(tail -n1 <<< "$response")  # get the last line
-  content=$(sed '$ d' <<< "$response")   # get all but the last line which contains the status code
+  # get the last line
+  http_code=$(tail -n1 <<< "$response")
+  
+  # get all but the last line which contains the status code
+  content=$(sed '$ d' <<< "$response")   
 
   if [ $http_code = 200 ]; then
     jq '.id' <<< "$content"
@@ -109,16 +112,16 @@ get_release() {
 # best effort, if already exists, ignore
 create_release() {
   tag=$1
-  message=$2
+  msg="$2"
 
   # first create the tag
   echo "Try create tag $tag ..."
-  create_tag $tag $message;
+  create_tag $tag "$msg";
 
   # now create the release
   echo "Try create release with tag $tag ..."
 
-  data=$(printf '{"tag_name": "%s","target_commitish": "main","name": "%s","body": "%s","draft": false,"prerelease": false,"generate_release_notes":false}' $tag $tag "$message")
+  data=$(printf '{"tag_name": "%s","target_commitish": "main","name": "%s","body": "%s","draft": false,"prerelease": false,"generate_release_notes":false}' $tag $tag "$msg")
 
   response=$(
     curl -sL -w '%{http_code}'\
@@ -133,7 +136,7 @@ create_release() {
   http_code=$(tail -n1 <<< "$response")  # get the last line
   content=$(sed '$ d' <<< "$response")   # get all but the last line which contains the status code
 
-  if [ $http_code = 200 ]; then
+  if [ $http_code = 201 ]; then
     echo "Release with tag $tag successfully created"
   elif [ $http_code = 422 ]; then
     echo "Release with tag $tag already exists"
@@ -263,7 +266,7 @@ list_assets() {
 
   if [ $http_code = 200 ]; then
     echo "Assets in release with tag $RELEASE_TAG:"
-    jq '.[] | .name + " => " + (.size|tostring)' <<< "$content"
+    jq '.[] | .name + " => " + (.size|tostring) + ": " + .url' <<< "$content"
   else
     printf "ERROR: Something went wrong (status code: $http_code), aborting!\n" >&2
     exit 1
@@ -276,7 +279,7 @@ if [ -z "$RELEASE_TAG" ]; then
 elif [ -z "$FILE" ]; then
   if [ $create -eq 1 ]; then
     echo "Try create release with tag $RELEASE_TAG ..."
-    create_release $RELEASE_TAG $message
+    create_release $RELEASE_TAG "$message"
   elif [ $delete -eq 1 ]; then
     echo "Try delete release with tag $RELEASE_TAG ..."
     remove_release $RELEASE_TAG
