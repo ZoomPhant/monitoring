@@ -34,12 +34,13 @@ done
 # remove option arguments
 shift $((OPTIND-1))
 
-TAG=
+
 if [ "$#" -eq 1 ]; then
   TAG="$1";
 else
-  echo "Please give version tag like v2.3.4 or latest to build"
-  exit 1;
+  # echo "Please give version tag like v2.3.4 or latest to build"
+  # exit 1;
+  TAG="v$(head -1 ../RELEASE)"
 fi
 
 # ROOT points to start of zp
