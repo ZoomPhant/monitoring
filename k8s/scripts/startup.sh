@@ -111,6 +111,10 @@ EOF
   INSERT INTO install_codes (code, expiresOn, status, config, properties) VALUES ('local-demo-agent-run-1000', 0, 'created', '{}', '{"account": 1, "collector": 10000}');
 EOF
 
+  mysql -s --user=root --password=changeit coredb > /dev/null 2>&1 << EOF
+  INSERT INTO configurations (name, value) VALUES ('serverSettings', '{"name":"ZoomPhant Pack Server","host":"zervice.local","port":80,"secure":false,"baseUrl":"/","collectorReleaseUrl":"","enableReleaseUrl":true,"exposeReleaseUrl":true,"website":"http://www.zervice.us/","mailTo":"info@zervice.us"}');
+EOF
+
   # let's refresh server caches ...
   curl -X POST -d '' "http://localhost:8080/system/reload?account=localdemo" > /dev/null 2>&1
 
