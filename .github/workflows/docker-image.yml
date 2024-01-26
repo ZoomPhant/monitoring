@@ -1,7 +1,12 @@
 name: ZP AIO Build
 
 on:
-  workflow_dispatch
+  push:
+    paths:
+      - 'releases/**'
+      
+  workflow_dispatch:
+    
   schedule:
     - cron: "0 0 * * *"
 
@@ -33,4 +38,4 @@ jobs:
         password: ${{ secrets.ZPDOCKER_PASSWORD }}
           
     - name: Build the Docker image
-      run: ./k8s/build.sh
+      run: ./k8s/build.sh -l
