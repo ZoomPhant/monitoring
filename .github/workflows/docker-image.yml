@@ -1,10 +1,9 @@
-name: Build and Push Docker Image to Docker Hub
+name: ZP AIO Build
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch
+  schedule:
+    - cron: "0 0 * * *"
 
 env:
   REPO_BASE: ${{ vars.REPO_BASE }}

@@ -8,19 +8,24 @@ if [ `uname` == 'Darwin' ]; then
     IS_MAC=1;
 fi
 
+REPO=
+
 cache=0
 push=1
-REPO=
-while getopts "chr:n?" opt
+latest=0
+
+while getopts "chlr:n?" opt
 do
     case $opt in
     (c) cache=1 ;;
+    (l) latest=1 ;;
     (n) push=0 ;;
     (r) REPO=${OPTARG} ;;
     (h|?)
-      echo "Usage: release.h [-h|-?] [-c] [-n] [-r REPO] tag"
+      echo "Usage: release.h [-h|-?] [-c] [-l] [-n] [-r REPO] tag"
       echo "    -h|-?      Print help message"
       echo "    -c         Use building cache, will not try to pull images when building"
+      echo "    -l         Make the version LATEST version"
       echo "    -r <REPO>  Base image repository, if not given, will try to get from environment variable REPO_BASE"
       echo "    -n         Not push the image after building"
       echo "    tag        Version tag to use, like v3.1.2 or latest"
@@ -46,21 +51,40 @@ else
 fi
 
 
+build() {
+  local name=$1
+    
+  local IMAGE_NAME=zoomphant/${name}:${TAG}
+
+  if [ $cache -eq 0 ]; then
+    docker build -f Dockerfile.${name} --no-cache=true --build-arg REPO=${REPO_BASE:-$REPO} --build-arg release=${TAG} -t ${IMAGE_NAME} .
+  else
+    docker build -f Dockerfile.${name} --build-arg REPO=${REPO_BASE:-$REPO} --build-arg release=${TAG} -t ${IMAGE_NAME} .
+  fi
+
+  if [ $push -eq 0 ]; then
+    echo "Built image ${IMAGE_NAME} NOT pushed!"
+  else
+    docker push ${IMAGE_NAME}
+  fi
+
+  # make it also latest
+  if [ $latest -eq 1 ]; then
+    echo "Tag ${IMAGE_NAME} as LATEST ..."
+    docker tag ${IMAGE_NAME} zoomphant/${name}:latest
+
+    if [ $push -eq 1 ]; then
+      docker push zoomphant/${name}:latest
+    fi
+  fi
+}
+
 cd ${ROOT}
 
-IMAGE_NAME=zoomphant/aio:${TAG}
+echo "Building ${TAG} PACK image from ${REPO_BASE:-$REPO} ..."
+build "pack"
 
 echo "Building ${TAG} AIO image from ${REPO_BASE:-$REPO} ..."
-if [ $cache -eq 0 ]; then
-  docker build --no-cache=true --build-arg REPO=${REPO_BASE:-$REPO} -t ${IMAGE_NAME} .
-else
-  docker build --build-arg REPO=${REPO_BASE:-$REPO} -t ${IMAGE_NAME} .
-fi
+build "aio"
 
-if [ $push -eq 0 ]; then
-    echo "Built image ${IMAGE_NAME} NOT pushed!"
-else
-    docker push ${IMAGE_NAME}
-fi
-
-echo "Create AIO image done"
+echo "Create PACK and AIO images done"

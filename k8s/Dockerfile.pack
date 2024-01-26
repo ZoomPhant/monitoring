@@ -15,7 +15,7 @@ MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
 ##
 ## Labels
 ##
-LABEL name="ZoomPhant AIO" image="aio" vendor="ZoomPhant"
+LABEL name="ZoomPhant AIO Pack" image="pack" vendor="ZoomPhant"
 
 RUN mkdir -p /usr/local/zoomphant
 
@@ -48,9 +48,6 @@ RUN mkdir /usr/local/zoomphant/agent/logs
 COPY --from=collector /usr/local/zoomphant/agent/lib /usr/local/zoomphant/agent/lib
 COPY conf/agent.config.json /usr/local/zoomphant/agent/conf/config.json
 
-# startup scripts
-COPY ./scripts/startup.sh /scripts/
-
 # nginx conf
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
@@ -59,6 +56,10 @@ COPY conf/supervisord.conf /etc/supervisor/conf.d
 
 # Kicking in
 RUN touch /first_run
+
+# startup scripts
+COPY ./scripts/startup.pack.sh /scripts/startup.sh
+RUN chmod +x /scripts/startup.sh
 
 # language, for internalization, default to en-US for now
 ARG language=en-US
