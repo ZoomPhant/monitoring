@@ -1,7 +1,8 @@
 #!/bin/bash
 source /etc/profile
 
-ROOT=${GITHUB_REPO:-~/monitoring}
+# ROOT=${GITHUB_REPO:-~/monitoring}
+ROOT=$(cd $(dirname ${BASH_SOURCE[0]})/.. && pwd)
 
 OWNER=ZoomPhant
 REPO=monitoring
