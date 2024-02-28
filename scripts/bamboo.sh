@@ -230,7 +230,7 @@ prepare_release() {
 cd $ROOT
 
 # 1. check if release file exists
-version=`ls $ROOT/zpagent-release-*.gz | cut -d - -f 3 | cut -d . -f 1-3`
+version=`ls $ROOT/zpagent-release-*.gz | xargs basename | cut -d - -f 3 | cut -d . -f 1-3`
 echo "Found release version $version ..."
 if [ -z "$version" ]; then
   echo "No release file found"
