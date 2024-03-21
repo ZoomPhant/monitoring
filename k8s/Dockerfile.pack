@@ -1,70 +1,14 @@
 ARG REPO=zpcloud
+ARG RELEASE=latest
 
-FROM $REPO/zoomphant-aio-base:latest as base
-FROM $REPO/nui:latest as nui
-FROM $REPO/ingestion:latest as ingestion
-FROM $REPO/endpoint:latest as endpoint
-FROM $REPO/zervice:latest as zervice
-FROM $REPO/collector:latest as collector
-
-FROM base
+FROM $REPO/zoomphant-pack:$RELEASE as base
 
 MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
-
 
 ##
 ## Labels
 ##
 LABEL name="ZoomPhant AIO Pack" image="pack" vendor="ZoomPhant"
-
-RUN mkdir -p /usr/local/zoomphant
-
-# 5. nui stuff
-COPY --from=nui /usr/local/zoomphant/frontend/dist /var/www
-
-# 6. ingestion stuff
-RUN mkdir -p /usr/local/zoomphant/ingestion
-COPY --from=ingestion /ingestion/ingestion.jar /usr/local/zoomphant/ingestion
-
-# 7. endpoint stuff
-RUN mkdir -p /usr/local/zoomphant/endpoint
-COPY --from=endpoint /endpoint/endpoint.jar /usr/local/zoomphant/endpoint
-
-# 8. backend stuff
-RUN mkdir -p /usr/local/zoomphant/lib
-RUN mkdir /usr/local/zoomphant/collectors
-COPY --from=zervice /usr/local/zoomphant/lib/backend.jar /usr/local/zoomphant/lib
-
-RUN mkdir -p /usr/local/zoomphant/config
-COPY conf/endpoint.properties /usr/local/zoomphant/config
-COPY conf/ingestion.properties /usr/local/zoomphant/config
-COPY conf/application.properties /usr/local/zoomphant/config
-
-# 9. agent stuff
-RUN mkdir /usr/local/zoomphant/agent/
-RUN mkdir /usr/local/zoomphant/agent/bin
-RUN mkdir /usr/local/zoomphant/agent/conf
-RUN mkdir /usr/local/zoomphant/agent/logs
-COPY --from=collector /usr/local/zoomphant/agent/lib /usr/local/zoomphant/agent/lib
-COPY conf/agent.config.json /usr/local/zoomphant/agent/conf/config.json
-
-# nginx conf
-COPY conf/nginx.conf /etc/nginx/nginx.conf
-
-# services
-COPY conf/supervisord.conf /etc/supervisor/conf.d
-
-# Kicking in
-RUN touch /first_run
-
-# startup scripts
-COPY ./scripts/startup.pack.sh /scripts/startup.sh
-RUN chmod +x /scripts/startup.sh
-
-# language, for internalization, default to en-US for now
-ARG language=en-US
-
-ENV LANGUAGE=$language
 
 EXPOSE 80
 

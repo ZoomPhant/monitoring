@@ -1,10 +1,7 @@
 ARG REPO=zpcloud
-ARG release=latest
+ARG RELEASE=latest
 
-FROM zoomphant/pack:$release as base
-FROM $REPO/collector-packages:$release as collector
-
-FROM base
+FROM $REPO/zoomphant-aio:$RELEASE as base
 
 MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
 
@@ -13,29 +10,6 @@ MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
 ##
 LABEL name="ZoomPhant AIO Package" image="zoomphant-aio" vendor="Zervice"
 
-RUN mkdir -p /usr/local/zoomphant/collectors/$release
-RUN mkdir -p /usr/local/zoomphant/collectors/$release/linux
-RUN mkdir -p /usr/local/zoomphant/collectors/$release/windows
-
-COPY --from=collector /packages/upgrader.zip /usr/local/zoomphant/collectors/$release/agent.zip
-COPY --from=collector /packages/upgrader.zip.md5 /usr/local/zoomphant/collectors/$release/agent.zip.md5
-COPY --from=collector /packages/installer-linux-x64.bin /usr/local/zoomphant/collectors/$release/linux/x64.bin
-COPY --from=collector /packages/installer-linux-x64.bin.md5 /usr/local/zoomphant/collectors/$release/linux/x64.bin.md5
-COPY --from=collector /packages/installer-linux-x86.bin /usr/local/zoomphant/collectors/$release/linux/x86.bin
-COPY --from=collector /packages/installer-linux-x86.bin.md5 /usr/local/zoomphant/collectors/$release/linux/x86.bin.md5
-COPY --from=collector /packages/installer-windows-x64.exe /usr/local/zoomphant/collectors/$release/windows/x64.exe
-COPY --from=collector /packages/installer-windows-x64.exe.md5 /usr/local/zoomphant/collectors/$release/windows/x64.exe.md5
-COPY --from=collector /packages/installer-windows-x86.exe /usr/local/zoomphant/collectors/$release/windows/x86.exe
-COPY --from=collector /packages/installer-windows-x86.exe.md5 /usr/local/zoomphant/collectors/$release/windows/x86.exe.md5
-
-# startup scripts
-COPY ./scripts/startup.aio.sh /scripts/startup.sh
-RUN chmod +x /scripts/startup.sh
-
-# language, default to en-US
-ARG language=en-US
-
-ENV LANGUAGE=$language
 
 EXPOSE 80
 
