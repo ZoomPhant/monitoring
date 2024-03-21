@@ -1,6 +1,6 @@
 ARG REPO=zpcloud
 
-FROM $REPO/zoomphant-aio-base:1.0 as base
+FROM $REPO/zoomphant-aio-base:latest as base
 FROM $REPO/nui:latest as nui
 FROM $REPO/ingestion:latest as ingestion
 FROM $REPO/endpoint:latest as endpoint
