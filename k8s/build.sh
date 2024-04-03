@@ -42,24 +42,34 @@ shift $((OPTIND-1))
 # ROOT points to start build.sh, i.e. <repo>/k8s
 ROOT=$(cd "$(dirname ${BASH_SOURCE[0]})" && pwd)
 
-if [ "$#" -eq 1 ]; then
-  TAG="$1";
-else
-  # echo "Please give version tag like v2.3.4 or latest to build"
-  # exit 1;
-  TAG="v$(head -1 $ROOT/../RELEASE)"
-fi
+# INFO are lines of text in form of key#value, let's split it into key and value
 
+TAG=
+TAG_OPERATOR=
+TAG_CENTRAL=
+TAG_NORMAL=
+while IFS='#' read -r key value; do
+  if [ "$key" == "collector" ]; then
+    TAG="v$value"
+  elif [ "$key" == "operator" ]; then
+    TAG_OPERATOR="v$value"
+  elif [ "$key" == "central" ]; then
+    TAG_CENRAL="v$value"
+  elif [ "$key" == "normal" ]; then
+    TAG_NORMAL="v$value"
+  fi
+done <<< "$(more $ROOT/../RELEASE)"
 
 build() {
   local name=$1
+  local tag=$2
     
-  local IMAGE_NAME=zoomphant/${name}:${TAG}
+  local IMAGE_NAME=zoomphant/${name}:${tag}
 
   if [ $cache -eq 0 ]; then
-    docker build -f Dockerfile.${name} --no-cache=true --build-arg REPO=${REPO_BASE:-$REPO} --build-arg release=${TAG} -t ${IMAGE_NAME} .
+    docker build -f Dockerfile.${name} --no-cache=true --build-arg REPO=${REPO_BASE:-$REPO} --build-arg release=${tag} -t ${IMAGE_NAME} .
   else
-    docker build -f Dockerfile.${name} --build-arg REPO=${REPO_BASE:-$REPO} --build-arg release=${TAG} -t ${IMAGE_NAME} .
+    docker build -f Dockerfile.${name} --build-arg REPO=${REPO_BASE:-$REPO} --build-arg release=${tag} -t ${IMAGE_NAME} .
   fi
 
   if [ $push -eq 0 ]; then
@@ -82,9 +92,21 @@ build() {
 cd ${ROOT}
 
 echo "Building ${TAG} PACK image from ${REPO_BASE:-$REPO} ..."
-build "pack"
+build "pack" "$TAG"
+echo "Create PACK image done"
 
 echo "Building ${TAG} AIO image from ${REPO_BASE:-$REPO} ..."
-build "aio"
+build "aio" "$TAG"
+echo "Create AIO image done"
 
-echo "Create PACK and AIO images done"
+echo "Building ${TAG_OPERATOR} operator image from ${REPO_BASE:-$REPO} ..."
+build "operator" "$TAG_OPERATOR"
+echo "Create operator image done"
+
+echo "Building ${TAG_CENTRAL} central metrics image from ${REPO_BASE:-$REPO} ..."
+build "operator" "$TAG_CENTRAL"
+echo "Create central metric image done"
+
+echo "Building ${TAG_NORMAL} normal metrics image from ${REPO_BASE:-$REPO} ..."
+build "operator" "$TAG_NORMAL"
+echo "Create normal metrics image done"

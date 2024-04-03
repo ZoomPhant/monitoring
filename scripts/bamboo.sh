@@ -261,8 +261,10 @@ tar xzvf ./zpagent-release-$version.tar.gz -C $ASSETS_DIR
 # 3. prepare release
 prepare_release $version $ASSETS_DIR 
 
-# 4. update the release info
-echo $version > $ROOT/RELEASE
+# RELEASE is updated outside of the script now, in multiple lines like
+#   collector##v4.2.20, etc.
+## 4. update the release info
+## echo $version > $ROOT/RELEASE
 
 git commit -a -m "Release $version"
 

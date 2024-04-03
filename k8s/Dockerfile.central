@@ -1,0 +1,15 @@
+ARG REPO=zpcloud
+ARG RELEASE=latest
+
+FROM $REPO/zpmetrics:$RELEASE as base
+
+MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
+
+##
+## Labels
+##
+LABEL name="ZoomPhant Collector Central Metrics Server" image="zoomphant-central-metrics" vendor="Zervice"
+
+ENV GIN_MODE release
+
+ENTRYPOINT ["/usr/local/bin/zpmetrics", "run"]

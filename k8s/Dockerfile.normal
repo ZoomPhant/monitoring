@@ -1,0 +1,15 @@
+ARG REPO=zpcloud
+ARG RELEASE=latest
+
+FROM $REPO/dockermetrics:$RELEASE as base
+
+MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
+
+##
+## Labels
+##
+LABEL name="ZoomPhant Collector Normal Metrics Server" image="zoomphant-normal-metrics" vendor="Zervice"
+
+ENV GIN_MODE release
+
+ENTRYPOINT ["/usr/local/bin/dockermetrics", "run"]
