@@ -8,7 +8,7 @@ MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
 ##
 ## Labels
 ##
-LABEL name="ZoomPhant AIO Pack" image="pack" vendor="ZoomPhant"
+LABEL name="ZoomPhant AIO Pack" image="zoomphant-pack" vendor="ZoomPhant"
 
 EXPOSE 80
 

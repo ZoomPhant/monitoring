@@ -54,7 +54,7 @@ while IFS='#' read -r key value; do
   elif [ "$key" == "operator" ]; then
     TAG_OPERATOR="v$value"
   elif [ "$key" == "central" ]; then
-    TAG_CENRAL="v$value"
+    TAG_CENTRAL="v$value"
   elif [ "$key" == "normal" ]; then
     TAG_NORMAL="v$value"
   fi
@@ -67,9 +67,9 @@ build() {
   local IMAGE_NAME=zoomphant/${name}:${tag}
 
   if [ $cache -eq 0 ]; then
-    docker build -f Dockerfile.${name} --no-cache=true --build-arg REPO=${REPO_BASE:-$REPO} --build-arg release=${tag} -t ${IMAGE_NAME} .
+    docker build -f Dockerfile.${name} --no-cache=true --build-arg REPO=${REPO_BASE:-$REPO} --build-arg RELEASE=${tag} -t ${IMAGE_NAME} .
   else
-    docker build -f Dockerfile.${name} --build-arg REPO=${REPO_BASE:-$REPO} --build-arg release=${tag} -t ${IMAGE_NAME} .
+    docker build -f Dockerfile.${name} --build-arg REPO=${REPO_BASE:-$REPO} --build-arg RELEASE=${tag} -t ${IMAGE_NAME} .
   fi
 
   if [ $push -eq 0 ]; then
@@ -92,21 +92,21 @@ build() {
 cd ${ROOT}
 
 echo "Building ${TAG} PACK image from ${REPO_BASE:-$REPO} ..."
-build "pack" "$TAG"
+build "pack" "${TAG}"
 echo "Create PACK image done"
 
 echo "Building ${TAG} AIO image from ${REPO_BASE:-$REPO} ..."
-build "aio" "$TAG"
+build "aio" "${TAG}"
 echo "Create AIO image done"
 
 echo "Building ${TAG_OPERATOR} operator image from ${REPO_BASE:-$REPO} ..."
-build "operator" "$TAG_OPERATOR"
+build "operator" "${TAG_OPERATOR}"
 echo "Create operator image done"
 
 echo "Building ${TAG_CENTRAL} central metrics image from ${REPO_BASE:-$REPO} ..."
-build "operator" "$TAG_CENTRAL"
+build "central-metrics" "${TAG_CENTRAL}"
 echo "Create central metric image done"
 
 echo "Building ${TAG_NORMAL} normal metrics image from ${REPO_BASE:-$REPO} ..."
-build "operator" "$TAG_NORMAL"
+build "normal-metrics" "${TAG_NORMAL}"
 echo "Create normal metrics image done"
