@@ -206,6 +206,8 @@ prepare_release() {
     mkdir -p "$dir"
   fi
 
+  echo "Creating or updating artifacts in $dir ..."
+
   # assets contains following stuff
   #   agent.zip
   #   agent.zip.md5
@@ -248,6 +250,7 @@ set -e
 # release contains the assets info as .assets[{...}, {...}]
 RELEASE=$(get_release "v${version}")
 
+echo "Updating GitHub repo ..."
 # Now do the job
 # make sure we are latest
 git pull
@@ -255,6 +258,8 @@ git pull
 # 2. create a temp folder and extract all the stuff in it
 ASSETS_DIR=$(mktemp -d -t zpagent-XXXXXXXXXX)
 trap 'rm -rf -- "$ASSETS_DIR"' EXIT
+
+echo "Extracting artifacts to $ASSETS_DIR ..."
 
 tar xzvf ./zpagent-release-$version.tar.gz -C $ASSETS_DIR
 

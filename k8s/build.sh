@@ -100,13 +100,13 @@ build "aio" "${TAG}"
 echo "Create AIO image done"
 
 echo "Building ${TAG_OPERATOR} operator image from ${REPO_BASE:-$REPO} ..."
-build "operator" "${TAG_OPERATOR}"
+build "zp-operator" "${TAG_OPERATOR}"
 echo "Create operator image done"
 
 echo "Building ${TAG_CENTRAL} central metrics image from ${REPO_BASE:-$REPO} ..."
-build "central-metrics" "${TAG_CENTRAL}"
+build "zpmetrics" "${TAG_CENTRAL}"
 echo "Create central metric image done"
 
 echo "Building ${TAG_NORMAL} normal metrics image from ${REPO_BASE:-$REPO} ..."
-build "normal-metrics" "${TAG_NORMAL}"
+build "dockermetrics" "${TAG_NORMAL}"
 echo "Create normal metrics image done"
