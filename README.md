@@ -3,9 +3,9 @@
 
 Using ZoomPhant, customers can focus on their valuable businesses while owning their data. ZoomPhant can totally replace customers' existing expensive monitoring solutions like DataDog, Splunk and / or open source monitoring stack like Zabbix, Prometheus & Grafana (YES, no longer need to struggle with building and maintaining of an opensource stack!)
 
-## About Creator
+## About The Creators
 
-ZoomPhant is built by people who have been working in the data-center and application monitoring indrustries for 10+ years. The same people had created a world known monitoring solution and had served thousands of enterprise customers world-wide (among them many of the Fortune Global 500s). It's from that unique background and experience that we know what the next generation of monitoring solution shall be and we are driving to that direction. 
+ZoomPhant is created by people who have been working in the data-center and application monitoring indrustries for 10+ years. The same people had created a world known monitoring solution and had served thousands of enterprise customers world-wide (among them many of the Fortune Global 500s). It's from that unique background and experience that we know what the next generation of monitoring solution shall be and we are driving to that direction. 
 
 *We want to help all customers be able to (and **should**) use an **affordable** and **enterprise-level** monitoring solution!*
 
