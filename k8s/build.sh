@@ -91,6 +91,10 @@ build() {
 
 cd ${ROOT}
 
+echo "Building ${TAG} Collector image from ${REPO_BASE:-$REPO} ..."
+build "collector" "${TAG}"
+echo "Create Collector image done"
+
 echo "Building ${TAG} PACK image from ${REPO_BASE:-$REPO} ..."
 build "pack" "${TAG}"
 echo "Create PACK image done"
