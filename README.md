@@ -18,7 +18,9 @@ For business use, the **community version released in this repository is FREE to
 Note: **We are opensource supporters!** This repository hosts only the releasing artifacts of ZoomPhant. We will gradually open source parts of ZoomPhant like data collecting and UI, etc. Please bookmark us to get updated!
 
 ## Trying ZoomPhant
-Start using ZoomPhant is simple and straightforward, please refer to [Quick Start](http://zoomphant.github.io/docs/start) on our GitHub hosted documentation site. Or you can just follow below simple steps
+Start using ZoomPhant is simple and straightforward, please refer to [Quick Start](http://zoomphant.github.io/docs/start) on our GitHub hosted documentation site. Or you can just follow below simple steps.
+
+***Important Note: This step is for testing purposes only. All data will be lost upon restart. If you need to save data, please refer to the Quick Start documentation for startup instructions.***
 
 1. Find a Linux host with engough space (recommended 40+GB free diskspace and 8+GB memory)
 
@@ -31,7 +33,7 @@ docker run zoomphant/pack:latest
 ```
 You will be asked to open in browser a link like below:
 ```
-http://172.17.0.47 
+http://<your docker host ip>
 ```
 Where the IP is your started docker container IP (thus would be different!) and you shall be able to login with username **admin@zervice.local** and initial password **admin**.
 
