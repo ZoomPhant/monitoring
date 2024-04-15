@@ -5,10 +5,10 @@ on:
     paths:
       - 'releases/**'
       
-  workflow_dispatch:
+#  workflow_dispatch:
     
-  schedule:
-    - cron: "0 0 * * *"
+#  schedule:
+#    - cron: "0 0 * * *"
 
 env:
   REPO_BASE: ${{ vars.REPO_BASE }}
