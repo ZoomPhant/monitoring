@@ -1,0 +1,11 @@
+ARG REPO=zpcloud
+ARG RELEASE=latest
+
+FROM $REPO/collector-packages:$RELEASE as base
+
+MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
+
+##
+## Labels
+##
+LABEL name="ZoomPhant Collector Packaging" image="collector-packages" vendor="Zervice"

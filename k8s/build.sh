@@ -95,6 +95,14 @@ echo "Building ${TAG} Collector image from ${REPO_BASE:-$REPO} ..."
 build "collector" "${TAG}"
 echo "Create Collector image done"
 
+echo "Building ${TAG} Collector Packaging image from ${REPO_BASE:-$REPO} ..."
+build "collector-packages" "${TAG}"
+echo "Create Collector Packaging image done"
+
+echo "Building ${TAG} Collector Installer image from ${REPO_BASE:-$REPO} ..."
+build "collector-installer" "${TAG}"
+echo "Create Collector Installer image done"
+
 echo "Building ${TAG} PACK image from ${REPO_BASE:-$REPO} ..."
 build "pack" "${TAG}"
 echo "Create PACK image done"

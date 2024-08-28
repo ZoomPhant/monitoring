@@ -1,0 +1,13 @@
+ARG REPO=zpcloud
+ARG RELEASE=latest
+
+FROM $REPO/collector-installer:$RELEASE as base
+
+MAINTAINER ZoomPhant DEV <dev@zoomphant.com>
+
+##
+## Labels
+##
+LABEL name="ZoomPhant Collector Installer" image="collector-installer" vendor="Zervice"
+
+ENTRYPOINT ["/scripts/start.sh"]
