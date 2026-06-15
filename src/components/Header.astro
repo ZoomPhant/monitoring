@@ -1,0 +1,43 @@
+---
+export interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+const isDocs = currentPath.startsWith('/docs');
+---
+
+<header class="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <a href="/" class="flex items-center gap-2.5 text-xl font-bold text-gray-900">
+      <img src="/logo.svg" alt="ZoomPhant" class="h-8 w-8" />
+      ZoomPhant
+    </a>
+    <div class="hidden items-center gap-8 md:flex">
+      <a
+        href="/"
+        class="text-sm font-medium transition-colors"
+        class:list={[currentPath === '/' ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
+      >Home</a>
+      <a
+        href="/docs/start/"
+        class="text-sm font-medium transition-colors"
+        class:list={[isDocs ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
+      >Docs</a>
+      <a
+        href="/docs/about/"
+        class="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+      >About</a>
+      <a
+        href="https://github.com/ZoomPhant/monitoring"
+        class="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+      >GitHub</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a
+        href="/docs/start/"
+        class="hidden rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 md:inline-block"
+      >Get Started</a>
+    </div>
+  </nav>
+</header>

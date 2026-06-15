@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .doc-content h1:first-child {
+    display: none;
+  }
+
+  .doc-content h2 {
+    @apply mt-12 mb-4 text-2xl font-bold tracking-tight text-gray-900;
+  }
+
+  .doc-content h3 {
+    @apply mt-8 mb-3 text-xl font-semibold tracking-tight text-gray-900;
+  }
+
+  .doc-content h4 {
+    @apply mt-6 mb-2 text-lg font-semibold text-gray-900;
+  }
+
+  .doc-content p {
+    @apply mb-4 leading-7 text-gray-600;
+  }
+
+  .doc-content a {
+    @apply font-medium text-brand-600 underline decoration-brand-200 underline-offset-2 transition-colors hover:text-brand-700 hover:decoration-brand-300;
+  }
+
+  .doc-content ul,
+  .doc-content ol {
+    @apply mb-4 pl-6 text-gray-600;
+  }
+
+  .doc-content ul {
+    @apply list-disc;
+  }
+
+  .doc-content ol {
+    @apply list-decimal;
+  }
+
+  .doc-content li {
+    @apply mb-2 leading-7;
+  }
+
+  .doc-content li > ul,
+  .doc-content li > ol {
+    @apply mt-2 mb-0;
+  }
+
+  .doc-content strong {
+    @apply font-semibold text-gray-900;
+  }
+
+  .doc-content blockquote {
+    @apply my-6 border-l-4 border-brand-200 bg-brand-50/50 py-3 pl-6 pr-4 text-gray-700 italic;
+  }
+
+  .doc-content hr {
+    @apply my-8 border-gray-100;
+  }
+
+  .doc-content code {
+    @apply rounded bg-gray-100 px-1.5 py-0.5 text-sm font-medium text-brand-700;
+  }
+
+  .doc-content pre {
+    @apply my-6 overflow-x-auto rounded-xl border border-gray-200 bg-gray-900 p-5 text-sm leading-6 text-gray-100 shadow-sm;
+  }
+
+  .doc-content pre code {
+    @apply bg-transparent p-0 text-gray-100;
+  }
+
+  .doc-content table {
+    @apply my-6 w-full border-collapse;
+  }
+
+  .doc-content table th {
+    @apply border-b-2 border-gray-200 bg-gray-50 px-4 py-3 text-left text-sm font-semibold text-gray-900;
+  }
+
+  .doc-content table td {
+    @apply border-b border-gray-100 px-4 py-3 text-sm text-gray-600;
+  }
+
+  .doc-content table tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .doc-content img {
+    @apply my-6 rounded-xl border border-gray-200 shadow-sm;
+  }
+
+  .doc-content .header {
+    @apply text-brand-600;
+  }
+}

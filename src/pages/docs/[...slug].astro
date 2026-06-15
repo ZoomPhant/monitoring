@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map((doc) => ({
+    params: { slug: doc.slug },
+    props: { entry: doc },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const allDocs = await getCollection('docs');
+
+function buildSidebar(docs: { slug: string; data: { title: string; parent?: string; grand_parent?: string; nav_order?: number } }[]) {
+  const pages = docs.map((d) => ({
+    slug: d.slug,
+    title: d.data.title,
+    parent: d.data.parent,
+    grand_parent: d.data.grand_parent,
+    nav_order: d.data.nav_order ?? 99,
+  }));
+
+  const topLevel = pages
+    .filter((p) => !p.parent)
+    .sort((a, b) => a.nav_order - b.nav_order);
+
+  return topLevel.map((section) => {
+    const children = pages
+      .filter((p) => p.parent === section.title && !p.grand_parent)
+      .sort((a, b) => a.nav_order - b.nav_order);
+
+    const grandchildren = pages.filter((p) => p.grand_parent === section.title);
+    const childrenWithGrandchildren = children.map((child) => {
+      const subChildren = grandchildren
+        .filter((gc) => gc.parent === child.title)
+        .sort((a, b) => a.nav_order - b.nav_order);
+      return {
+        title: child.title,
+        href: `/docs/${child.slug}/`,
+        children: subChildren.length > 0
+          ? subChildren.map((sc) => ({
+              title: sc.title,
+              href: `/docs/${sc.slug}/`,
+            }))
+          : undefined,
+      };
+    });
+
+    return {
+      title: section.title,
+      href: `/docs/${section.slug}/`,
+      children: childrenWithGrandchildren.length > 0 ? childrenWithGrandchildren : undefined,
+    };
+  });
+}
+
+const sidebar = buildSidebar(allDocs);
+---
+
+<DocsLayout title={entry.data.title} description={entry.data.description} sidebar={sidebar} currentPath={Astro.url.pathname}>
+  <Content />
+</DocsLayout>

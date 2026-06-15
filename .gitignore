@@ -1,0 +1,8 @@
+.jekyll-cache
+_site
+*.tar
+.DS_Store
+.idea
+.astro
+node_modules
+dist

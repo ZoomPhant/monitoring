@@ -1,0 +1,341 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout title="ZoomPhant — Enterprise All-in-One Self-Hosted Monitoring">
+  <Header currentPath={Astro.url.pathname} />
+
+  <main>
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-blue-50" />
+      <div class="relative mx-auto max-w-7xl px-6 pb-24 pt-16 sm:pb-32 sm:pt-20 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="inline-flex items-center rounded-full bg-brand-100 px-4 py-1.5 text-xs font-medium text-brand-700 ring-1 ring-inset ring-brand-200">
+            Open-core · Self-hosted · Enterprise-ready
+          </span>
+          <h1 class="mt-8 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            Your Data, Your Control.
+            <span class="mt-2 block text-brand-600">Enterprise Monitoring, Self-Hosted.</span>
+          </h1>
+          <p class="mt-6 text-lg leading-8 text-gray-600">
+            The next-gen all-in-one monitoring platform for Ops and DevOps teams. Replace Datadog, Zabbix,
+            Prometheus & Grafana with a single Docker image — fully self-hosted, open-core, and built for data sovereignty.
+          </p>
+          <div class="mt-10 flex items-center justify-center gap-4">
+            <a href="/docs/start/" class="rounded-xl bg-brand-600 px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600">
+              Start Monitoring in 1 Minute
+            </a>
+            <a href="/docs/about/" class="rounded-xl border border-gray-300 bg-white px-8 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md">
+              Learn More
+            </a>
+          </div>
+          <div class="mt-8 flex items-center justify-center gap-6 text-sm text-gray-500">
+            <span class="flex items-center gap-1.5">
+              <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              No credit card
+            </span>
+            <span class="flex items-center gap-1.5">
+              <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Free for personal use
+            </span>
+            <span class="flex items-center gap-1.5">
+              <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Single Docker image
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+    </section>
+
+    <!-- Quick Deploy -->
+    <section class="border-y border-gray-100 bg-gray-50/50">
+      <div class="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8">
+        <div class="mx-auto max-w-4xl">
+          <div class="text-center">
+            <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Quick Deploy</span>
+            <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">One command to start</h2>
+            <p class="mt-4 text-base text-gray-600">
+              Docker 20+ required. Runs in under a minute.
+            </p>
+          </div>
+          <div class="mt-8 overflow-hidden rounded-xl border border-gray-200 bg-gray-900 shadow-lg">
+            <div class="flex items-center gap-2 border-b border-gray-700 px-5 py-3">
+              <span class="h-3 w-3 rounded-full bg-red-500" />
+              <span class="h-3 w-3 rounded-full bg-yellow-500" />
+              <span class="h-3 w-3 rounded-full bg-green-500" />
+              <span class="ml-2 text-xs text-gray-400">terminal</span>
+            </div>
+            <pre class="overflow-x-auto px-5 py-4 text-sm text-green-400"><code>docker run --hostname zoomphant -it -d \<span class="text-gray-400">
+  </span>-v /root/data:/data \<span class="text-gray-400">
+  </span>-p 8080:80 \<span class="text-gray-400">
+  </span>--name zoomphant zoomphant/pack:latest</code></pre>
+          </div>
+          <p class="mt-4 text-center text-sm text-gray-500">
+            Then visit <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-700">http://localhost:8080</code> — default credentials: <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-700">admin@zervice.local / admin</code>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">All-in-One Platform</span>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Everything you need to monitor, nothing you don't</h2>
+          <p class="mt-4 text-base leading-7 text-gray-600">
+            Metrics, logs, alerts, dashboards, collectors — all built-in, all working together out of the box.
+          </p>
+        </div>
+        <div class="mx-auto mt-16 grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+            </div>
+            <h3 class="mt-6 text-base font-semibold text-gray-900">Metrics</h3>
+            <p class="mt-2 text-sm leading-6 text-gray-600">
+              Collect counters, gauges, histograms. Prometheus-compatible storage. Monitor everything from CPU to Kafka consumer lag.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+            </div>
+            <h3 class="mt-6 text-base font-semibold text-gray-900">Logs</h3>
+            <p class="mt-2 text-sm leading-6 text-gray-600">
+              Collect from local files, rsyslog, or Loki push. Parse with Grok. Correlate with metrics for full observability.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+            </div>
+            <h3 class="mt-6 text-base font-semibold text-gray-900">Alerts</h3>
+            <p class="mt-2 text-sm leading-6 text-gray-600">
+              Real-time evaluation engine. Staged delivery chains for email, SMS, voice, Slack, webhooks. Escalate if no response.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+            </div>
+            <h3 class="mt-6 text-base font-semibold text-gray-900">Dashboards</h3>
+            <p class="mt-2 text-sm leading-6 text-gray-600">
+              Global, service-level, and independent dashboards. Rich widgets: graphs, pies, stats, log viewers, text, monitor tables.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
+            </div>
+            <h3 class="mt-6 text-base font-semibold text-gray-900">Collectors</h3>
+            <p class="mt-2 text-sm leading-6 text-gray-600">
+              Built-in visual collector management. Install agents on Linux, Windows, Kubernetes. Plugins for MySQL, Kafka, Redis, HTTP, SNMP, and more.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+            </div>
+            <h3 class="mt-6 text-base font-semibold text-gray-900">Data Sovereignty</h3>
+            <p class="mt-2 text-sm leading-6 text-gray-600">
+              Your data stays on your infrastructure. Standard Prometheus/Loki formats. No vendor lock-in. Export anytime, integrate anywhere.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why ZoomPhant -->
+    <section class="bg-gray-50 border-y border-gray-100 py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Next-Gen Monitoring</span>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Beyond first and second generation monitoring</h2>
+        </div>
+        <div class="mx-auto mt-16 grid max-w-5xl gap-6 sm:grid-cols-3">
+          <div class="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+            <div class="text-4xl font-bold text-brand-600">1st</div>
+            <h3 class="mt-4 text-base font-semibold text-gray-900">Legacy Systems</h3>
+            <p class="mt-2 text-sm text-gray-500">Nagios, Zabbix, HP OpenView</p>
+            <ul class="mt-4 space-y-2 text-left text-xs text-gray-500">
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Local deployment overhead</li>
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Static configuration</li>
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Limited visualization</li>
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Singular purpose</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+            <div class="text-4xl font-bold text-yellow-600">2nd</div>
+            <h3 class="mt-4 text-base font-semibold text-gray-900">SaaS Solutions</h3>
+            <p class="mt-2 text-sm text-gray-500">Datadog, New Relic, CloudWatch</p>
+            <ul class="mt-4 space-y-2 text-left text-xs text-gray-500">
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> High data/bandwidth costs</li>
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Vendor lock-in</li>
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Data export fees</li>
+              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Limited retention</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl border-2 border-brand-200 bg-brand-50 p-8 text-center shadow-sm">
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-brand-200 px-3 py-1 text-xs font-semibold text-brand-700">3rd Gen</div>
+            <h3 class="mt-4 text-base font-semibold text-gray-900">ZoomPhant</h3>
+            <p class="mt-2 text-sm text-brand-700">Next-Gen Self-Hosted</p>
+            <ul class="mt-4 space-y-2 text-left text-xs text-gray-700">
+              <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Data sovereignty</li>
+              <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Cost-effective</li>
+              <li class="flex items-center gap-2"><span class="text-green-500">✓</span> One-click Docker deploy</li>
+              <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Hybrid cloud support</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Built for Everything</span>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Infrastructure and application monitoring</h2>
+        </div>
+        <div class="mx-auto mt-16 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
+            <div class="text-3xl">🐧</div>
+            <h3 class="mt-3 text-sm font-semibold text-gray-900">Linux</h3>
+            <p class="mt-1 text-xs text-gray-500">CPU, memory, disk, network</p>
+          </div>
+          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
+            <div class="text-3xl">🪟</div>
+            <h3 class="mt-3 text-sm font-semibold text-gray-900">Windows</h3>
+            <p class="mt-1 text-xs text-gray-500">WMI, performance counters, logs</p>
+          </div>
+          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
+            <div class="text-3xl">⎈</div>
+            <h3 class="mt-3 text-sm font-semibold text-gray-900">Kubernetes</h3>
+            <p class="mt-1 text-xs text-gray-500">Pods, nodes, cluster health</p>
+          </div>
+          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
+            <div class="text-3xl">🗄️</div>
+            <h3 class="mt-3 text-sm font-semibold text-gray-900">Databases</h3>
+            <p class="mt-1 text-xs text-gray-500">MySQL, Redis, Kafka</p>
+          </div>
+          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
+            <div class="text-3xl">🌐</div>
+            <h3 class="mt-3 text-sm font-semibold text-gray-900">HTTP</h3>
+            <p class="mt-1 text-xs text-gray-500">Websites, APIs, endpoints</p>
+          </div>
+          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
+            <div class="text-3xl">📡</div>
+            <h3 class="mt-3 text-sm font-semibold text-gray-900">Network</h3>
+            <p class="mt-1 text-xs text-gray-500">Ping, DNS, ports, SNMP</p>
+          </div>
+          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
+            <div class="text-3xl">📝</div>
+            <h3 class="mt-3 text-sm font-semibold text-gray-900">Logs</h3>
+            <p class="mt-1 text-xs text-gray-500">Grok parsing, Loki push</p>
+          </div>
+          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
+            <div class="text-3xl">🔌</div>
+            <h3 class="mt-3 text-sm font-semibold text-gray-900">Proxmox</h3>
+            <p class="mt-1 text-xs text-gray-500">VMware/Proxmox VE</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="border-y border-gray-100 bg-gray-50 py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Pricing</span>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Free for personal use</h2>
+          <p class="mt-4 text-base leading-7 text-gray-600">
+            Start monitoring today. No time limits, no feature gates for personal use.
+          </p>
+        </div>
+        <div class="mx-auto mt-16 grid max-w-4xl gap-8 lg:grid-cols-2">
+          <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900">Community</h3>
+            <p class="mt-4 text-4xl font-extrabold text-gray-900">Free</p>
+            <p class="mt-2 text-sm text-gray-500">For personal use</p>
+            <ul class="mt-8 space-y-3 text-sm text-gray-600">
+              <li class="flex items-center gap-2">
+                <svg class="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                All core monitoring features
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                Single Docker image deploy
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                Unlimited metrics & logs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                Community support via GitHub
+              </li>
+            </ul>
+            <a href="/docs/start/" class="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700">
+              Get Started Free
+            </a>
+          </div>
+          <div class="rounded-2xl border-2 border-brand-200 bg-white p-8 shadow-md">
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">For Business</div>
+            <h3 class="mt-4 text-lg font-semibold text-gray-900">Enterprise</h3>
+            <p class="mt-4 text-4xl font-extrabold text-gray-900">Contact Us</p>
+            <p class="mt-2 text-sm text-gray-500">Custom pricing for your scale</p>
+            <ul class="mt-8 space-y-3 text-sm text-gray-600">
+              <li class="flex items-center gap-2">
+                <svg class="h-5 w-5 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                Everything in Community
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-5 w-5 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                Cloud management service
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-5 w-5 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                SMS / Voice notifications
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-5 w-5 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                Priority support & SLA
+              </li>
+            </ul>
+            <a href="mailto:info@zervice.us" class="mt-8 inline-flex w-full items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-6 py-3 text-sm font-semibold text-brand-700 transition-all hover:bg-brand-100">
+              Contact Sales
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Ready to take control of your monitoring?</h2>
+          <p class="mt-4 text-base leading-7 text-gray-600">
+            Deploy in under a minute. Your data stays on your infrastructure. No credit card required.
+          </p>
+          <div class="mt-10 flex items-center justify-center gap-4">
+            <a href="/docs/start/" class="rounded-xl bg-brand-600 px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md">
+              Start Monitoring Now
+            </a>
+            <a href="/docs/" class="rounded-xl border border-gray-300 bg-white px-8 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md">
+              Read the Docs
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
