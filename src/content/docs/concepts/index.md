@@ -5,10 +5,9 @@ has_children: true
 
 ---
 
-# References
-
+# Concepts
 
 ----
 
-You can find the important concepts that are used in ZoomPhant and would help you to use ZoomPhant in more advanced ways.
+In this section, you will find information on the core concepts used in ZoomPhant. Understanding these concepts will help you utilize ZoomPhant's advanced monitoring capabilities.
 

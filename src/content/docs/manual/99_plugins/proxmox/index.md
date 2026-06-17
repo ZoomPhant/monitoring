@@ -6,98 +6,79 @@ nav_order: 1
 has_children: true
 ---
 
-Proxmox VE (PVE) is the most commonly used opensource virtulization platform, like monitoring ESX, ZoomPhant can also monitor Proxmox VE.
+Proxmox VE (PVE) is a popular open-source virtualization platform. Similar to VMware ESXi monitoring, ZoomPhant provides comprehensive, native monitoring for Proxmox VE cluster health and resource usage.
 
-For more information about PVE, please visit its offical website at:
+For more information about PVE, please visit the official website at [Proxmox VE](https://www.proxmox.com/en/proxmox-ve).
 
-https://www.proxmox.com/en/proxmox-ve)
+### Creating a Proxmox VE Monitoring Service
 
-### Creating PVE Monitoring Service
+Before creating a Proxmox VE monitoring service, collect the following connection details:
 
-Before creating a monitoring service for your PVE, please collect following information to ensure you can access your PVE cluster:
+1. **Cluster Access Endpoint**: The URL used to access the PVE administration panel (e.g., `https://192.168.1.1:8006`).
+2. **Username**: The account name configured for monitoring (e.g., `monitor` or `zervice`). Include the authentication realm (domain), which defaults to `pam` (e.g., `monitor@pam`).
+3. **Password or API Token**: If using an API token, format it as `tokenId=tokenValue`. For example, if you created a token with the ID `monitoring` and the value `a267354d-bc9f-426a-828c-5174382b3e00`, you must enter `monitoring=a267354d-bc9f-426a-828c-5174382b3e00` in the token field.
 
-1. Cluster access endpoint. It should be the URL you use to access your PVE cluster in browser, like: https://192.168.1.1:8006.
-2. Cluster access username. You should create a username for monitoring purpose, like *monitor* or *zervice*. Please also collect the domain of the user (by default it should be **pam**)
-3. The access password or token for the monitoring user. If you decide to use token, please be aware that in ZoomPhant we would request you to prepend with your tokenId in format of ***tokenId**=**token***. For example, you could have created a token with token ID ***monitoring***, the corresponding token value is "***a267354d-bc9f-426a-828c-5174382b3e00***", then the token you provided to ZoomPhant should be "***monitoring=a267354d-bc9f-426a-828c-5174382b3e00***"
-
-
-
-With above information ready, you can know start adding your PVE monitoring service. Please follow the steps in [Add Monitor Service](../../01_service/) and choose **Proxmox** monitoring plugin :
+Once you have this information, you can add the service. Follow the steps in [Add Monitor Service](../../01_service/) and select the **Proxmox** plugin:
 
 ![image-20240408205119158](./image-20240408205119158.png?lastModify=1712581049)
 
-
-
-In the parameter step, you shall provide following parameters using above information:
+In the parameters step, fill in the configuration fields:
 
 ![image-20240408205237283](./image-20240408205237283.png?lastModify=1712581049)
 
+* **url**: Enter either the host IP and port (e.g., `192.168.1.1:8006`) or the full URL (e.g., `https://192.168.1.1:8006/`).
+* **username**: The monitoring account name.
+* **password**: The account password. If you are using an API token instead, leave this blank.
+* **token**: The API token formatted as `tokenId=tokenValue`. Leave this blank if using a password.
 
+Click **Finish** to complete the wizard. After a few seconds, data will begin reporting to ZoomPhant.
 
-Here:
+---
 
-1. url: you can just input host port like ***192.168.1.1:8006*** or you can just paste the url in like https://192.168.1.1:8006/
-2. username: The account name like ***monitor*** or ***zervice***
-3. password: If you use passwords, input the password here, or you can keep it blank and fill in token field
-4. token: If you use token, fill in token (in format of ***tokenId=token***), otherwise you shall have password set and keep this blank
+## Understanding Proxmox Data
 
-Now finish adding your monitoring service and wait few seconds, you'll soon be able to see the data coming.
+The Proxmox VE monitoring dashboard provides an overview of cluster health, individual node statistics, and guest VM performance.
 
+### Cluster Dashboard
 
-
-### Understanding Proxmox Data
-
-Once you have added the PVE monitoring service, you shall be able see the dashboards for your added monitoring service. You will be able to see
-1. The status of the cluster
-2. The status of a node in the cluster
-3. The status of a VM in the cluster
-4. Other information
-
-## Cluster Dashboard
-
-The default dashboard would be the cluster status dashboard:
+The landing view is the cluster-level dashboard:
 
 ![image-20240408210653376](./image-20240408210653376.png)
 
-Here you will be able to see
-1. The cluster statistics like the node number, VM number etc.
-2. The resource usage status of the cluster, like CPU usage, memory usage and storage usage.
-3. List of nodes and a simple overall status of each node
-4. List of VM and a simple overall status of each VM
+This dashboard contains:
+1. Cluster statistics (number of nodes, VMs, etc.).
+2. Aggregated cluster resource usage (CPU, memory, storage).
+3. A list of nodes with status indicators.
+4. A list of guest VMs with status indicators.
 
-The node list and VM list are clickable, if you click a row you'll be navigate to a sub-dashboard of corresponding node or VM.
+The nodes and VMs listed are interactive. Click any row to navigate directly to its specific detail dashboard.
 
+---
 
+### Node Dashboard
 
-## Node Dashboard
-
-if you click a node in above node list, you'll be navigate to node dashboard of that node, as shown below:
+Clicking a node in the node list opens the node-specific dashboard:
 
 ![image-20240408211014475](./image-20240408211014475.png)
 
+This dashboard includes:
+1. Node uptime.
+2. Detailed resource utilization (CPU, memory, disk, network).
+3. A list of guest VMs running on this specific node.
+4. Node storage and disk status.
 
+As with the cluster dashboard, clicking any VM in the list will navigate you to its dedicated VM dashboard.
 
-On this dashboard, you'll be able to view information like:
+---
 
-1. Node running time
-2. Node resource status
-3. VMs running on the node and their simple overall status
-4. Node disk and other information
+### VM Dashboard
 
-Like in the cluster status, the VM List is clickable, by clicking one VM you'll be navigate to the VM sub-dashboard.
-
-
-
-## VM Dashboard
-
-Once you click a VM in Cluster Dashboard or a Node Dashboard, you will be presented the VM Dashboard:
+Clicking a VM in the Cluster Dashboard or Node Dashboard opens the VM-specific dashboard:
 
 ![image-20240408211530306](./image-20240408211530306.png)
 
-
-
-In VM dashboard, you'll see information about the VM like
-1. VM status and running time
-2. VM resource usage
-3. VM Disk I/O and Netowrk I/O Status
-4. Other informations
+This view provides:
+1. VM status and uptime.
+2. Detailed resource consumption.
+3. Disk I/O and Network interface traffic.
+4. General VM metadata.

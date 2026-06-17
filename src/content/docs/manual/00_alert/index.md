@@ -9,30 +9,28 @@ has_children: true
 # Alerting & Notifications
 
 ----
-One important function of a monitoring system is to identify exceptional or abnormal conditions. When such something unexpected happens, the monitoring system shall generate alerts and get users notified. 
+One of the most important functions of a monitoring system is to identify exceptional or abnormal conditions. When something unexpected happens, the monitoring system generates alerts and notifies users. 
 
-In this section, we will let you know how ZoomPhant allows users to define alerts and get users be updated for generated alerts.
+In this section, we will explain how ZoomPhant allows users to define alerts and stay updated when they are triggered.
 
 ## Alerting & Delivery Process
 
-Below diagram describes how ZoomPhant generates alerts and delivers notifications to users
+The diagram below describes how ZoomPhant generates alerts and delivers notifications to users:
 
 ![image-20240406105102101](./image-20240406105102101.png)
 
-
-
-As shown in above diagram, ZoomPhant will first evaluate alerts against time series and then, for generated alerts, deliver the alerts to end users using delivery channel and stage settings.
+As shown in the diagram above, ZoomPhant first evaluates alerting rules against incoming time-series data. When an alert is triggered, it is delivered to end users according to your configured delivery channels and escalation stages.
 
 ### Alert Evaluation
 
-ZoomPhant will have **alert evaluators** evaluating the timeseries in a real-time way to identify exceptions or abnormals according to **Alerting Rules** defined by users in their alerting settings. Once an exception is identified, it will generate a stateful **alert**, and the alerts will then be queued for delivery.
+ZoomPhant uses **alert evaluators** to analyze time-series data in real-time, identifying exceptions or anomalies according to user-defined **Alerting Rules**. Once an exception is identified, a stateful **alert** is generated and queued for delivery.
 
-Please refer to [Alerting Settings](./alert) for more on how to define alerting rules.
+Please refer to [Alert Settings](./alert) to learn more about defining alerting rules.
 
 ### Alert Delivery
 
-Alert delivery in ZoomPhant is a staged process using a concept called **Alert Delivery Chain**, which contains stages of **Alert Channels**. In each channel one or more recipients would be defined to receive notifications via email, Webhook, SMS or voice.
+Alert delivery in ZoomPhant is a staged escalation process centered around the **Alert Delivery Chain**. Each chain consists of one or more stages linked to specific **Alert Channels**. Within each channel, you can define one or more recipients to receive notifications via email, Webhooks, SMS, or voice calls.
 
-When an alert is generated, the first stage will be activated and alerts will be sent to recipients defined in the channels of first stage, and it will then escalate gradually along the stages if no actions is detected by recipients in current channel.
+When an alert is generated, the first stage is activated, and notifications are sent to the recipients defined in those channels. The alert will then escalate along the defined stages if no acknowledgment or action is detected within the specified period.
 
-Please refer to  [Alert Delivery](./delivery) for more on how to manage your alert channels and alert delivery chains as well how the alert delivery chains are escalated.
+Please refer to [Alert Delivery](./delivery) to learn how to manage your alert channels, configure delivery chains, and manage the escalation process.

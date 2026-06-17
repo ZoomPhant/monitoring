@@ -9,57 +9,61 @@ has_children: false
 
 # Linux Monitoring
 
-Linux monitoring entails a suite of tools designed to monitor the health and performance of Linux servers. We offer two modes for monitoring Linux servers:
+Linux monitoring entails a suite of tools designed to monitor the health and performance of Linux servers. ZoomPhant offers two modes for monitoring Linux servers:
 
-- Deep monitoring by installing collectors on Linux.
-- Monitoring Linux via SNMP.
+- **In-depth monitoring**: By installing the ZoomPhant collector agent on the target Linux host.
+- **Agentless monitoring**: By querying the host via the SNMP protocol.
 
-## Deep Monitoring by Installing Collectors on Linux
+---
 
-Navigate to the "Monitoring Services" section in the sidebar to access the Service page. Click the "add" button at the top-left corner.
+## In-Depth Monitoring (Agent-Based)
+
+Navigate to the **Services** page in the sidebar and click the **Add** button in the top-right corner of the Services panel:
 
 ![img.png](img.png)
 
-In the pop-up window, select "Single addition" under "Infrastructures".
+In the popup window, select **Single addition** under **Infrastructures**:
 
 ![img_1.png](img_1.png)
 
-Next, choose the "Linux" option.
+Next, choose **Linux**:
 
 ![img_2.png](img_2.png)
 
-Begin by providing a name for the monitoring task. It's essential to differentiate between monitoring tasks for ease of management, especially during alarm occurrences, which aids in quick identification.
-
-In-depth monitoring refers to comprehensive monitoring of Linux servers, encompassing CPU, processes, memory, disk, network, and even security logs. We offer monitoring data at a 1-minute granularity, which is highly recommended in cloud environments like AWS to optimize CloudWatch costs.
+Configure the basic service settings:
+- **Service Name**: We recommend using clear, descriptive names to make troubleshooting easier when alarms occur.
+- **In-depth Monitoring**: Enabled by default. This collects comprehensive host metrics (including CPU, memory, disk I/O, process lists, network throughput, and security logs). ZoomPhant collects this data at a 1-minute granularity, which is highly recommended in cloud environments like AWS to reduce CloudWatch costs.
 
 ![img_3.png](img_3.png)
 
-Click "next" to proceed. Here, you'll need to copy the script and execute it on the Linux server to be monitored. Please note that executing the script requires root privileges.
+Click **Next** to proceed. Copy the generated installation command and execute it on the target Linux server. Note that running the installer requires root privileges.
 
 ![img_4.png](img_4.png)
 
-Upon successful script execution, you'll see the following prompt. If the collector fails to download, please verify the External Host configuration in accordance with the Quick Start guide to ensure the Collector Server is enabled. For script execution failures, kindly contact our support team.
+Once the script runs successfully, you will see a success confirmation in the terminal. If the host fails to download the package, verify that the **External Host** parameter in the global configuration is set correctly and the Collector Server is accessible. For other installation failures, please contact support.
 
 ![img_5.png](img_5.png)
 
-After successful collector installation, click the "validate" button. Successful validation indicates that the collector has been installed and successfully connected to the server.
+Once the agent is installed, click **Verify** in the wizard. A successful verification indicates that the collector has successfully connected and registered with the ZoomPhant server.
 
 ![img_6.png](img_6.png)
 
-At this point, you can view the successfully added collector in the Service page.
+The newly added server and its collector will now appear on the **Services** page.
 
 ![img_7.png](img_7.png)
 
-## Monitoring Linux via SNMP
+---
 
-First, ensure that the SNMP service is enabled. Below is an example for enabling SNMP service on CentOS:
+## Agentless Monitoring (SNMP)
+
+Before configuring SNMP monitoring, ensure that the SNMP daemon is running on the target server. Here is an example of installing and configuring SNMP on CentOS:
 
 ```bash
 # Install SNMP service
 yum install -y net-snmp net-snmp-utils
 # Configure SNMP service
 vi /etc/snmp/snmpd.conf
-# Modify the following configuration to .1.3.6.1 to obtain more system information
+# Modify `/etc/snmp/snmpd.conf` to include the `.1.3.6.1` view for comprehensive system metrics:
 view    systemview    included   .1.3.6.1
 # Restart SNMP service
 systemctl restart snmpd.service
@@ -67,32 +71,34 @@ systemctl restart snmpd.service
 systemctl enable snmpd.service
 ```
 
-### Adding SNMP Monitoring in the Monitoring Services
+### Adding SNMP Monitoring
 
-Navigate to the "Monitoring Services" section in the sidebar to access the Service page. Click the "add" button at the top-left corner. In the pop-up window, select "Single addition" under "Applications Or Services".
+Navigate to the **Services** page and click the **Add** button. In the popup window, select **Single addition** under **Application or Services**:
 
 ![img_8.png](img_8.png)
 
-Next, choose the "Linux(SNMP)" option. You can also search for "linux" in the search bar.
+Choose **Linux (SNMP)** from the plugin selector (you can also search for "Linux"):
 
 ![img_9.png](img_9.png)
 
-Begin by providing a name for the monitoring task. It's essential to differentiate between monitoring tasks for ease of management, especially during alarm occurrences, which aids in quick identification. You need to select a collector that can access the server being monitored, as SNMP uses the UDP protocol, so it's preferable for the collector and the monitored server to be in the same LAN.
+Configure the basic service settings:
+- **Service Name**: Enter a name for the service.
+- **Associated Collector**: You must select an active Collector that has network access to the target host. Because SNMP communicates over UDP, it is recommended that the collector and the target server reside on the same Local Area Network (LAN).
 
 ![img_10.png](img_10.png)
 
-Fill in the IP address of the server being monitored and SNMP protocol version, authentication information, etc.
+Enter the IP address of the target server, select the SNMP protocol version, and configure the authentication settings (such as the community string):
 
 ![img_11.png](img_11.png)
 
-If you're concerned about whether the parameters are filled in correctly, you can click the "Test" button to perform a test.
+Click the **Test** button to verify that the collector can successfully query the SNMP service on the target host.
 
 ![img_12.png](img_12.png)
 
-Once confirmed, click "Next" to successfully add the service monitoring.
+Once confirmed, click **Next** to complete the configuration and save the service.
 
 ![img_13.png](img_13.png)
 
-Now, you can view the added service on the service page.
+The new SNMP-monitored service will now be visible on the **Services** page.
 
 ![img_14.png](img_14.png)

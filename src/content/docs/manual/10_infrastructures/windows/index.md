@@ -10,36 +10,43 @@ has_children: false
 # Windows Monitoring
 
 ----
-Lots of enterprises are still heavily relying on Windows servers for their business, as an all-in-one monitoring solution, ZoomPhant would support Windows monitoring from the start!
+# Windows Monitoring
 
-The first step to do Windows monitoring is to setup one or more Windows data collecting agent. Those agent are can perform both general data collecting tasks as well as supporting many Windows specific collecting tasks using Windows specific mechanisms like WMI, PDH, etc.
+----
+Many enterprises rely heavily on Windows Server for business-critical operations. ZoomPhant supports Windows monitoring natively, providing comprehensive insights out of the box.
 
-## Install Windows Collector
+To monitor a Windows server, you must first install the Windows collector agent on the target machine. This agent performs general monitoring checks and leverages Windows-native interfaces (such as WMI and PDH performance counters) to gather system metrics.
 
-Follow the instructions in  [Install Collectors](../collector/) and choose Windows as underlying infrastructure, you'll be able to install a Windows collector.
+## Install the Windows Collector
 
-In the second step, you need to give basic information of the the Windows system you will need to install the collector on:
+Follow the instructions in [Install Collectors](../collector/) and choose **Windows** as the underlying infrastructure.
+
+In step 2, provide basic information about the Windows system where the collector will be installed:
 
 ![image-20240401145234615](./image-20240401145234615.png)
 
-
-
-And in step three, you'll be required to open a Windows command window to execute the command that are shown:
+In step 3, you will be prompted to open a Windows command prompt (`cmd.exe`) and execute the generated installation command:
 
 ![image-20240401145324845](./image-20240401145324845.png)
 
-If you are using powershell, you could modify the command accordingly before you execute the command
+*Note: If you are using PowerShell, you may need to adjust the syntax or run the command within a standard Command Prompt session.*
+
+---
 
 ## Understanding Windows Monitoring Data
 
-Go to the infrastructure monitoring service you just added, you shall be able to see dashboards like follows
+Navigate to the newly created infrastructure service to view the default Windows monitoring dashboards:
 
 ![image-20240404120400907](./image-20240404120400907.png)
 
-Here you can have one place to see the overall status of the windows server, And if you want view the process status on your system, you can switch to the Process tab to view a list of running processes:
+This dashboard provides a centralized view of the server's health and resource usage.
+
+### Process Monitoring
+Switch to the **Process** tab to view the CPU, memory, and status of active running processes:
 
 ![image-20240404120453903](./image-20240404120453903.png)
 
-And also the network status of the system in **Nework** tab:
+### Network Monitoring
+Switch to the **Network** tab to view the active network interfaces and throughput statistics:
 
 ![image-20240404120520723](./image-20240404120520723.png)

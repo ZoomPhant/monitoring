@@ -7,7 +7,6 @@ has_children: true
 
 # Infrastructure Monitoring
 
-
 ----
 
-ZoomPhant support data collecting on different platforms and ZoomPhant calls those platforms as **infrastructures**. An infrastructure provides resources for running ZoomPhant collector as well as other services of the customer.
+ZoomPhant supports data collection across various platforms, which are referred to as **infrastructures**. These environments host the ZoomPhant collector agents alongside other customer services.

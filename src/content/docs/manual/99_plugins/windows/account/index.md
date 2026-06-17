@@ -12,88 +12,97 @@ has_children: false
 
 ----
 
-This document helps you to create a Windows account on your target Windows machine for monitoring purpose. For more detailed and official information, you can visit here [Windows Management Instrumentation - Win32 apps | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page).
+This document describes how to create a local Windows account on a target machine for monitoring. For official details on WMI access and security, refer to the [Microsoft WMI Documentation](https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page).
 
-The first step to monitoring a Windows host is to make sure you have an account on the target machine with necessary permissions been set, you can follow steps below to create the account you want.
+To monitor a Windows host via WMI, you must configure a user account on the target machine with appropriate permissions. Follow these steps to set up the account.
 
-### 1. Create Account
+---
 
-You can go to the Control Panel / User Accounts to add a new account, here we assume you would create an account called **zpmon**
+### 1. Create the Local Account
+
+First, create a new local user account on the target host. For this guide, we will use the username **zpmon**:
+
+1. Navigate to **Control Panel** > **User Accounts** > **Manage Accounts**.
+2. Select **Add a user account** to create a local user:
 
 ![image-20240408144441547](./image-20240408144441547.png)
-
-
 
 ![image-20240408144527990](./image-20240408144527990.png)
 
 ![image-20240408144607535](./image-20240408144607535.png)
 
-After the account created, go to Manage Account page again and select the created account to set a password for it (we would need the password when creating Windows WMI monitoring service)
+After creating the account, set a secure password for it. You will need these credentials when configuring the WMI monitoring service in ZoomPhant.
 
 ![image-20240408144803447](./image-20240408144803447.png)
 
-### Add Account To Correct Groups
+---
 
-The newly created account shall be added to following groups
+### 2. Add the Account to Local Groups
 
-* Distributed COM Users
-* Performance Log Users
-* Performance Monitor Users
-* Remote Management Users
+The monitoring user must be added to the following local groups:
 
-*Note: In different version of Windows, some of the groups above may not exists, just find out the groups as follows and add in the user you just created*
+* **Distributed COM Users**
+* **Performance Log Users**
+* **Performance Monitor Users**
+* **Remote Management Users**
 
-To do this, you need to goto **Administrator Tools** > **Computer Management** and then select **Local Users and Groups** / **Groups** and click the group you want to add the user and add the user
+*Note: Depending on your Windows version, some of these groups might not exist. Add the user to all applicable groups that are available.*
+
+To assign these groups, open **Computer Management** (`compmgmt.msc`) and navigate to **System Tools** > **Local Users and Groups** > **Groups**. Select each group, add the **zpmon** user, and apply the changes:
 
 ![image-20240408145438345](./image-20240408145438345.png)
 
-Double click the group name you will be able to add the user into the group in popped up dialog:
+Double-click each group to open its properties, click **Add...**, and enter the user name:
 
 ![image-20240408145555524](./image-20240408145555524.png)
 
-### Grant Permissions
+---
 
-There are few places you need to visit to grant the permissions.
+### 3. Grant Permissions
 
-#### WMI Permission
+You must configure permissions in several system settings to enable WMI access.
 
-The first permision is the WMI permissions. In **Computer Management**, expanding **Services and Applications**, you shall see **WMI Control**, right click to and select **Properties**.
+#### WMI Namespace Permissions
+
+In **Computer Management**, expand **Services and Applications**, right-click **WMI Control**, and select **Properties**:
 
 ![image-20240408150131357](./image-20240408150131357.png)
 
-In the coming dialog, select **Security** tab and you shall see the namesaces with a "**Security**" button in the bottom.
+Switch to the **Security** tab, select the root namespace, and click the **Security** button at the bottom:
 
 ![image-20240408150242388](./image-20240408150242388.png)
 
-Click the **Security** button and in the coming dialog you shall enable the permissions as shown in below diagram:
+Add the **zpmon** user and enable the following permissions:
+- **Execute Methods**
+- **Enable Account**
+- **Remote Enable**
+- **Read Security**
 
 ![image-20240408150524997](./image-20240408150524997.png)
 
-#### DCOM Permission
+#### DCOM Configuration
 
-WMI relies on DCOM (Distributed Component Object Model) for remote communication. You may need to configure DCOM permissions to allow remote access to WMI.
+WMI uses DCOM (Distributed Component Object Model) for remote queries. You must configure DCOM permissions to allow remote connections. Open the Component Services manager by running `dcomcnfg` from the Start menu.
 
-To configure DCOM permissions, you can use the `Component Services` MMC snap-in (`dcomcnfg`) on the target machine. 
-
-First navigate to `Component Services` > `Computers` > `My Computer.` Here right click on **My Computer** and select **Properties**, you shall switch to **COM Security** tab in shown dialog, click "**Edit Limits ...**" in **Launch and Activation Permissions** to make following changes:
+Navigate to **Component Services** > **Computers** > **My Computer**. Right-click **My Computer**, select **Properties**, and switch to the **COM Security** tab. Click **Edit Limits...** under **Launch and Activation Permissions** and allow Remote Launch and Remote Activation for the user (or a group containing the user):
 
 ![image-20240408151139189](./image-20240408151139189.png)
 
-*Note:  here you can just modify one of the group the user is in to have above permissions*
-
-Then navigate to `DCOM Config`, find `Windows Management and Instrumentation`, and configure the permissions to allow remote access.
+Next, expand **DCOM Config** under My Computer, locate **Windows Management and Instrumentation**, right-click it, and select **Properties**:
 
 ![image-20240408150810884](./image-20240408150810884.png)
 
-Right click on **Windows Management and Instrumentation** and select **Properties**, goto the Security tab to make sure you have customized the **Launch and Activation Permissions** and **Access Permissions** to give the account all permissions.
+On the **Security** tab, ensure you customize both **Launch and Activation Permissions** and **Access Permissions** to grant the monitoring user remote access rights:
 
 ![image-20240408151458886](./image-20240408151458886.png)
 
-### Firewall Settings
+---
 
-The final step is to make sure you have make changes to Windows firewall to allow the traffic. You shall at least allow below two rules be allowed:
+### 4. Firewall Settings
+
+Ensure that the Windows Firewall is configured to allow WMI and DCOM traffic. You must enable the following inbound rules:
 
 ![image-20240408151949350](./image-20240408151949350.png)
 
-For testing purpose, you may temporarily disable the Windows firewall on target Windows servers to use wbemtest or wmic tools to make sure the account created could successfully make connections from the collector host to the target servers.
+For troubleshooting, you can test connectivity from the collector using utility tools such as `wbemtest` or `wmic` to verify that the credentials and permissions are configured correctly.
 

@@ -10,33 +10,39 @@ has_children: false
 # Ping Monitoring
 
 ----
-Ping is another widely used protocol for operators to check if a remote device is active and roughly how the access performance that remote device is. ZoomPhant provides and easy way for you to monitor a remote device using **Ping Checker** plugin.
+Ping (ICMP) is a standard protocol used to verify if a remote host is reachable and to measure network latency. ZoomPhant provides a simple way to monitor host availability using the **Ping Checker** plugin.
 
-## Creating Ping Monitoring
+---
 
-To start monitor a remote device for aliveness and access performance, you can choose the **Ping Checker** plugin as shown in  [Add Monitor Service](../service/) and provide following necessary parameters to create a monitoring service:
+## Create Ping Monitoring
+
+To start monitoring a remote host, select the **Ping Checker** plugin from the plugin library. You will be prompted to configure the following parameters:
 
 ![image-20240328210704407](./image-20240328210704407.png)
 
-* host: the IP or DNS of the device you want to monitor, this is mandatory
-* timeout: the timeout in seconds to perform ping monitoring
+* **host**: The IP address or domain name of the target device to ping (required).
+* **timeout**: The ICMP request timeout in seconds.
 
-With the parameters provided and the monitoring service been created, you can wait few seconds and see the diagrams for the monitored device.
+Once you have configured the parameters, click **Test** to verify connectivity, and then click **Finish** to add the service.
 
-## Understanding Ping Data
+---
 
-Ping monitoring data are presented in straigtforward ways as shown below:
+## Understanding Ping Metrics
+
+After adding the service, select it from the service list to view host status and round-trip time metrics:
 
 ![image-20240328210927867](./image-20240328210927867.png)
 
-1. The **Status** widget will show the overall status of the ping monitoring service
-2. The **RTT** is the average Route-Trip-Time for ping packets sent during one check, the lower the better and usu. for health devices in an intranet, this shall just few milliseconds.
-3. The **minRTT** and **maxRTT** are the minimum and maximum RTTs of the packets sent in one check.
+1. **Overall Status**: The **Status** widget displays `OK` if the target host responds to ICMP requests. If a packet loss threshold is exceeded or the host is unreachable, it will trigger an alert.
+2. **RTT (Round-Trip Time)**: The average round-trip latency in milliseconds. Lower RTT is preferred; on local area networks (LANs), RTT is typically under a few milliseconds.
+3. **minRTT / maxRTT**: The minimum and maximum round-trip times recorded during the measurement interval, helping you identify packet jitter.
 
-## Monitoring Mulitple Devices
+---
 
-We recommend to create one ping monitoring service for each service (although we support to check multiple devices in one monitoring service) and we can then view the overall status of all monitored devices at the group level by click the **Ping Checker** tab as follows:
+## Monitoring Multiple Devices
+
+We recommend creating a separate ping monitoring service for each critical device. You can then monitor the state of all devices in a single view by clicking the **Ping Checker** plugin group tab:
 
 ![image-20240328211343436](./image-20240328211343436.png)
 
-As shown in above diagram, we can easily identify the devices in problems as well as viewing the overall RTT trends for all active devices.
+This group dashboard makes it easy to identify unreachable hosts and compare RTT latency trends across all monitored targets.

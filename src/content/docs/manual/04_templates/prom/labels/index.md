@@ -6,46 +6,54 @@ nav_order: 3
 has_children: false
 ---
 
-In a Proometheus Scraper, the data sometimes have some special and / or user defined labels. ZoomPhant may remove some of the labels and may allow you to define extra custom labels to manage and presenting your data.
+In a Prometheus scraper, collected metrics often contain special and/or user-defined labels. ZoomPhant automatically handles these labels, filtering out system-level Prometheus metadata while letting you define custom labels to organize and display your data.
+
+---
 
 ## Removed Labels
 
-Usually a Prometheus Scraper would generate data with following two labels
-* job: a name to identify the task of collecting the data
-* instance: used to identify source of the data, the value usu. is the host:port part of address or url of the target
+Typically, a Prometheus scraper attaches two default labels to every metric:
+* **job**: The name of the scraping job configured to collect the metrics.
+* **instance**: The source target of the metrics, usually formatted as `host:port`.
 
-In ZoomPhant, since we collecting data in monitoring plugins in an integrated way, above labels no longer has any meaning and would thus be removed or replaced with ZoomPhant internal labels.
+Because ZoomPhant collects and organizes data via integrated monitoring services, these labels are redundant. ZoomPhant strips these labels from ingested metrics and replaces them with standard ZoomPhant metadata labels.
+
+---
 
 ## Custom Labels
 
-Prometheus Scraper allows user to add custom labels in scraper configurations, like:
+Prometheus allows you to define static labels in the scraper configuration file, for example:
 
-    static_configs:
-        - targets: ['app.mysite.com']
-          labels:
-            application: 'Awesome App'
+```yaml
+static_configs:
+    - targets: ['app.mysite.com']
+      labels:
+        application: 'Awesome App'
+```
 
-In ZoomPhant, you can still add your custom labels when creating the monitoring service. This is done by adding a custom param with name been prefixed with "**custom.**", and the value of the param will then be taken as the label value:
+In ZoomPhant, you can attach custom labels to a monitoring service. To do this, add a configuration parameter prefixed with `custom.`. The string following the prefix becomes the label key, and the parameter value becomes the label value:
 
-    custom.\<labelName\>
+```
+custom.<labelName>
+```
 
-As an example, a custom label is defined in the monitoring service configuration.
+For example, adding a parameter named `custom.env` with the value `production` will add the label `env="production"` to all metrics ingested by that service.
 
-If you have already created your monitoring service, you can edit your monitoring service to add / modify custom labels, but the changes will only be reflected in data collected after your change.
+You can add or modify custom labels at any time by editing the monitoring service settings. Note that changes only apply to metrics collected after the modification.
 
 ### Custom Label Values
 
-When creating custom labels, you can reference existing variables to define the label value as \{\{<variable Name>}}.
+When defining custom label values, you can use double curly braces to reference system variables (e.g., `{{_instanceName}}`).
 
-ZoomPhant has following variable been pre-defined:
+ZoomPhant provides the following pre-defined variables:
 
-* _account: A unique identifier to represent current user account.
-* _accountName：Name of current user account.
-* _agent：A unique identifier of the collector running the data collecting tasks.
-* _agentName：Name of the collector
-* _product：A unique identifier of the monitoring plugin used to define the collecting task
-* _productName：Name of the monitoring plugin
-* _instance：A unique identifier representing current monitoring service
-* _instanceName：Name of current monitoring service
-* _resource：A unique idenitifier representing the object providing the data
-* _resourceName：Name of the object
+* **_account**: A unique ID representing the user account.
+* **_accountName**: The name of the user account.
+* **_agent**: The unique ID of the collector agent executing the collection task.
+* **_agentName**: The name of the collector agent.
+* **_product**: The unique ID of the monitoring plugin.
+* **_productName**: The name of the monitoring plugin.
+* **_instance**: The unique ID representing the monitoring service instance.
+* **_instanceName**: The name of the monitoring service instance.
+* **_resource**: The unique ID representing the resource target.
+* **_resourceName**: The name of the resource target.

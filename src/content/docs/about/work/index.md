@@ -7,30 +7,31 @@ nav_order: 2
 # How ZoomPhant Works
 
 ---
-Like any complete monitoring solutions, ZoomPhant will performing all the tasks required for monitoring on behalf of customers:
-* Collecting data from various sources, both structured data like metrics and seme-strutured data like logs / traces or events
-* Storing data in time series database. The Community version is backed by prometheus compatible timeseries database so the data are saved in standard formats.
-* Processing & Presenting data. ZoomPhant has feature rich widgets for displaying various types of data.
-* Alerting & Notifications. ZoomPhant has its proprietary engine to process the time series data in a realtime way and allow customers to set notifications based on stages using various methods like email, SMS, Voice or webhook
-* Configurations management. ZoomPhant has well organized ways for user to manage their monitored  objects.
-* Plugins. ZoomPhant provides full range of plugins for monitoring various infrastructures and softwares / services. ZoomPhant supports using Prometheus plugins directly and will also has its plugin markets for customers to exchange valuable proprietary plugins.
+Like any comprehensive monitoring solution, ZoomPhant performs all the key tasks required to monitor your systems:
 
-Depends on how you plan to use ZoomPhant, following diagrams will given you a very high-level idea about how ZoomPhant works
+* **Data Collection**: Collects data from various sources, including structured data (metrics) and semi-structured data (logs, traces, and events).
+* **Data Storage**: Stores data in a time-series database. The Community Version is backed by a Prometheus-compatible database, ensuring all data is saved in standard, open formats.
+* **Processing & Presentation**: Processes and displays data using feature-rich, interactive widgets.
+* **Alerting & Notifications**: Uses a proprietary engine to process time-series data in real-time, allowing users to define multi-stage notifications via email, SMS, voice calls, or webhooks.
+* **Configuration Management**: Provides well-organized interfaces for managing monitored objects and devices.
+* **Plugins**: Offers a wide range of plugins for monitoring various infrastructures, software, and services. ZoomPhant natively supports Prometheus exporters and will feature a plugin marketplace for sharing custom integrations.
 
-## Using Proprietary Deployment (Deploying in Customer DataCenters)
+Depending on your deployment model, the diagrams below provide a high-level overview of how ZoomPhant operates:
 
-We recommend customers to use proprietary deployment and this is the only choice available for community version.
+## Local/On-Premises Deployment
+
+We highly recommend local deployment, which is currently the default and only option available for the Community Version.
 
 ![proprietary.jpg](./proprietary.jpg)
 
-In such deployments all ZoomPhant functions will be available in customer data center, this allow customers to own their data and reduce unnecessary bandwidth.
+In a local deployment, all ZoomPhant functions run directly within your own data center. This ensures full data sovereignty and eliminates outbound bandwidth charges.
 
-For paid customers, they can register to ZoomPhant Cloud for advanced functions like system upgrading, SMS/Voice notifications, plugin managements etc.
+Paid customers can connect their local installations to the ZoomPhant Cloud to enable advanced features like automatic system upgrades, SMS/voice notifications, and centralized plugin management.
 
-## Using Cloud Service
+## SaaS Cloud Service
 
-ZoomPhant will also offer traditional SaaS cloud service.  Users can just register and start using ZoomPhant service by just installing data collecting agents.
+ZoomPhant will also offer a traditional SaaS cloud service, allowing users to register and start monitoring immediately by installing data collection agents.
 
 ![cloud.jpg](./cloud.jpg)
 
-Customers need to install one or more data collecting agent in their data center to help collect desired monitoring data to achieve Total Monitoring (TM), and ZoomPhant Cloud service will offer advanced monitoring like Web Service Performance Monitoring (wSPM) for customers to monitor their important business service websites.
+To use the cloud service, you install one or more collection agents in your environments to report metrics and logs to ZoomPhant Cloud. Additionally, the cloud service offers advanced external monitoring capabilities, such as Web Service Performance Monitoring (wSPM), to track the availability and speed of your business websites.

@@ -10,38 +10,39 @@ has_children: false
 # Redis Monitoring
 
 ----
-ZoomPhant provides an easy way for you to monitor redis servers or clusters using **Redis** plugin.
+ZoomPhant provides a straightforward way to monitor Redis servers or clusters using the **Redis** plugin.
 
-## Creating Redis Monitoring
+## Creating a Redis Monitoring Service
 
-To start monitor a redis server, you can choose the **Redis** plugin as shown in  [Add Monitor Service](../../01_service/) and provide following necessary parameters to create a monitoring service:
+To start monitoring a Redis server, choose the **Redis** plugin as described in [Add Monitor Service](../../01_service/) and specify the following parameters:
 
 ![image-20240403162241819](image-20240403162241819.png)
 
-* host: the host for a redis server.
-* port: the port for a redis server. eg: 6379
-* password: optional, the password for a redis server.
-* userName: optional, the userName for a redis server.
+* **host**: The hostname or IP address of the Redis server.
+* **port**: The port number of the Redis server (e.g., `6379`).
+* **password**: (Optional) The password required for Redis authentication.
+* **userName**: (Optional) The username required for Redis authentication (useful for Redis 6.0 ACLs).
 
-With the parameters provided and the monitoring service been created, you can wait few seconds and see the diagrams for the monitored redis service.
+Once the parameters are set and the monitoring service is created, wait a few seconds for data collection to initialize, and the dashboards will begin displaying metrics.
+
+---
 
 ## Understanding Redis Data
 
-Redis monitoring data are presented in straigtforward ways as shown below:
+ZoomPhant organizes Redis performance metrics into an intuitive dashboard layout:
 
 ![redis-metrics](redis-metrics.jpg)
 
-It contains below metrics for a redis server:
-
-- Uptime in hours
-- Max clients 
-- AOF (Append only file) feature status ()
-- Connected and blocked clients
-- Memory used 
-- Expired keys count
-- Input and output network bytes in seconds
-- Pub and subscribed channels
-- User and sys cpu usage
-- Memory replication backlog
-- Commands processed
-- Connected slaves
+This dashboard includes the following metrics:
+- Uptime (in hours).
+- Maximum configured clients.
+- Append Only File (AOF) status.
+- Connected and blocked clients.
+- Used memory.
+- Expired keys count.
+- Input and output network throughput (bytes/sec).
+- Publish/Subscribe channels.
+- User and System CPU usage.
+- Replication backlog memory size.
+- Total commands processed.
+- Number of connected replicas.

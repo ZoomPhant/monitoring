@@ -10,33 +10,35 @@ has_children: false
 # Route Monitoring
 
 ----
-For many network operators, tracers might be one of their most favorite tools. ZoomPhant provide Route Checker for easier monitoring the routes in the internet and make such professional function straightforward to ordinary people.
+Traceroute is an indispensable tool for network administrators to diagnose routing paths and locate network latency. ZoomPhant's **Route Checker** plugin makes routing path analysis accessible and easy to monitor continuously.
 
+---
 
+## Create Route Monitoring
 
-## Creating Route Monitoring
-
-To monitor routes to a domain, it is straigtht forward to follow the steps in  [Add Monitor Service](../service/) by choosing **Route Checker** plugin and fill in following parameters
+To monitor the network path to a target host, select the **Route Checker** plugin from the plugin library as described in [Add Monitor Service](../../01_service/). You will be prompted to configure the following parameters:
 
 ![image-20240328213431435](./image-20240328213431435.png)
 
-* host: the IP or DNS of the device you want to monitor routes to
-* hops: the maximum hops to check. If more hops required to reach that host, the task fails.
+* **host**: The IP address or domain name of the destination target (required).
+* **hops**: The maximum number of network hops (TTL) to allow. If the target requires more hops to be reached, the check will fail.
 
-Once created, wait few seconds and you can check the routes information shown as follows.
+Once you have configured the parameters, click **Test** to run a manual traceroute, and then click **Finish** to save the service.
 
-## Understanding Route Data
+---
 
-After data coming, when you navigate to the monitoring service you have created, you can see data as follows
+## Understanding Route Checker Metrics
+
+After adding the service, select it from the service list to view the routing path dashboard:
 
 ![image-20240329175002268](./image-20240329175002268.png)
 
+The dashboard displays the following key routing metrics and states:
 
-
-* **Status**: this is the overall status. If the target IP or DNS could be reached, you'll see the green OK, otherwise, it will try to show  messages like
-  * Intranet: we have been able to receive responses from several hops, but all the hops are having an intranet IP (i.e. not public IP)
-  * Internet: we have been able to receive responses from several hops and at least one hop has a public Internet IP
-  * Invalid Domain: the domain could not be resolved
-* **Hop**: Number of hops taken to reach the target. If the target could not be reached, this would be zero.
-* **RTT**: Time taken to reach the target, in milliseconds
-* **Events**: Some important informations about the target, usu. it will show you the IP resolved for last check
+1. **Status**: Displays `OK` (green) if the target is reachable. If the target cannot be reached, the status describes the last known network segment:
+   * **Intranet**: Responses were received from several hops, but all responding routers use private/local IP addresses (no public Internet routing).
+   * **Internet**: Responses were received, and at least one responding router has a public IP address, but the final target host could not be reached.
+   * **Invalid Domain**: The destination domain name could not be resolved by the configured DNS.
+2. **Hops**: The number of network hops taken to reach the destination target. If unreachable, this is recorded as `0`.
+3. **RTT (Round-Trip Time)**: The network latency to the target host in milliseconds.
+4. **Events**: Lists significant routing events, such as changes in the resolved target IP address or routing path changes.

@@ -5,12 +5,12 @@ nav_order: 4
 has_children: true
 ---
 
-Some times users need to create custom monitoring plugins to meet their special business monitoring requirements. ZoomPhant allows advanced users to create custom plugins, but for most of the cases, users just need to create their custom monitoring plugins using one of the predefineed **Template Plugins**.
+Sometimes users need to create custom monitoring plugins to meet specific business requirements. While ZoomPhant allows advanced users to develop plugins from scratch, in most cases, you can create them much faster using predefined **Template Plugins**.
 
-A **template plugin** is a templated monitoring plugin that users can create powerful monitoring plugins quickly by simple steps like adding parameters, importing dashboards, etc. Currently ZoomPhant support following two types of template plugins
+A **Template Plugin** is a parameterized monitoring plugin skeleton. You can quickly configure a fully functional monitoring solution by defining connection parameters, selecting metrics, and importing dashboards. Currently, ZoomPhant supports two types of template plugins:
 
-* Prometheus Template Plugins: collect data using one of the widely used prometheus exporters.
-* SNMP Template Plugins: collect data using SNMP v1, v2c & v3 protocols
+* **Prometheus Template Plugins**: Collect metrics via Prometheus exporters (see [Prometheus Templates](./prom/)).
+* **SNMP Template Plugins**: Collect metrics using SNMP v1, v2c, or v3 protocols (see [SNMP Templates](./snmp/)).
 
-Once you have created your custom monitoring plugin using one of the template plugins, you can create or import dashboards. ZoomPhant support import Grafana dashboards in a simple way, which makes your presenting data collected by your custom monitoring plugin very easy. For more information please refer to  [Importing Grafana Dashboards](./grafana/) 
+After creating a custom plugin, you can build new dashboards or import existing ones. ZoomPhant supports importing Grafana dashboards directly, making it easy to visualize your custom metrics. For details, refer to [Importing Grafana Dashboards](./grafana/).
 

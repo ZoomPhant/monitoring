@@ -10,63 +10,62 @@ has_children: false
 # Kafka Monitoring
 
 ----
-ZoomPhant provides an easy way for you to monitor one or more kafka cluster using **Kafka** plugin.
+ZoomPhant provides a straightforward way to monitor one or more Apache Kafka clusters using the **Kafka** plugin.
 
-## Creating Kafka Monitoring
+## Creating a Kafka Monitoring Service
 
-To start monitor a  kafka cluster, you can choose the **Kafka** plugin as shown in  [Add Monitor Service](../../01_service/) and provide following necessary parameters to create a monitoring service:
+To start monitoring a Kafka cluster, choose the **Kafka** plugin as described in [Add Monitor Service](../../01_service/) and specify the following configuration parameter:
 
 ![image-20240329150532194](image-20240329150532194.png)
 
-* bootstrap: the bootstrap urls for a kafka cluster. 
+* **bootstrap**: The bootstrap server URLs (e.g., a comma-separated list of `host:port`) for the Kafka cluster.
 
-With the parameters provided and the monitoring service been created, you can wait few seconds and see the diagrams for the monitored device.
+Once the parameters are set and the service is created, wait a few seconds for data collection to initialize, and the dashboards will begin showing data.
+
+---
 
 ## Understanding Kafka Data
 
-Kafka monitoring data are presented in straigtforward ways as shown below:
+ZoomPhant organizes Kafka monitoring metrics into three main dashboards:
 
-### Cluster dashboard	
+### Cluster Dashboard
 
 ![image-20240329150828987](image-20240329150828987.png)
 
-It contains below metrics:
+This view displays the following cluster-level metrics:
+- Message input rate at the cluster level.
+- Log directory size on disk per broker.
+- Broker status and active broker count.
+- Top 10 highest offset commit rates.
+- Top 10 topics by message input rate.
+- Partition count per broker.
+- Broker partition skew rate (measuring partition distribution imbalance across brokers).
+- Broker leader partition skew rate.
 
-- Messages in per cluster level
-- Log directory size per broker
-- Broker status & broker count
-- Offsets committed rate top 10
-- Messages in by topic top 10
-- Broker partitions count 
-- Broker partition skew rate. The partitions per broker divides the avg partitions count
-- Broker leader partition skew rate 
-
-### Consumer group dashboard
+### Consumer Group Dashboard
 
 ![image-20240329151215483](image-20240329151215483.png)
 
-It contains below metrics:
+This view displays the following consumer group metrics:
+- Consumer group-level topic lag (unread messages).
+- Offset commit rate per consumer group.
 
-- consumer group level topic lag
-- offset commit rate per consumer group
-
-### Topic dashboard
+### Topic Dashboard
 
 ![image-20240329151330414](image-20240329151330414.png)
 
-It contains below metrics:
+This view displays the following topic-specific metrics:
+- Total message count for a topic.
+- Partition count for a topic.
+- Replication factor for a topic.
+- Message input rate per topic.
+- In-Sync Replicas (ISR) and Under-Replicated Partitions (URP).
+- Number of subscribed consumer groups.
+- Log directory size for this topic across brokers.
+- Message offset details per partition for the topic.
 
-- messages count for a topic
-- partition count for a topic
-- replication factor for a topic
-- messages in per topic
-- In sync replicas (ISR) and Under replica partitions (URP, which partition doesn't have enough replica)
-- Subscribed consumer groups count
-- Log directory size for this topic in brokers
-- Partitions messages offset for topic
-
-
+---
 
 ## Monitoring Multiple Kafka Clusters
 
-You can monitor multiple kafka clusters by adding more services.
+To monitor multiple Kafka clusters, simply add a separate monitoring service for each cluster.

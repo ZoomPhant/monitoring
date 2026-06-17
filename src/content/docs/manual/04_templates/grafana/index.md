@@ -6,44 +6,44 @@ nav_order: 0
 has_children: false
 ---
 
-Grafana is the most widely used opensource data presenting software and it has very greate support for Prometheus plugins by providing support to presenting the data collected by a Prometheus exporter.
+Grafana is a popular open-source visualization platform. It has excellent support for Prometheus-compatible data sources, making it easy to display metrics collected by Prometheus exporters.
 
-In this section will show you how to import a Grafana dashboard for your created custom plugin based on one of the template plugins.
+This section describes how to import a Grafana dashboard into a custom ZoomPhant monitoring plugin.
 
-### Finding Grafana Dashboard
+---
 
-First you need to find the correct Grafana dashboard for the custom plugin you have created. That's the purpose of custom plugins to create from the same template: The template only defines the way for collecting data, but a custom monitoring plugin is more than just collecting data, it also defines how to presenting data!
+### Finding a Grafana Dashboard
 
-In our example, let's assume we have create a custom plugin for SpringBoot applications [create a custom plugin for SpringBoot applications](../prom/) , by searching on Grafana for SpringBoot, we find the matching dashboard:
+First, locate the Grafana dashboard designed for your target exporter. While a template plugin defines how data is collected, the imported dashboard defines how that data is visually presented.
+
+For this example, let's assume we created a custom plugin for Spring Boot applications (as described in [Prometheus Template Plugins](../prom/)). By searching the Grafana dashboard library for "SpringBoot", we find a matching dashboard:
 
 ![image-20240410101925863](./image-20240410101925863.png)
 
-Click the matching dashboard and we can have the information we want to import in below step:
+Click the dashboard to find its ID or URL, which you will use in the next step.
 
-### Import Grafana Dashboard
+---
 
-Now goto "Settings | Custom Monitoring Plugins" page again, find the custom plugin we have created:
+### Importing the Grafana Dashboard
+
+1. Navigate to **Settings** > **Custom Monitoring Plugins** and locate the custom plugin you created:
 
 ![image-20240410102044396](./image-20240410102044396.png)
 
-Click the **Settings** icon and we shall see a dialog popped up:
+2. Click the **Settings** icon to open the configuration dialog:
 
 ![image-20240401194638454](./image-20240401194638454.png)
 
+3. In the dialog, you can import the dashboard using one of two methods:
+   * **File Upload**: If you have downloaded the dashboard JSON file, click **Import From Grafana Dashboard File** and select the file.
+   * **Direct Import**: Alternatively, click **Import From Grafana** to open the direct import dialog:
 
+![image-20240401194940331](./image-20240401194940331.png)
 
-In the dialog popped-up, if you have downloaded the Grafana dashboard definition file, select "**Import From Grafana Dashboard File**" button and choose the file you want to import, otherwise you shall click the "**Import From Grafana**" button and see the import dialog shown up:
+4. Enter the Grafana dashboard ID (e.g., `12900` for the Spring Boot dashboard) or the full dashboard URL (e.g., `https://grafana.com/grafana/dashboards/12900-springboot-apm-dashboard`):
 
-<img src="./image-20240401194940331.png" alt="image-20240401194940331" style="zoom:50%;" />
-
-
-
-Here,  you shall paste in the Grafana dashboard ID (e.g. ***12900*** for above created SpringBoot dashboard) or the full url (e.g. https://grafana.com/grafana/dashboards/12900-springboot-apm-dashboard/ in our above example):
-
-Wait few seconds, you shall see the dashboard has been imported and ready for use:
+5. Click **Import** and wait a few seconds. The dashboard layout and panel configurations will be imported:
 
 ![image-20240410102545631](./image-20240410102545631.png)
 
-
-
-Click OK and if you navigate to a service created from this custom plugins, you shall see the dashboards you have imported with the data collected!
+6. Click **OK** to save. If you navigate to any monitoring service created using this custom plugin, the imported dashboard will now display the collected metrics.

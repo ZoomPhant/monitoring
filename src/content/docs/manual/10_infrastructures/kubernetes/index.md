@@ -10,103 +10,88 @@ has_children: false
 # Kubernetes Monitoring
 
 ----
-Kubernetes is widely used nowadays and there's no good monitoring tool for Kuberenetes in the past, and now we have ZoomPhant! Just install a ZoomPhant Kubernetes collector and your Kubernetes cluster is under control.
+Kubernetes is widely used for modern application deployment. ZoomPhant provides native Kubernetes monitoring. By installing the ZoomPhant Kubernetes collector, you can quickly bring your entire cluster under control.
 
-## Install Kubernetes Collector
+## Install the Kubernetes Collector
 
-Follow the instructions in  [Install Collectors](../collector/) and choose Kubernetes as underlying infrastructure, you will be then creating a Kubernetes collector and corresponding monitoring service.
+Follow the instructions in [Install Collectors](../collector/) and choose **Kubernetes** as the underlying infrastructure. This will guide you through creating a Kubernetes collector and its corresponding monitoring service.
 
 ### Providing Kubernetes Cluster Information
 
-When creating a Kubernetes collector, you need to provide some basic information of the cluster in step 2 of the wizard:
+When creating a Kubernetes collector, you need to provide basic details about the cluster in step 2 of the wizard:
 
 ![image-20240401162055892](./image-20240401162055892.png)
 
+Here, you will need to provide the name of the cluster, which is also used to identify the collector. You can keep the default values for the Docker and logging configurations unless you have specific environment requirements.
 
+After entering this information, the final step provides instructions for installing the collector.
 
-Here, you'll need to provide the name of the cluster, which will aslo be used to identify the collector. Besides that you'll need to provide the docker and log stuff, which if you shall always keep the default if you don't know what your are doing.
+### Installing the Kubernetes Collector
 
-With above information provided, the final step will give instructions on how to install the Kubernetes collector.
-
-### Installing Kubernetes Collector
-
-Installing Kubernetes collector is simple, just copy one command and execute it, and you'll get your Kubernetes collector running up.
+Installing the Kubernetes collector is straightforward: copy the generated command and execute it in your terminal to deploy the agent.
 
 ![image-20240401162338200](./image-20240401162338200.png)
 
+The Kubernetes collector is deployed as a **DaemonSet**. You must run the command in a terminal where `kubectl` is configured with appropriate cluster privileges. The command downloads and applies a manifest file to your cluster, creating a namespace called `zoomphant-collector` where the collector pods will run.
 
+You can verify the installation by clicking the **Verify** button. Once registered, you can view the metrics reporting from your Kubernetes cluster.
 
-Here, Kubernetes collector will be installed as a daemon set, **you shall run above command in one of the console with kubectl available**. above command will try to download the YAML file and apply to your cluster. The YAML file will try to create a namespace called **zoomphant-collector**, where all the collector PODS will be created in.
-
-You can verify the installation by clicking the **Verify** button as shown above and after that you shall be able to view the data coming through your Kubernetes collector!
-
-
+---
 
 ## Understanding Kubernetes Data
 
-Kubernetes is complicated so you shall not be surprised to see the data collected by a Kubernetes collector without adding additional monitoring services. If you go the corresponding service you shall see default dashboards like below
+Because Kubernetes is a highly structured environment, the collector automatically discovers and monitors cluster resources without requiring you to manually configure additional services. Navigate to the newly created service page to view the default Kubernetes dashboards:
 
 ![image-20240401164204939](./image-20240401164204939.png)
 
-Here you can see
+The dashboard includes the following views:
 
-* **Kubernetes** tab, which contains important information of the whole cluster, like the overall status, resource usage and Cluster events, etc.
-* **Node** tab, which will give the list of nodes, from which you can see more detailed information of each node
-* **Pod** tab, which will give the list of pods, from which you can view more detailed information from PODs' point of views
-* **Service** tab, which will give the list of services in the cluster and you can click for more detailed information for each service
-* **Relation of Service**: a diagram of all the services running in the cluster will be shown so you can have an overall understanding of what's running in the cluster
+* **Kubernetes**: Displays critical cluster-wide information, including overall status, resource usage, and cluster events.
+* **Node**: Lists all nodes in the cluster along with high-level performance metrics.
+* **Pod**: Lists all pods and provides resource usage and status details.
+* **Service**: Lists all detected services within the cluster.
+* **Relation of Service**: A dependency diagram mapping traffic and communication paths between services and namespaces.
 
+---
 
+## Nodes, Pods, and Services
 
-## Nodes, Pods and Services
+ZoomPhant provides interactive lists of all nodes, pods, and services in your cluster. Switch tabs to view lists of resources, and click any item to drill down into a sub-dashboard for that specific resource:
 
-We providing navigatable list for nodes, pods and services in a Kubernetes cluster. By switching to corresponding tab, you can list the items and click them to get into a sub-level of dashboards for the chosing object:
+### Node List & Per-Node Dashboard
 
-### Node List & Per-node Dashboard
-
-Switch to Node tab, you can find the node list in the node tab as a widget (you can drag and drop to move it to top or bottom of the dashboard):
+Navigate to the **Node** tab to find the node list widget. You can drag and drop this widget to rearrange your dashboard layout:
 
 ![image-20240401165130694](./image-20240401165130694.png)
 
-
-
-Click one of the row, you will be bring to a dashboard for the node
+Click any row to open the detailed node dashboard:
 
 ![image-20240401165537526](./image-20240401165537526.png)
 
-
-
 ### Pod List and Per-Pod Dashboards
 
-As nodes, you can navigate to Pod tab to see the list and you can filter pods by namespaces as shown below:
+Similarly, you can switch to the **Pod** tab to see the active pods, which you can filter by namespace:
 
 ![image-20240401180749220](./image-20240401180749220.png)
 
-
-
-Click one of the POD you will be bring to the POD specific dashboard.
+Click any pod in the list to open its specific dashboard:
 
 ![image-20240401180806138](./image-20240401180806138.png)
 
-
-
 ### Service List & Per-Service Dashboard
 
-Service is a very important concept in Kubernetes. Visiting the Service tab, you can find all the services in cluster and you can add extra monitoring service for the services.
+Services are key communication pathways in Kubernetes. The **Service** tab displays all services detected in the cluster and allows you to attach additional application-level monitors to them.
 
 ![image-20240407211414911](./image-20240407211414911.png)
 
+If a service is not currently monitored, an **Add Service** button will appear next to it. Clicking this button lets you select a matching plugin to start monitoring that application service.
 
-
-As shown above, you can list all the services in the cluster, and for each listed service, if you have not get it monitored, you'll see the **Add Service** button at end of each service, by clicking with, you'll be asked to select the matching plugin and get the service be monitored.
-
-If you have the service been monitored, the corresponding monitoring service will be listed under **Service** column, by clicking which you can quickly visiting the corresponding monitoring service and view the dashboards, for example, in our above diagram, we can click the "Kafka - service/prod/kafka" which is bound to serivce/prod/kafka (Kafka service in prod namespace) and we will be navigated to a page like follows:
+If a service is already monitored, a link to the corresponding monitoring service will be listed under the **Service** column. Clicking the link will navigate you to the dedicated dashboard for that service. For example, clicking the monitored Kafka service in the list opens its application dashboard:
 
 ![image-20240407211910753](./image-20240407211910753.png)
 
-## Relation of Service ##
+## Relation of Service
 
-It is worth special notice of the service relationships, you can identify the data exchanging between services and / or namespaces and you can make your customized grouping / filtering here. Start exploring today!
+The **Relation of Service** view maps the traffic and communication paths between services and namespaces. You can apply custom groupings or filters to visualize service-to-service dependencies and identify data exchange paths.
 
 ![image-20240401164511950](./image-20240401164511950.png)
-

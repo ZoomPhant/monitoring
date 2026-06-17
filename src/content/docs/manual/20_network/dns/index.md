@@ -10,35 +10,33 @@ has_children: false
 # DNS Monitoring
 
 ----
-DNS is one of the most underlying infrastructure of the Internet but which is usu. get neglected by people. ZoomPhant DNS montioring provides you a simple but very useful insights on how your DNS works.
+Domain Name System (DNS) resolution is a foundational pillar of internet infrastructure that is often overlooked until it fails. ZoomPhant's DNS Monitoring provides simple, real-time insights into your DNS resolution health and latency.
 
-
+---
 
 ## Create DNS Monitoring
 
-Suppose you want to monitor your domain like github.com, you simply choose the **DNS Checker** plugin from our plugin library to create a monitoring, you will be asked to provide following parameters
+To start monitoring a domain (e.g., `github.com`), select the **DNS Checker** plugin from the plugin library. You will be prompted to configure the following parameters:
 
 ![image-20240328102506670](./image-20240328102506670.png)
 
-1. server: the DNS server to use to do the check. You can usu. choose a known DNS server like 8.8.8.8 or 1.1.1.1 or simply leaving it empty, in which case the agent will choose the default system DNS server to service the request
-2. port: the DNS server port to contact with. Just keep 53 which is the default DNS service port
-3. host: this is required and should be the domain name you want to check. In this example, just fill in www.github.com which means we would try to check the DNS information for the github official site.
-4. timeout: the default checking timeout in seconds. Usu. DNS resolvation would be finished very quick (in tens of milliseconds), so you can just leave it as 5 seconds which is the default.
+1. **server**: The IP address of the DNS server to query (e.g., `8.8.8.8` or `1.1.1.1`). If left empty, the Data Collection Agent will use the host system's default DNS server.
+2. **port**: The port number of the DNS server. Defaults to `53`, which is the standard DNS port.
+3. **host**: The domain name you want to resolve (e.g., `www.github.com`). This is a required field.
+4. **timeout**: The query timeout in seconds. Because DNS resolution is usually completed in tens of milliseconds, the default value of `5` seconds is sufficient.
 
+Once you have configured the parameters, click **Test** to verify resolution, and then click **Finish** to add the monitoring service.
 
+---
 
-Once you have fill in correct params, you can do the testing to make sure everything works and then add the monitoring service.
+## Understanding DNS Checker Metrics
 
-
-
-## Understanding the DNS Checker Data
-
-Once you have add the DNS monitoring service, wait few seconds for data to come and you can then click the service on the left side service list to view the DNS status, you will see something like this
+After adding the service, wait a few seconds for the initial collection cycle. Select the service from the services list to view the DNS dashboard:
 
 ![image-20240328103041258](./image-20240328103041258.png)
 
-Here you will see three important informations
+The dashboard highlights three key metrics and data points:
 
-1. The overall domain status. If everything works correctly you'll see OK as shown in above diagram, otherwise you will see an short description of what kind of error happens (like domain not existing, etc.)
-2. The response time or the DNS resolving time. How long it takes for the given server to respond the DNS queries. You'll see the response times be shown in a line so you can see the jitters if any for the server to service queries for your domain.
-3. The important events associated with your domain. Here it will show the resolved IP addresses for your domain. This will help you to check if your DNS configuration is correct or not or if your DNS name has been polluted or not.
+1. **Overall Status**: Displays `OK` if resolution is successful. If an issue occurs (e.g., domain does not exist or timeout), a short error description is displayed.
+2. **Response Time**: The time taken (in milliseconds) to resolve the domain. This is tracked on a line chart to help identify latency spikes or DNS server performance degradation.
+3. **Resolved IP Addresses (Events)**: Lists the IP addresses returned by the DNS server. This helps verify that your DNS configuration is routing users to the correct servers and alerts you to potential DNS hijacking or cache pollution.

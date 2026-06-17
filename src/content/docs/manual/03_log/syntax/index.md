@@ -6,318 +6,267 @@ nav_order: 1
 has_children: false
 ---
 
-ZoomPhant using a streaming processing lanuage to process the logs, and a log processing statement may contain following parts:
+ZoomPhant uses a stream processing language to query and analyze logs. A log processing statement typically contains three parts:
 
-1. Log Filtering: Using labels or keywords to reduce the size of logs to be processed
-2. Log Processing: Processing the filtered logs to do conversion / analyzing or grouping, etc.
-3. Log Presenting: Decides how to present the processed logs, e.g. show as pure logs or a diagram in given shapes, etc.
+1. **Log Filtering**: Filters logs by labels or keywords to reduce the volume of data to be processed.
+2. **Log Processing**: Performs transformations, extractions, grouping, or statistical analysis on the filtered log stream.
+3. **Log Presentation**: Defines how to display the results, such as raw log lines, tables, or charts (e.g., line, bar, or pie charts).
 
-For a quick reference, you can refer to [Log_Query_CheatSheet](./Log_Query_CheatSheet.jpg)
+For a quick reference, see the [Log Query Cheat Sheet](./Log_Query_CheatSheet.jpg).
 
+---
 
 ## Syntax
-ZoomPhant Log Query Language is a staged stream processing language, the statement is separated by pipe '|' into different processing stage and having an overall syntax as follows
+
+The ZoomPhant Log Query Language is a pipe-delimited stream processing language. A query is divided into distinct stages separated by the `|` character, using the following general syntax:
+
 ```
 { streamFiltering } keywordsFiltering | processorFunc1 [args...] | processorFunc2 [args...] /as displayType
 ```
 
-In above stage, the first stage is a filtering stage (more details below), this stage is optional by strongly recommended, followed by one or more processing stage, and could be ended with an optinal display specification.
+The first stage is a filtering stage (detailed below). While this stage is optional, it is strongly recommended for query performance. This is followed by one or more processing stages, and optionally ends with a display formatter (`/as <displayType>`).
 
-Before explaining the details of the processing functions, let's see how strings could be expressed in the syntax. 
+Strings are widely used for label values, keywords, and processor arguments. You can define strings using double quotes, single quotes, or backticks to handle different quotation requirements:
 
-Strings are widely used as label value, keyword and processor arguments, etc. We support different ways to express a string, which can bring convenience for users in different situations.
+### Double-Quoted Strings
+This is the most common way to express strings: enclose the string in double quotes. The string itself cannot contain double quotes unless escaped.
 
-### Double Quoted Strings
-This is the most common way to express strings: quote the string in double quotes, and in the string there shall have no double quote.
-
-Below are examples of valid double quoted strings.
-
+Examples of valid double-quoted strings:
 ```
 "error"
 "Error"
 "He's great"
 "/api/ping"
 ```
-And it is illegal to have a double quote in the double quoted string:
+It is invalid to have an unescaped double quote inside a double-quoted string:
 ```
 "invalid "double quote""
 ```
 
-### Single Quoted Strings
-We can use single quoted string to express strings with double quotes, but in single quoted strings there shall be no single quote.
+### Single-Quoted Strings
+Use single quotes to enclose strings that contain double quotes. The string itself cannot contain unescaped single quotes:
 ```
-‘Error’
-‘The "test" string is OK'
+'Error'
+'The "test" string is OK'
 '/api/ping'
 ```
-Single quote is not allowed in single quoted strings:
+A single quote is not allowed inside single-quoted strings:
 ```
 'invalid 'single quote''
 ```
 
-### Tick Quoted Strings
-In case you need to use both single and double quotes in your string, you can use the tick quoted strings, as shown below:
+### Tick-Quoted (Backtick) Strings
+If your string contains both single and double quotes, enclose the string in backticks (ticks):
 ```
 `Error`
 `The "double quoted" string and 'single quoted' string`
 `/api/ping`
 ```
-But tick shall not show up in tick quoted strings:
+A backtick cannot appear unescaped inside backtick-quoted strings:
 ```
 `Illegal `back quote``
 ```
 
-### RE2 Expression
-RE2 expression is a special string, we use slash '/' to enclose such strings, as shown below
-
+### RE2 Expressions
+Regular expressions use the RE2 syntax and are enclosed by forward slashes (`/`):
 ```
 /.*mysql.*/
 /192\.168\.3\.\d{1,3}/
 ```
 
-For more information about RE2 syntax, you can refer to [https://github.com/google/re2/wiki/Syntax](https://github.com/google/re2/wiki/Syntax).
+For more information about RE2 syntax, refer to the [RE2 Syntax Guide](https://github.com/google/re2/wiki/Syntax).
+
+---
 
 ## Log Filtering
-Log volumes could be huge, so when querying and processing logs, we shall filter those logs that we want to process first to improve the efficency.
+
+Because log volumes can be extremely large, you should always filter logs as early as possible in the query to improve execution efficiency.
 
 There are two types of filtering:
-1. Log Stream Filtering: A log stream is identified by the label set, so this kind of filtering will try to filter the label values to select the correct stream to process.
-2. Keyword Fitlering: Keyword filtering can be used to further filter log lines with certain keywords.
+1. **Log Stream Filtering**: Filters logs by their stream labels (metadata) to narrow down which log files or containers are queried.
+2. **Keyword Filtering**: Searches for specific strings or patterns within the raw log content.
 
-As said above, each log query statement shall try to use filters to reduce the volume of queried logs to improve the performance.
+Applying both filters together significantly reduces the volume of log data read from disk, improving query speed.
 
 ### Log Stream Filtering
-As said above, log stream filtering filters against the log labels. The basic syntax for filtering a label is as follows:
+Log stream filters target log metadata (labels). The basic syntax is:
 ```
-  labelName <Operator> labelValue
+labelName <Operator> labelValue
 ```
-Depends on the operator, the labelValue could be
+Depending on the operator, the label value can be:
+* Double, single, or tick-quoted strings.
+* RE2 regular expressions enclosed by forward slashes.
 
-* Double, single or tick quoted strings
-* RE2 regular expressions enclosed by slashes
+The operator can be:
+1. `=` : The label value matches the given string exactly.
+2. `!=` : The label value does not exactly match the given string.
+3. `~` : The label value matches the given RE2 expression.
+4. `!~` : The label value does not match the given RE2 expression.
 
-Here the operator could be:
-
-1. =  The label value matches the given string exactly
-2. != The label value doesn't exactly match the given string
-3. ~  The label value matches the given RE2 expression
-4. !~ The label value doesn't match the given RE2 expression
-
-Two or more label filters could be ***and***-ed or ***or***-ed together to create a complex log stream filter against multiple labels:
-
+Two or more label filters can be `and`-ed or `or`-ed together to create a complex log stream filter:
 ```
-  _instanceName ~ "prod.*" and _category="database"
+_instanceName ~ "prod.*" and _category="database"
 ```
 
 ### Keyword Filtering
+Keyword filters scan the raw log lines. Combining keyword filters with stream filters yields the best query performance.
 
-Keywords filtering will be used on log lines directly. Used with log stream filtering, it can further reduce the volume of the logs to be queried and processed.
+Keywords can be any string in double, single, or tick quotes, or an RE2 expression. The following are valid keywords:
+1. Single-quoted string: `'keyword'`
+2. Double-quoted string: `"keyword"`
+3. RE2 expression: `/key?word/`
 
-Keywords can be any strings in double, single or tick quotes, it can also be a RE2 expression in certain situations. Following are valid keywords:
-1. Single quoted string keyword: 'keyword'
-2. Double quoted string keyword: "keyword"
-3. Keyword in RE2 expression: /key?word/
-
-Like label filters, we can use **and**, **or** and **not** keywords to create complex keyword filtering against multiple keyworkds, for example:
+Like label filters, you can use **and**, **or**, and **not** keywords to create complex keyword filtering expressions:
 ```
-  "Error" or "Exception"
+"Error" or "Exception"
 ```
 or
 ```  
-  /.*mysql.*/ and not "database"
+/.*mysql.*/ and not "database"
 ```
 
 ### Using Filtering
-
-When using filtering, we support two ways to specify label and keyword filters
-1. Using Literals: this can only be used on start of query statement
-2. Using Functions: We can add one or more processing stages using filtering functions
+ZoomPhant supports two syntax options for defining filters:
+1. **Literals**: Can only be used at the very beginning of a query statement.
+2. **Functions**: Applied at any stage of the pipeline using pipe delimiters.
 
 #### Using Literals
-Filtering literals can only be used at start of a query statement, we would recommend user to always starts with filtering literals to improve log querying and processing.
+Literal filters must appear at the beginning of the query statement. We highly recommend using them to pre-filter logs before applying processing functions.
 
-The syntax for filtering literals is as follows:
-
+The syntax for filtering literals is:
 ```
 { <stream filtering> } <keyword filtering>
 ```
+In this syntax:
+1. The stream filters are surrounded by curly braces `{}`.
+2. They are followed by optional keyword filters.
 
-In this syntax, the filtering contains two optional parts
-
-1. the stream filters, surounded by brackets
-2. followed by optional keyword filters
-
-Following are some examples using above syntax
-
+Examples using literal filters:
 ```
-{_source~/.*prod-\d+/ and _cagetory="webserver"} "Error" or "Warn"
+{_source~/.*prod-\d+/ and _category="webserver"} "Error" or "Warn"
 {level="error" or level="warn"}
 "/api/ping" and "error"
 ```
 
 #### Using Functions
-Filering literals can only be used at start of query statement. To make your query statement easier to understand, you can use filtering functions, which can appear at different stages. Filtering functions has following syntax
-
+Unlike literals, filtering functions can be chained at any stage of the pipeline. They use the following syntax:
 ```
 funcName filterExpression
 ```
 
-We will have more details for supported filtering functions later, for now we can see below examples for using filtering functions
+Here are a few examples of filtering functions in a pipeline:
 ```
 grep "Error" | grep -v "website"
 match "Error" or "Warn" | filter _category="database"
 filter _source!~/.*mysql.*/ and _level="error" | grep -v "test"
 ```
 
-
+---
 
 ## Log Processing & Displaying
 
-After we have filtered out the logs we want to process, we may need to further processing the logs like extracting certain information from log lines, counting the lines and find patterns about appearances of certain keywords, etc.
+Once logs are filtered, you can perform transformations, extract structured data, generate time-series metrics, or compute statistics. We use functions to do this processing, and the results can be presented in different formats using display options.
 
-We use functions to do such processing, and the processed result could be presented in different formats using the displaying options.
-
+---
 
 ## Log Functions
 
-We call the each processing method a function, and according to the type of processing, we can group the functions as:
+We refer to each processing step as a function. Processing functions are grouped into three categories:
 
-1. Log Filtering Functions: Used to filter logs using labels or keywords to achieve the same purpose as using **filtering literals** mentioned above.
-2. Log Expanding Functions: Used to generate dynamic labels, converting log lines, extracting information from log labels or log lines, etc.
-3. Log Processing Functions: Used to create timeseries from log streams and do analyzing / aggregations on the timeseries.
+1. **Log Filtering Functions**: Filter logs using labels or keywords to achieve the same result as literal filters.
+2. **Log Expanding Functions**: Generate dynamic labels, parse fields, or convert raw text formats.
+3. **Log Processing Functions**: Transform log streams into numerical time-series and perform aggregations.
 
 ### Log Filtering Functions
+These functions filter raw log content or stream metadata:
 
-We support following special functions to filter against log labels (streams) and log lines (keywords)
-
-* **grep**: Used to filter log lines against one keyword, an optional -v option could be used to inverse the effect, as shown in below examples
-  * **grep** "12345" 
-    * Finding all the loglines that contains 12345
-  * **grep** **-v** 12345 
-    * Finding all the logs that **not** contains 12345
-* **match**: Used to filter log lines against multiple keywords by using keyword filtering expressions. User can use brackets to change the default processing order, for example:
-  * **match** **(**"Failed" **or** "failed"**)** **and** /192\.168\.\d{1,3}\.\d{1,3}/                    
-    * Find all log lines containing one of "Failed" and "failed", and also with a matching IP address
-  * **match** "error" **and** "network" 
-    * Find all lines containing both "error" and "network"
-* **filter**: Used to filter log streams or log labels. Like above **match** function, it expects user to provide a label filtering expression as arguments, for example
-  * **filter** service **=** "finance"
-    * Filter all log streams with a service label with value "finance"
-  * **filter** location **!=** "Canada"
-    * Filter all log streams with a location label not equal to "Canada"
-  * **filter** name **~** /Instance .\*/ **and** _category **=** "website" 
-    * Filter log streams with name label matching given RE2 exrepssion and _category label set to "website"
-
+* **grep**: Filters log lines against a single keyword. An optional `-v` option inverts the match.
+  * `grep "12345"` : Returns all log lines containing "12345".
+  * `grep -v "12345"` : Returns all log lines that do not contain "12345".
+* **match**: Filters log lines using keyword filtering expressions. Parentheses can be used to alter evaluation order:
+  * `match ("Failed" or "failed") and /192\.168\.\d{1,3}\.\d{1,3}/` : Finds lines matching "Failed" or "failed" that also contain an IP address.
+  * `match "error" and "network"` : Finds lines containing both "error" and "network".
+* **filter**: Filters log streams based on label values. It accepts label filtering expressions:
+  * `filter service = "finance"` : Filters streams where the `service` label is "finance".
+  * `filter location != "Canada"` : Filters streams where the `location` label is not "Canada".
+  * `filter name ~ /Instance .*/ and _category = "website"` : Filters streams where the `name` label matches the RE2 expression and `_category` is "website".
 
 ### Log Expanding Functions
+These functions parse raw log text or existing labels to dynamically extract new labels:
 
-Those functions can help convert log stream by expanding labels or cnverting the log lines. For now we support following functions
-
-* **json**: Take the log line as valid JSON and extract the fields in this JSON as labels. Existing labels may be overwritten by this operation. For example
-  * json
-    * with out argument, each field will be generated as a label
-  * json location, size
-    * Extract the location and size field to create new location and size labels
-* **pattern**: This is the same as the Loki pattern processing function, which can be used to quickly extract pattern form log lines and generate new labels. It would expect a pattern as argument and use it to match the log lines, using blank space as separator.  You can give a name using \<*labelNamne*\> to generate a label with the matching part or special \<_\> to ignore that part. For example,
-  * pattern '\<ip\> - - <_> "\<method\> \<uri\> <_>" \<status\> \<size\> <_>'
-    * Match a log line, with the first part used to generate ip, method, uri, status and size labels
-* **regexp**: Using RE2 syntax to matching named pattern and using the name to generate labels
-  * regexp /POST (?P<uri>.*) .* (?P<code>\d+) (?P<size>\d+)/
-    * Matching the url, code and size part to generate labels accordingly
-* **logfmt**: Take the log lines as following the logfmt format and convert the key=value pairs as labels. You can visit following link for more information
-  * https://www.brandur.org/logfmt
-
-
-More log expanding functions will be supported in the future.
+* **json**: Parses log lines as JSON and extracts fields as labels.
+  * `json` : Extracts all top-level JSON fields as labels.
+  * `json location, size` : Extracts only the `location` and `size` fields.
+* **pattern**: Extracts fields from log lines using a pattern structure, using whitespace as a delimiter (similar to Grafana Loki's pattern function). Use `<labelName>` to name a captured field, or `<_>` to ignore it:
+  * `pattern '<ip> - - <_> "<method> <uri> <_>" <status> <size> <_>'` : Extracts IP, HTTP method, URI, status code, and size from Nginx-style logs.
+* **regexp**: Extracts labels using named RE2 capture groups:
+  * `regexp /POST (?P<uri>.*) .* (?P<code>\d+) (?P<size>\d+)/` : Extracts `uri`, `code`, and `size` from matching POST requests.
+* **logfmt**: Parses log lines formatted in the logfmt style (`key=value` pairs) into labels. For details, see the [logfmt specification](https://www.brandur.org/logfmt).
 
 ### Log Processing Functions
+To visualize trends or count events, you can convert (vectorize) log lines into numerical time-series data. This process typically follows three steps:
 
-Log lines are hard to extract useful information and to display. We can use log processing functions to vectorize the loglines as time series to identify patterns and presenting to customers.
+1. **Vectorization**: Convert raw logs into initial time-series data using a range interval.
+2. **Aggregation**: Apply statistical aggregation or filtering functions.
+3. **Data Presentation**: Formatter options to display the data as charts or lists.
 
-To processing the log lines for above purpose, we need to through following steps
-
-1. Vectorize logs: This is the first step and we would generate the initial timeseries from the log lines which can be further processed and displayed
-2. Timeseries processing: We can using various aggregation and processing functions to process the generated timeseries.
-3. Data presenting: With the final data, we can shall it in a way easier for user to understand the data
-
-#### Log Vectorizing Function
-ZoomPhant support a **range** function to vectorize the log lines or log labels in given steps:
+#### Log Vectorization Functions
+ZoomPhant uses the `range` function to convert logs into a time-series based on a specified time interval:
 ```
-  range <vecorizingRange or step> use convertingFunc [<convertingParam1> ...]
-  range <labelName> <vecorizingRange or step> use convertingFunc [<convertingParam1> ...] [without|by (labelSet)]
+range <vectorizingRange or step> use convertingFunc [<convertingParam1> ...]
+range <labelName> <vectorizingRange or step> use convertingFunc [<convertingParam1> ...] [without|by (labelSet)]
 ```
+In this syntax:
+* The first form vectorizes based on log lines.
+* The second form vectorizes based on a specific label value (aggregating across a `labelSet` if `by` or `without` is provided).
+* **vectorizingRange** specifies the interval (e.g., `5m`, `1h`, or `auto` for auto-scaling).
+* **convertingFunc** determines the conversion function:
 
-In above syntax
+##### Converting Functions for Log Lines:
+* **rate**: Average number of log lines generated per second over the specified time range.
+* **count**: Total count of log lines generated within the time range.
+* **bytes_rate**: Average log volume in bytes per second over the time range.
+* **bytes_count**: Total log volume in bytes generated within the time range.
+* **absent**: Returns `1` if no logs were generated during the interval, and an empty vector otherwise.
 
-* the first is used to vectorize against log lines
-* the second is used to vectorize against given **labelName**
-  * When aggregate against labels, a **labelSet** can be provided to filter or aggregation log streams
+##### Converting Functions for Log Labels:
+Interprets the specified label value as a numeric value:
+* **rate**: Calculates the per-second rate of change over the interval.
+* **sum**: Calculates the sum of the numeric label values over the interval.
+* **avg**: Calculates the average value over the interval.
+* **max**: Calculates the maximum value over the interval.
+* **min**: Calculates the minimum value over the interval.
+* **first**: Returns the first non-null value in the interval.
+* **last**: Returns the last non-null value in the interval.
+* **stdvar**: Calculates the standard variance over the interval.
+* **stddev**: Calculates the standard deviation over the interval.
+* **quantile**: Calculates the specified percentile (e.g., `quantile 90` for the 90th percentile).
+* **absent**: Returns `1` if no label values are present in the interval, and an empty vector otherwise.
 
-In both cases, 
-
-* **vecorizingRange** or step is used to given the a time range to vectorize the log, it is given in format like 5m, 1h or  ***auto*** so ZoomPhant can automatically decide the value.
-* **convertingFunc** is a name to decide what kind of function we can use to do the vectorizization, as shown below
-
-##### Converting Function for Log Lines
-
-If we try to vectorize against the log lines, we can using following converting functions
-
-* **rate**: Number of log lines generated per second every given time range (speed)
-* **count**: Number of log lines generated in given time range
-* **bytes_rate**: Number of bytes per second generated every given time range (speed)
-* **bytes_count**: Number of bytes generated in given time range
-* **absent**: if any logs generated every given time range. If yes a vector with value 1 is returned, otherwise an empty vector is returned
-
-##### Converting Function for Log Labels
-
-To vectorize against a given label following function could be used
-
-* **rate**：Taken the label value as a number, the change rate of the accumulated sum in given time range
-* **sum**：Taken the label value as a number, the accumulated sum in given time range
-* **avg**：Taken the label value as a number, the average value in given time range
-* **max**：Taken the label value as a number, the maximum value in given time range
-* **min**：Taken the label value as a number, the minimum value in given time range
-* **first**：Taken the label value as a number, the first non-null value in given time range
-* **last**：Taken the label value as a number, the last non-null value in given time range
-* **stdvar**：Taken the label value as a number, the standard variation value in given time range
-* **stddev**：Taken the label value as a number, the standard deviation value in given time range
-* **quantile**：Taken the label value as a number, the proportion of values above given percentile. The percentile is given as a number like 90 as the first argument and if missing taken as 90 percentile
-* **absent**：If no value in gime time range, return an empty vector, otherwise an vector with value 1 is returned
-
-
-
-#### Log Processing Functions
-
-Once we have vectorized timeseries data, we can further processing the timeseries using log processing functions in following syntax
-
+#### Log Aggregation Functions
+Once data is vectorized into a time-series, you can perform aggregations using the following syntax:
 ```
 <funcName> [<funcParam1> ...] (without|by) (labelSet)
 ```
-
-So the log processing functions can further filter / aggregation the timeseries using given label set, and following functions are supported
-
-* **sum**: Calculate theaccumulated value aggregated by given label set
-* **avg**: Calculate average value aggregated by given label set
-* **min**: Get the minimum value aggregated by given label set
-* **max**: Get maximum value aggregated by given label set
-* **stdvar**: Calculate the standard variation aggregated by given label set
-* **stddev**: Calculate the standard deviation aggregated by given label set
-* **count**: Count the number of streams aggregated by the given label set
-* **top**: Return the top N series aggregated by the given labelset, N is given as the first param, default to 3 if not given
-* **bottom**: Return the bottom N series aggregated by the given labelset, N is given as the first param, default to 3 if not given
-
-
+Supported aggregation functions:
+* **sum**: Calculates the accumulated sum aggregated by the label set.
+* **avg**: Calculates the average value aggregated by the label set.
+* **min**: Gets the minimum value aggregated by the label set.
+* **max**: Gets the maximum value aggregated by the label set.
+* **stdvar**: Calculates the standard variance aggregated by the label set.
+* **stddev**: Calculates the standard deviation aggregated by the label set.
+* **count**: Counts the number of active streams aggregated by the label set.
+* **top**: Returns the top N series; `N` defaults to 3 if not specified (e.g., `top 5`).
+* **bottom**: Returns the bottom N series; `N` defaults to 3 if not specified (e.g., `bottom 5`).
 
 #### Log Display Options
-
-By default we display log data as just log lines and timeseries data as colored lines. User can use the display option to override the display if it applies
+By default, raw log data is displayed as text lines, and time-series data is rendered as a line chart. Use the `/as` display option to override this behavior:
 ```
-  /as <displayOption>
+/as <displayOption>
 ```
-
-Here, **displayOption** could be one of following
-* **line** or **lines**: Display the timeseries data as lines, this is the default
-* **pie** or **pies**: Display the timeseries as pie diagrams
-* **bar** or **bars**: Display the timeseries as bar diagrams
-* **area** or **areas**: Display the timeseries as areas.
-* **stack** or **stacks**: Display the timeseries as stacked areas.
+Supported display options:
+* **line** or **lines**: Displays the time-series as a line chart (default).
+* **pie** or **pies**: Displays the time-series as a pie chart.
+* **bar** or **bars**: Displays the time-series as a bar chart.
+* **area** or **areas**: Displays the time-series as an area chart.
+* **stack** or **stacks**: Displays the time-series as a stacked area chart.

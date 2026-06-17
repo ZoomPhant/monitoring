@@ -9,91 +9,79 @@ has_children: false
 # Monitoring Service
 
 ----
-In ZoomPhant, a monitoring task you created will be called a **Monitoring Service**. You create a Monitoring Service from a plugin created by yourself or provided by ZoomPhant or 3rd parties.
+# Monitoring Service
 
-## Start Adding Monitoring Service ##
+----
+In ZoomPhant, a monitoring task is referred to as a **Monitoring Service**. You create a Monitoring Service from a plugin that you have created or one provided by ZoomPhant or a third party.
 
-To add a monitoring service, you can first choose the plugins. Click the **add** button on top right of the **Monitoring Service List** pannel so you can start adding a service:
+## Adding a Monitoring Service
+
+To add a monitoring service, click the **Add** button in the top-right corner of the **Services** panel to open the creation wizard:
 
 ![image-20240328104549020](./image-20240328104549020.png)
 
-
-
-The first step is to choose what kind of monitoring service you want to add:
+The first step is to choose the type of monitoring service:
 
 ![image-20240328104712542](./image-20240328104712542.png)
 
+1. **Infrastructure Monitoring Service**: A system-level service that requires installing a **data collection agent** on the target server. The agent collects system-level metrics and routes data from other services that run on that server.
+2. **Application Or Service**: The most common type of service. Used to monitor specific remote objects like databases, web servers, domain names, or websites.
 
+Once you decide on the type of monitoring service, you can choose to add either a single service or a batch of similar services (e.g., a group of servers or database instances). Batch operations are covered in detail later, but for now, we will add a single monitoring service by clicking **Single addition** under **Application or Services**.
 
-1. Infrastructure Monitoring Service: this is a special monitoring service that it would require you to create a **data collecting agent** along adding this service. The data collecting agent is used to collect data for this service and other monitoring services that depends on this infrastructure.
-2. Application Or Service: this is the most common monitoring service to monitor a specific object like a remote host, a database server or a website, etc.
+---
 
+## Choosing a Monitoring Plugin
 
-
-Once you decided the kind of monitoring services, you will start to add the monitoring services by choosing to add just one or add a batch of similar services (like monitoring a group of serviers or bunch of database servers). We'll have more on batch adding monitoring service later, but for now, let's suppose we would try to add a single monitoring service for an application or service, so just click the "**Single addition**" under **Application or Services** type.
-
-
-
-## Choosing Monitoring Plugin
-
-Once you clicked the "Single Addition" button, you'll be asked to choose a **Monitoring Plugin** in the **plugin selector**. You can create your own monitoring plugin or using plugins released by ZoomPhant or 3rd parties. Allong with the ZoomPhant package released, we included the most commonly used plugins for your choose:
+After selecting "Single Addition", you will be prompted to choose a **Monitoring Plugin** from the selector. You can use standard system plugins, community plugins, or your own custom designs:
 
 ![image-20240328105619603](./image-20240328105619603.png)
 
+Use the search bar at the top of the selector to filter plugins by keyword, or navigate using these categories:
 
-The plugin selector will list all the plugins available, including those you created and the plugins released along with ZoomPhant and other 3rd parties.
+* **Recently Used**: Highlights plugins you have configured recently, saving you from searching the entire list.
+* **Custom Plugins**: Lists custom plugins you have created or instantiated from a template.
+* **System Plugins**: Default plugins created and maintained by ZoomPhant.
 
-On top of the selector, you can do filtering by input the keyword to search for plugins you want, or you can decide the plugin from
+Once you select a plugin (for example, the DNS Checker), a setup wizard will guide you through the rest of the configuration.
 
-* Recently Used List: Usu. in a business, you'll just use few of all the plugins, you can find those you commonly used to avoid searching in a long list
-* User Customized Plugins: You may created your own or instantiated a plugin for a plugin template. Those will be shown here so you can try to find them quickly
-* System Plugins: those are the plugins created and managed by ZoomPhant
+---
 
+## Providing Basic Service Information
 
-Once you decide the plugin (here, suppose we want to choose the DNS Checker to monitor a domain), just click it and a wizard will shown up to add the monitor service.
-
-
-## Providing Monitoring Service Information
-
-The first page of the wizard would be asking you to provide basic information as shown below
+The first page of the wizard requires the following basic information:
 
 ![image-20240328113153007](./image-20240328113153007.png)
 
-Here you shall provide information like
+* **Display**: A user-friendly name for the Monitoring Service.
+* **Associated Collector**: The data collection agent that will run this check.
+* **Tags**: One or more tags to group and organize your monitoring services.
+* **Description**: A short, optional explanation of the service.
 
-* Display: the name for the Monitor Service
-* Associated Collector: which data collecting agent you shall use to collect data for this monitor service
-* Tags: one or more tags you want to group your monitor service
-* Description: a short optional description of your monitor service
+Click **Next** once you have filled in this information.
 
-Click "Next" once you fill in those information
+---
 
+## Configuring Parameters and Testing
 
+Most plugins require configuration parameters to communicate with the target host. These parameters typically include details such as the host address, port, and credentials.
 
-## Provide Parameters and Testing Monitor Service
-
-In most cases, a plugin would define one or more parameters for you to input to create a monitor service. Those parameters usu. are the remote address, username / password to access certain data, etc.
-
-Parameters could be optional or mandatory, and if it is mandatory and no default value provided, you'll have to fill in before you can continue, as shown in below diagram (the **host** parameter)
+Parameters can be optional or mandatory. Mandatory parameters without default values must be filled in before you can proceed (such as the **host** parameter in the example below):
 
 ![image-20240328113335394](./image-20240328113335394.png)
 
+After entering the parameters, you can click the **Script Test** button to verify that data collection works as expected before saving.
 
-
-Once you have input the parameters and if you want to make sure the data collecting could work as expected, you can click the "**Script Test**" button to bring the "Script Test" dialog to do some tests before you can continue. 
-
-In the "Script Test" dialog, you first set a timeout value (default to 30 seconds) and then click the "**Run Test**" button, the system will start to do the test and presents a "**View the results**" button once it finishes, if you click this button the raw data will be presented to you so you can know what kind of data is collected and if the data is you expected.
+In the test dialog, set a timeout value (default is 30 seconds) and click **Run Test**. Once the test completes, you can click **View results** to review the raw data collected and verify it matches your expectations.
 
 ![image-20240328113759371](./image-20240328113759371.png)
 
-If anything goes wrong, an error message will be presented instead of the "**View the results**" button.
+If the test fails, an error log is displayed instead to help you troubleshoot. Click **Next** to proceed to the final step.
 
-Click Next so you can complete adding the monitoring service.
+---
 
-## Complete Adding Monitor Service
+## Complete Service Setup
 
-Once you reach here, your monitor service has been successfully added. You can choose to close the wizard by click the "**Finish**" button to jump to the page to start checking the data for your service by clicking "**View Services**" button in the middle of the wizard.
-
-
+Your monitoring service is now active. Click **Finish** to close the wizard, or click **View Services** to navigate directly to the service's dashboard.
 
 ![image-20240328114254478](./image-20240328114254478.png)

@@ -6,108 +6,122 @@ nav_order: 3
 has_children: false
 ---
 
-To help you understand the ZoomPhant Log Query Language, we using a concrete example to help you processing and understanding your logs. In our example, we will try to process the nginx logs generated with following format (refer to your nginx configuration):
+To help you understand the ZoomPhant Log Query Language, this guide walks through a concrete example of log processing and analysis. We will process Nginx access logs formatted as follows:
 
-    log_format combined '$remote_addr - $remote_user [$time_local] '
-                '"$request" $status $body_bytes_sent '
-                '"$http_referer" "$http_user_agent"';
+```nginx
+log_format combined '$remote_addr - $remote_user [$time_local] '
+            '"$request" $status $body_bytes_sent '
+            '"$http_referer" "$http_user_agent"';
+```
 
-Before we have performed any processing, the raw logs we have collected is something like follows:
+Before any processing, the raw logs collected from Nginx look like this:
 
 ![image-20240402155342053](./image-20240402155342053.png)
 
-
+---
 
 ## Filtering Logs
 
-Suppose we just want to process the POST requests, let's filter the logs using following statement
+To filter and display only `POST` requests, we can write the following query:
 
-    {method="POST"}
+```
+{method="POST"}
+```
 
-By applying the filter, we can see something like follows
+Applying the filter yields the following output:
 
 ![image-20240402155557568](./image-20240402155557568.png)
 
-If we want to filter non-POST requests, we can using a filter statement like follows
+To filter out non-`POST` requests instead, use the inequality operator:
 
-    {method!="POST"}
+```
+{method!="POST"}
+```
 
 ![image-20240402155732479](./image-20240402155732479.png)
 
-**Note: here we shall switch to expert mode for this as selection mode only for more basic usage**
+*Note: Switch the log viewer to **Expert Mode** to manually enter query statements, as Selection Mode is limited to basic filters.*
 
+Continuing with the example, let's filter the logs to target specific API endpoints:
 
+```
+{method!="POST"} "/api/collectors/mc2" or "/api/logs?"
+```
 
-Continue with above example, let's just try to filter logs for some special apis:
-
-    {method!="POST"} "/api/collectors/mc2" or "/api/logs?"
-
-We now have following:
+The output is updated accordingly:
 
 ![image-20240402155937303](./image-20240402155937303.png)
 
-
+---
 
 ## Using Log Processing Functions
 
-With above filtering, we now limit our logs to a much smaller set, and we can further processing our logs to
-
-1. Extract more important information dynamically
-2. Further filtering / processing the processed logs
+By filtering the raw logs to a smaller subset, we can now apply processing functions to:
+1. Dynamically extract structured information from log text.
+2. Perform secondary filtering and metric calculations on the extracted data.
 
 ### Extracting More Labels
 
-In the raw nginx log, there are no labels like ip, referer, etc.:
+By default, raw Nginx logs are unstructured text and lack discrete labels for IP addresses, HTTP methods, or referrers:
 
 ![image-20240402160356897](./image-20240402160356897.png)
 
-But those labels might be very useful to understand Nginx logs, we can try to extract them from the logs lines as
+To perform advanced analysis, we can extract the following fields from the log lines:
+* **ip**: The client IP address sending the request.
+* **ver**: The HTTP protocol version.
+* **size**: The size of the server response in bytes.
+* **referer**: The referring page URL.
 
-1. ip: the IP address sending the request
-1. ver: HTTP request version
-2. size: the size in bytes of the responses from the server
-4. referer: the page sending the request (i.e. referer of the request)
+We can achieve this using the **pattern** function:
 
-We can use **pattern** function to get this done:
+```
+{method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>`
+```
 
-    {method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>`
-
-**Note: we are using ticked string here to be able to use double quotes in the pattern argument**
+*Note: We enclose the pattern in backticks (ticks) to allow double quotes within the pattern argument itself.*
 
 ![image-20240402160634371](./image-20240402160634371.png)
 
+To find unsuccessful requests (where the status code is not `200`), we chain a secondary `filter` stage to our pipeline:
 
+```
+{method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>` | filter status!="200"
+```
 
-Suppose we want to find requests that are not processed successfully (status != 200), we can expand our query statement with another filter stage as follows:
-
-    {method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>` | filter status!="200"
-
-We now have:
+The filtered results are displayed:
 
 ![image-20240402161204161](./image-20240402161204161.png)
 
-### Vectorizing Logs and Display
+---
 
-Now suppose we want to see the pattern of the successful requests in a 5 minute step, we can do this using following query statement:
+### Vectorizing Logs and Charts
 
-    {method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>` | filter status="200" and referer!="-" | range 5m use count
+To visualize the trend of successful requests over time at 5-minute intervals, we vectorize the logs using the `range` function:
 
-We now have our output displayed in lines as follows:
+```
+{method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>` | filter status="200" and referer!="-" | range 5m use count
+```
+
+The output is rendered as a line chart:
 
 ![image-20240402182051426](./image-20240402182051426.png)
 
-We can try to get a stats by response size by sumiming against size using following statement
+We can calculate statistics by response size by aggregating the counts using the `sum` function:
 
-    {method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>` | filter status="200" and referer!="-" | range 5m use count | sum by size
+```
+{method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>` | filter status="200" and referer!="-" | range 5m use count | sum by size
+```
 
-We now have:
+The output displays metrics grouped by size:
 
 ![image-20240402182133987](./image-20240402182133987.png)
 
-If we want to take a look at current distribution by size, it would be better to view the data in pies, so let's add pies display options as follows:
+To visualize the current distribution of response sizes as a pie chart, add the `/as pies` display option:
 
-    {method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>` | filter status="200" and referer!="-" | range 5m use count | sum by size /as pies
+```
+{method!="POST"} "/api/collectors/mc2" or "/api/logs?" | pattern `<ip> <_> HTTP/<ver>" <_> <size> "<referer>" <_>` | filter status="200" and referer!="-" | range 5m use count | sum by size /as pies
+```
 
-Now we would have data be shown in pies as following:
+The data is rendered as a pie chart:
 
 ![image-20240402182214494](./image-20240402182214494.png)
