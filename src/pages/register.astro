@@ -1,0 +1,229 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout title="Register — ZoomPhant Free Business License">
+  <Header currentPath={Astro.url.pathname} />
+
+  <main class="min-h-screen bg-gray-50 flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-xl w-full bg-white p-8 sm:p-12 rounded-3xl border border-gray-200 shadow-sm">
+      <div class="text-center">
+        <span class="inline-flex items-center rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">
+          Community License
+        </span>
+        <h2 class="mt-4 text-3xl font-extrabold text-gray-900 tracking-tight">
+          Register ZoomPhant
+        </h2>
+        <p class="mt-2 text-sm text-gray-500">
+          Register your startup or small business deployment to unlock free business use and receive product updates.
+        </p>
+      </div>
+
+      <form class="mt-8 space-y-6" action="https://www.zoomphant.com/api/register" method="POST" id="registrationForm">
+        <!-- Section 1: Required Details -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2 flex items-center justify-between">
+            <span>1. Company & Contact Details</span>
+            <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-600">Required</span>
+          </h3>
+          <div>
+            <label for="company-name" class="block text-xs font-medium text-gray-700">Company Name</label>
+            <input type="text" name="company" id="company-name" required class="mt-1 block w-full rounded-xl border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-brand-500" placeholder="Acme Corp" />
+          </div>
+          <div>
+            <label for="company-website" class="block text-xs font-medium text-gray-700">Company Website</label>
+            <input type="url" name="website" id="company-website" required class="mt-1 block w-full rounded-xl border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-brand-500" placeholder="https://www.company.com" />
+          </div>
+          <div>
+            <label for="business-email" class="block text-xs font-medium text-gray-700">Business Email</label>
+            <input type="email" name="email" id="business-email" required class="mt-1 block w-full rounded-xl border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-brand-500" placeholder="you@company.com" />
+          </div>
+          
+          <!-- Custom Select for Company Size -->
+          <div class="relative">
+            <label class="block text-xs font-medium text-gray-700">Company Size</label>
+            <input type="hidden" name="companySize" id="companySizeInput" value="1-10" required />
+            <div class="relative mt-1">
+              <button type="button" id="companySizeDropdownBtn" class="relative w-full cursor-pointer rounded-xl border border-gray-300 bg-white py-3.5 pl-4 pr-10 text-left text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <span class="block truncate" id="companySizeSelectedText">1 - 10 employees</span>
+                <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                  </svg>
+                </span>
+              </button>
+              
+              <ul id="companySizeOptions" class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-sm shadow-lg border border-gray-100 focus:outline-none hidden">
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all font-semibold" data-val="1-10">
+                  1 - 10 employees
+                </li>
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all" data-val="11-50">
+                  11 - 50 employees
+                </li>
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all" data-val="51-200">
+                  51 - 200 employees
+                </li>
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all" data-val="200+">
+                  200+ employees
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Optional Details -->
+        <div class="space-y-4 pt-2">
+          <h3 class="text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2 flex items-center justify-between">
+            <span>2. Monitoring Scenario</span>
+            <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">Optional</span>
+          </h3>
+          
+          <!-- Custom Select for Primary Infrastructure Type -->
+          <div class="relative">
+            <label class="block text-xs font-medium text-gray-700">Primary Infrastructure Type</label>
+            <input type="hidden" name="infrastructure" id="infrastructureInput" value="undisclosed" />
+            <div class="relative mt-1">
+              <button type="button" id="infrastructureDropdownBtn" class="relative w-full cursor-pointer rounded-xl border border-gray-300 bg-white py-3.5 pl-4 pr-10 text-left text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <span class="block truncate text-gray-900" id="infrastructureSelectedText">Prefer not to disclose</span>
+                <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                  </svg>
+                </span>
+              </button>
+              
+              <ul id="infrastructureOptions" class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-sm shadow-lg border border-gray-100 focus:outline-none hidden">
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all font-semibold" data-val="undisclosed">
+                  Prefer not to disclose
+                </li>
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all" data-val="bare-metal">
+                  Bare Metal / VMs
+                </li>
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all" data-val="kubernetes">
+                  Kubernetes
+                </li>
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all" data-val="hybrid">
+                  Hybrid Cloud
+                </li>
+                <li class="relative cursor-pointer select-none py-3 pl-4 pr-9 text-gray-900 hover:bg-brand-50 hover:text-brand-900 transition-all" data-val="public-cloud">
+                  Public Cloud
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <label for="usage-details" class="block text-xs font-medium text-gray-700">Tell us more about how you want to use ZoomPhant</label>
+            <textarea name="usage" id="usage-details" rows="3" class="mt-1 block w-full rounded-xl border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-brand-500" placeholder="e.g., We plan to monitor our Redis cache clusters, Windows Server WMI endpoints, and custom Nginx application servers."></textarea>
+          </div>
+        </div>
+
+        <!-- Opt-in and Submit -->
+        <div class="space-y-4 pt-2">
+          <div class="flex items-start">
+            <div class="flex h-5 items-center">
+              <input id="updates-optin" name="updates" type="checkbox" checked class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+            </div>
+            <div class="ml-3 text-xs">
+              <label for="updates-optin" class="text-gray-500">I agree to receive product updates, security advisories, and critical notifications.</label>
+            </div>
+          </div>
+          <button type="submit" class="w-full flex items-center justify-center rounded-xl bg-brand-600 px-6 py-4 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700">
+            Submit Registration
+          </button>
+        </div>
+      </form>
+
+      <div id="registrationSuccess" class="hidden mt-8 text-center rounded-2xl bg-green-50 border border-green-200 p-8">
+        <p class="text-base font-bold text-green-800">Registration Submitted Successfully!</p>
+        <p class="mt-2 text-sm text-green-600">Thank you for registering. Your details have been recorded. Redirecting you to the homepage...</p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+
+  <script is:inline>
+    const form = document.getElementById('registrationForm');
+    const successDiv = document.getElementById('registrationSuccess');
+    if (form) {
+      // Setup Custom Dropdowns
+      function setupDropdown(btnId, optionsId, inputId, textId, defaultValueText) {
+        const btn = document.getElementById(btnId);
+        const optionsList = document.getElementById(optionsId);
+        const input = document.getElementById(inputId);
+        const textSpan = document.getElementById(textId);
+        const options = optionsList.querySelectorAll('li');
+
+        // Toggle open/close dropdown
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          optionsList.classList.toggle('hidden');
+        });
+
+        // Close when clicking elsewhere
+        document.addEventListener('click', () => {
+          optionsList.classList.add('hidden');
+        });
+
+        // Handle item selection
+        options.forEach(option => {
+          option.addEventListener('click', () => {
+            const val = option.getAttribute('data-val');
+            input.value = val;
+            
+            // Highlight selected item, remove highlight from others
+            options.forEach(opt => {
+              opt.classList.remove('font-semibold', 'bg-brand-50', 'text-brand-900');
+            });
+            
+            if (val !== '') {
+              option.classList.add('font-semibold', 'bg-brand-50', 'text-brand-900');
+              textSpan.textContent = option.textContent.trim();
+              textSpan.classList.remove('text-gray-400');
+              textSpan.classList.add('text-gray-900');
+            } else {
+              textSpan.textContent = defaultValueText;
+              textSpan.classList.add('text-gray-400');
+              textSpan.classList.remove('text-gray-900');
+            }
+          });
+        });
+      }
+
+      setupDropdown('companySizeDropdownBtn', 'companySizeOptions', 'companySizeInput', 'companySizeSelectedText', 'Select company size...');
+      setupDropdown('infrastructureDropdownBtn', 'infrastructureOptions', 'infrastructureInput', 'infrastructureSelectedText', 'Select infrastructure type...');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = {};
+        
+        formData.forEach((value, key) => {
+          data[key] = value;
+        });
+        
+        try {
+          await fetch(form.action, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+        } catch (err) {
+          console.error('Registration submission error:', err);
+        }
+        
+        form.classList.add('hidden');
+        successDiv.classList.remove('hidden');
+
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 3000);
+      });
+    }
+  </script>
+</BaseLayout>

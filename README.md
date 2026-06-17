@@ -11,18 +11,18 @@ ZoomPhant is created by people who have been working in the data-center and appl
 
 ## Term To Use
 
-ZoomPhant is totally **FREE for personal and non-business purpose use**.
+ZoomPhant is completely **FREE for personal and non-business use**.
 
-For business use, the **community version released in this repository is FREE to use, but registration would be required**. Please contact us at [info@zervice.us](mailto:info@zervice.us) for registration or make self-serviced registration on our coming official website.
+For business use, the **Community Version is free for startups and small businesses, provided you register your deployment**. You can register on our website or contact us at [info@zervice.us](mailto:info@zervice.us). For larger enterprises, commercial licensing is required.
 
-Note: **We are opensource supporters!** This repository hosts only the releasing artifacts of ZoomPhant. We will gradually open source parts of ZoomPhant like data collecting and UI, etc. Please bookmark us to get updated!
+Note: **We are opensource supporters!** This repository hosts the official ZoomPhant landing page and documentation site. We will gradually open source other parts of ZoomPhant like data collecting and UI, etc. Please bookmark us to get updated!
 
 ## Trying ZoomPhant
-Start using ZoomPhant is simple and straightforward, please refer to [Quick Start](http://zoomphant.github.io/docs/start) on our GitHub hosted documentation site. Or you can just follow below simple steps.
+Starting with ZoomPhant is simple and straightforward. Please refer to [Quick Start](https://www.zoomphant.com/docs/start) on our documentation site, or follow the simple steps below.
 
 ***Important Note: This step is for testing purposes only. All data will be lost upon restart. If you need to save data, please refer to the Quick Start documentation for startup instructions.***
 
-1. Find a Linux host with engough space (recommended 40+GB free diskspace and 8+GB memory)
+1. Find a Linux host with enough space (recommended 40+GB free diskspace and 8+GB memory)
 
 2. Ensure you have docker installed (Version > 20)
 
@@ -37,10 +37,10 @@ http://<your docker host ip>
 ```
 Where the IP is your started docker container IP (thus would be different!) and you shall be able to login with username **admin@zervice.local** and initial password **admin**.
 
-Enjoy and please read our [documentation site](https://zoomphant.github.io/) for more!
+Enjoy and please read our [documentation site](https://www.zoomphant.com/docs/) for more!
 
 ## Feature Requests, Suggestions & Bugs
-Please open an issue for us [here](https://github.com/ZoomPhant/monitoring/issues/new), be as detail as possible.
+Please open an issue for us [here](https://github.com/ZoomPhant/monitoring/issues/new), be as detailed as possible.
 
 ## Contact US
-Our website will be online soon! Before that, please reach us using email at [info@zervice.us](mailto:info@zervice.us) 
+Please reach us using email at [info@zervice.us](mailto:info@zervice.us) 

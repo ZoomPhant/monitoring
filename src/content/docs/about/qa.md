@@ -22,3 +22,9 @@ We plan to offer cloud services in the near future. These will focus primarily o
 ### Where can I report a problem or request a new feature?
 
 Please go to our [GitHub repository](https://github.com/ZoomPhant/monitoring) and [create a new issue](https://github.com/ZoomPhant/monitoring/issues/new). Before reporting a new problem or requesting a feature, please check the existing [issues](https://github.com/ZoomPhant/monitoring/issues) to avoid duplicates.
+
+### Can I use ZoomPhant for business or commercial purposes?
+
+Yes! ZoomPhant is completely free for personal use. We also offer a **free community business tier** for startups and small businesses, provided you register your deployment. 
+
+You can [register your business deployment here](/register/). Registration is a licensing requirement for business use, and it ensures you are notified of critical product updates, security patches, and new features. For larger enterprises or custom licensing requirements, please contact us at [info@zervice.us](mailto:info@zervice.us).

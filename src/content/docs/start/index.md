@@ -9,7 +9,7 @@ has_children: false
 ----
 Getting started with ZoomPhant is simple. The steps below will help you get the Community Version up and running in just one minute.
 
-*Note: The Community Version is free for personal use only. If you want to use it for business purposes, please contact us by emailing [info@zervice.us](mailto:info@zervice.us).*
+*Note: The Community Version is free for personal use. It is also free for business use by startups and small businesses, provided you register your deployment. You can [register your business deployment here](/register/) to comply with our license and receive product updates. For larger enterprises, please contact us at [info@zervice.us](mailto:info@zervice.us).*
 
 ## Local Deployment
 
