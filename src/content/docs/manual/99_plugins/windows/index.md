@@ -12,40 +12,38 @@ has_children: true
 
 ----
 
-Sometimes, we want to remotely monitoring Windows servers using WMI, we can do this by using **Windows WMI Monitoring** plugin.
+Sometimes, you may want to monitor Windows servers remotely using WMI (Windows Management Instrumentation). You can do this by using the **Windows WMI Monitoring** plugin.
 
+---
 
+## Create Windows WMI Monitoring
 
-## Creating Windows WMI Monitoring
+To start monitoring a Windows server, ensure you have set up a Data Collection Agent on a Windows host. If not, follow the instructions to [add a Windows Collector](../../10_infrastructures/windows/) first.
 
-To start monitor a Windows server, you first need to make sure you have installed a Windows collector, if not please follow instructions to  [add a Windows collector](../../10_infrastructures/windows/) first.
-
-Once you have the Windows collector, you can follow steps in  [Add Monitor Service](../service/) by selecting **Windows (WMI)** monitoring plugin:
+Once you have the Windows collector, follow the steps in [Add Monitor Service](../service/) and select the **Windows (WMI)** monitoring plugin:
 
 ![image-20240408141318315](./image-20240408141318315.png)
 
+*Note: Make sure to select a **Windows** collector in the collector selection step.*
 
-
-*Note: Make sure to select a **Windows** collector in the collector selection page*
-
-You'll need to create provide the Windows host / domain information along with the username and password to complete adding the service:
+Specify the Windows host or domain information along with the username and password to complete the setup:
 
 ![image-20240408141734425](./image-20240408141734425.png)
 
-Here, the following parameters would be required:
+The following parameters are required:
 
-1. Server Name: You can fill in the remote host name or IP address
-2. Username: the username or account on remote host used to collecting WMI data
-3. Password: corresponding password used
+1. **Server Name**: The hostname or IP address of the remote Windows server.
+2. **Username**: The remote user account used to query WMI data.
+3. **Password**: The password associated with the username.
 
-Please make sure your have the correct permissions settings on the account. You can refer to here on [How to create a WMI monitroing account](./account) 
+Please ensure the configured account has the correct permissions. For detailed steps, see [How to Create a WMI Monitoring Account](./account/).
 
-### Understanding Windows Data
+---
 
-After few seconds adding the monitoring service, you can click the added monitored service and view a dashboard like belows:
+## Understanding Windows Performance Metrics
+
+After adding the monitoring service, wait a few seconds for data collection to initialize. Select the service from the list to view the Windows performance dashboard:
 
 ![image-20240408131743357](./image-20240408131743357.png)
 
-
-
-Here you can see the basic status of the server as well as the major event logs generated in the given time range.
+The dashboard displays basic resource utilization metrics as well as major event logs generated during the selected time range.
