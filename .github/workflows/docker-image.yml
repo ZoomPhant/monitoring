@@ -5,7 +5,23 @@ on:
     paths:
       - 'releases/**'
       
-#  workflow_dispatch:
+  workflow_dispatch:
+    inputs:
+      use_cache:
+        description: 'Use building cache'
+        required: false
+        default: 'false'
+        type: boolean
+      tag_as_latest:
+        description: 'Tag images as latest'
+        required: false
+        default: 'true'
+        type: boolean
+      skip_push:
+        description: 'Skip pushing images to registry'
+        required: false
+        default: 'false'
+        type: boolean
     
 #  schedule:
 #    - cron: "0 0 * * *"
@@ -38,4 +54,21 @@ jobs:
         password: ${{ secrets.ZPDOCKER_PASSWORD }}
           
     - name: Build the Docker image
-      run: ./k8s/build.sh -l
+      run: |
+        build_cmd="./k8s/build.sh"
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          if [[ "${{ inputs.tag_as_latest }}" == "true" ]]; then
+            build_cmd="$build_cmd -l"
+          fi
+          if [[ "${{ inputs.use_cache }}" == "true" ]]; then
+            build_cmd="$build_cmd -c"
+          fi
+          if [[ "${{ inputs.skip_push }}" == "true" ]]; then
+            build_cmd="$build_cmd -n"
+          fi
+        else
+          # For push triggers, use default behavior (tag as latest)
+          build_cmd="$build_cmd -l"
+        fi
+        echo "Running: $build_cmd"
+        $build_cmd
