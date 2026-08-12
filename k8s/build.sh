@@ -49,6 +49,9 @@ TAG_OPERATOR=
 TAG_CENTRAL=
 TAG_NORMAL=
 while IFS='#' read -r key value; do
+  # Skip empty lines and comments
+  [[ -z "$key" || "$key" =~ ^[[:space:]]*$ || "$key" =~ ^[[:space:]]*# ]] && continue
+  
   if [ "$key" == "collector" ]; then
     TAG="v$value"
   elif [ "$key" == "operator" ]; then

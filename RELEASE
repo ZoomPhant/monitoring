@@ -1,3 +1,19 @@
+# ZoomPhant Release Version File
+#
+# This file contains version information for different components used during Docker image builds.
+# Format: component#version
+#
+# AUTOMATIC UPDATES:
+#   - collector: Updated automatically by scripts/bamboo.sh when processing a new release
+#
+# MANUAL UPDATES REQUIRED:
+#   - launcher: Update manually when launcher version changes (rarely)
+#   - operator: Update manually when operator version changes (rarely)
+#   - central: Update manually when central metrics version changes (rarely)  
+#   - normal: Update manually when normal metrics version changes (rarely)
+#
+# The Docker build process (k8s/build.sh) reads these versions to tag the appropriate images.
+#
 launcher#1.0.0
 collector#2.4.59
 operator#4.1.7

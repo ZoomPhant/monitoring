@@ -229,6 +229,67 @@ prepare_release() {
   git add "$dir"
 }
 
+#
+# Update the RELEASE file with a new version for a specific component
+# This function updates any component version line in the RELEASE file
+#
+# The RELEASE file format is:
+#   launcher#1.0.0
+#   collector#2.4.59
+#   operator#4.1.7
+#   central#4.1.7
+#   normal#4.1.7
+#
+# Required args
+#   component - the component name (e.g., collector, operator, central, normal, launcher)
+#   version   - the version to set (e.g., 2.4.59)
+#
+# Usage examples:
+#   update_release_file "collector" "2.4.59"
+#   update_release_file "operator" "4.1.8"
+update_release_file() {
+  local component=$1
+  local ver=$2
+  local release_file="$ROOT/RELEASE"
+
+  if [ -z "$component" ] || [ -z "$ver" ]; then
+    echo "ERROR: update_release_file requires both component and version arguments" >&2
+    echo "Usage: update_release_file <component> <version>" >&2
+    exit 1
+  fi
+
+  if [ ! -f "$release_file" ]; then
+    echo "ERROR: RELEASE file not found at $release_file" >&2
+    exit 1
+  fi
+
+  # Check if the component exists in the RELEASE file
+  if ! grep -q "^${component}#" "$release_file"; then
+    echo "WARNING: Component '${component}' not found in RELEASE file, adding new entry" >&2
+    echo "${component}#${ver}" >> "$release_file"
+  else
+    # Use sed to update the component version line
+    # This will match the line starting with "component#" and replace the version
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      # macOS sed requires -i with backup extension
+      sed -i.bak "s/^${component}#.*/${component}#${ver}/" "$release_file"
+      rm -f "$release_file.bak"
+    else
+      # Linux sed
+      sed -i "s/^${component}#.*/${component}#${ver}/" "$release_file"
+    fi
+  fi
+
+  echo "Updated ${component} version to ${ver} in RELEASE file"
+  
+  # Show what's in the RELEASE file now
+  echo "Current RELEASE file contents:"
+  cat "$release_file"
+  
+  # Add RELEASE file to git staging
+  git add "$release_file"
+}
+
 cd $ROOT
 
 # 1. check if release file exists
@@ -266,10 +327,9 @@ tar xzvf ./zpagent-release-$version.tar.gz -C $ASSETS_DIR
 # 3. prepare release
 prepare_release $version $ASSETS_DIR 
 
-# RELEASE is updated outside of the script now, in multiple lines like
-#   collector##v4.2.20, etc.
-## 4. update the release info
-## echo $version > $ROOT/RELEASE
+# 4. update the RELEASE file with the collector version
+echo "Updating RELEASE file with collector version $version ..."
+update_release_file "collector" "$version"
 
 git commit -a -m "Release $version"
 
