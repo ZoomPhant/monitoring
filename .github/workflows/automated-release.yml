@@ -143,22 +143,40 @@ jobs:
         mkdir -p /tmp/installers
         
         echo "Extracting installers from image..."
-        # Create a container from the image
-        CONTAINER_ID=$(docker create ${COLLECTOR_IMAGE})
         
-        # Extract installer files
-        # Note: Adjust paths based on where installers are stored in the image
-        # This is a placeholder - you'll need to verify actual paths
-        docker cp ${CONTAINER_ID}:/installers/. /tmp/installers/ 2>/dev/null || \
-        docker cp ${CONTAINER_ID}:/opt/installers/. /tmp/installers/ 2>/dev/null || \
-        docker cp ${CONTAINER_ID}:/app/installers/. /tmp/installers/ 2>/dev/null || \
-        echo "WARNING: Could not find installers in standard paths, you may need to adjust extraction logic"
+        # Use docker export for data-only images (works even without CMD)
+        # Create a temporary container
+        CONTAINER_ID=$(docker create ${COLLECTOR_IMAGE} /bin/sh 2>/dev/null || docker create ${COLLECTOR_IMAGE} 2>&1 | grep -v "no command specified" || true)
         
-        # Clean up container
-        docker rm ${CONTAINER_ID}
+        # If container creation failed, use docker save + tar extraction
+        if [ -z "$CONTAINER_ID" ] || ! docker export ${CONTAINER_ID} > /tmp/container.tar 2>/dev/null; then
+          echo "Using alternative extraction method..."
+          
+          # Export the entire image filesystem
+          docker save ${COLLECTOR_IMAGE} -o /tmp/image.tar
+          
+          # Extract layer tarballs and search for installers
+          mkdir -p /tmp/image-layers
+          tar -xf /tmp/image.tar -C /tmp/image-layers
+          
+          # Find and extract all layer tarballs
+          find /tmp/image-layers -name "*.tar" -exec tar -xf {} -C /tmp/installers \; 2>/dev/null || true
+          
+          rm -rf /tmp/image-layers /tmp/image.tar
+        else
+          # Extract from container export
+          echo "Extracting filesystem from container export..."
+          tar -xf /tmp/container.tar -C /tmp/installers 2>/dev/null || true
+          docker rm ${CONTAINER_ID} 2>/dev/null || true
+          rm -f /tmp/container.tar
+        fi
         
         echo "Extracted files:"
-        find /tmp/installers -type f
+        find /tmp/installers -type f | head -20
+        
+        # Try to find installers in common locations
+        echo "Searching for installer files..."
+        find /tmp/installers -type f \( -name "*.bin" -o -name "*.exe" -o -name "*.zip" \) -exec ls -lh {} \;
         
         # Generate MD5 checksums for extracted files
         echo "Generating MD5 checksums..."
