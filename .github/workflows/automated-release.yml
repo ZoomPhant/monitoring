@@ -273,15 +273,15 @@ jobs:
       run: |
         VERSION="${{ steps.detect.outputs.collector_version }}"
         
-        # Update RELEASE file
-        echo "Updating RELEASE file with collector version $VERSION..."
+        # Copy the entire RELEASE file from bootstrap image to keep it in sync
+        echo "Syncing RELEASE file with bootstrap image..."
         
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-          sed -i.bak "s/^collector#.*/collector#$VERSION/" RELEASE
-          rm -f RELEASE.bak
-        else
-          sed -i "s/^collector#.*/collector#$VERSION/" RELEASE
-        fi
+        # The RELEASE file was already extracted to /tmp/RELEASE in the detect step
+        # Copy it to replace the repo's RELEASE file
+        cp /tmp/RELEASE RELEASE
+        
+        echo "RELEASE file synced. Contents:"
+        cat RELEASE
         
         # Create releases directory with MD5 files
         RELEASE_DIR="releases/v${VERSION}"
@@ -295,10 +295,10 @@ jobs:
         git config user.email "github-actions[bot]@users.noreply.github.com"
         
         git add RELEASE "$RELEASE_DIR"
-        git commit -m "Release $VERSION" || echo "No changes to commit"
+        git commit -m "Release $VERSION - Sync RELEASE file with bootstrap image" || echo "No changes to commit"
         git push || echo "Nothing to push"
         
-        echo "✓ Updated RELEASE file and releases directory"
+        echo "✓ RELEASE file synced and committed"
     
     - name: Build Docker images
       if: steps.check_release.outputs.need_release == 'true' && inputs.skip_github_release != true

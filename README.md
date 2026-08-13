@@ -39,6 +39,43 @@ Where the IP is your started docker container IP (thus would be different!) and 
 
 Enjoy and please read our [documentation site](https://www.zoomphant.com/docs/) for more!
 
+## Collector Agent Downloads
+
+ZoomPhant collector agents are available for both Linux and Windows platforms. Starting from version 2.5.x, we provide the following collector versions:
+
+### Community Edition (Free)
+
+**Linux 64-bit (x86_64)** - Available in GitHub Releases
+- Platform: Linux x86_64 (64-bit)
+- Download: Check our [Releases page](https://github.com/ZoomPhant/monitoring/releases) for the latest version
+- File: `installer-linux-x64.bin`
+- This is the primary platform supported for community users
+
+### Enterprise & Special Requirements
+
+**Additional Platforms** - Available upon request
+
+For enterprise customers or users requiring other platforms, we provide:
+- ✅ Linux 32-bit (x86)
+- ✅ Windows 64-bit (x64)
+- ✅ Windows 32-bit (x86)
+
+**Note:** Building and maintaining multiple platform collectors requires significant resources. While we fully support both Linux and Windows platforms across all architectures, community releases (from v2.5.x onwards) primarily include Linux 64-bit installers to optimize our build infrastructure.
+
+**Need a different platform?** Please contact us at [info@zervice.us](mailto:info@zervice.us) and we'll be happy to provide:
+- Windows installers for your version
+- 32-bit Linux installers
+- Custom build configurations
+- Enterprise support packages
+
+We're committed to supporting your infrastructure needs regardless of platform! 🚀
+
+### Version Information
+
+Current collector version: Check the [RELEASE](RELEASE) file or [latest release](https://github.com/ZoomPhant/monitoring/releases/latest).
+
+For version history and upgrade information, see our [Releases page](https://github.com/ZoomPhant/monitoring/releases).
+
 ## Feature Requests, Suggestions & Bugs
 Please open an issue for us [here](https://github.com/ZoomPhant/monitoring/issues/new), be as detailed as possible.
 
