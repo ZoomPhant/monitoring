@@ -300,6 +300,21 @@ jobs:
         
         echo "✓ Updated RELEASE file and releases directory"
     
+    - name: Build Docker images
+      if: steps.check_release.outputs.need_release == 'true' && inputs.skip_github_release != true
+      run: |
+        VERSION="${{ steps.detect.outputs.collector_version }}"
+        
+        echo "========================================"
+        echo "Building Docker images for v${VERSION}"
+        echo "========================================"
+        
+        # Run k8s/build.sh with -l flag (tag as latest)
+        cd k8s
+        ./build.sh -l
+        
+        echo "✓ Docker images built and pushed successfully"
+    
     - name: Summary
       if: always()
       run: |
@@ -313,7 +328,20 @@ jobs:
         if [ "${{ steps.check_release.outputs.need_release }}" == "true" ]; then
           echo "✅ New release v${{ steps.detect.outputs.collector_version }} created" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Next: Docker images will be built automatically via docker-image.yml workflow" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ inputs.skip_github_release }}" != "true" ]; then
+            echo "**Actions Completed:**" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ GitHub release created with installer assets" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ RELEASE file updated" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Docker images built and pushed to registries" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Built Images:**" >> $GITHUB_STEP_SUMMARY
+            echo "- zoomphant/collector:v${{ steps.detect.outputs.collector_version }}" >> $GITHUB_STEP_SUMMARY
+            echo "- zoomphant/aio:v${{ steps.detect.outputs.collector_version }}" >> $GITHUB_STEP_SUMMARY
+            echo "- And 6 more images..." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Dry Run Mode** - GitHub release and Docker build skipped" >> $GITHUB_STEP_SUMMARY
+          fi
         else
           echo "ℹ️ No action needed - release already exists" >> $GITHUB_STEP_SUMMARY
         fi
