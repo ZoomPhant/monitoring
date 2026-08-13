@@ -1,4 +1,4 @@
-name: Automated Agent Release
+name: Automated ZoomPhant Release
 
 on:
   # Manual trigger

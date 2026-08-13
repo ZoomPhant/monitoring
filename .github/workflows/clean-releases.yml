@@ -1,0 +1,133 @@
+name: Clean Releases
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Cleanup mode'
+        required: true
+        type: choice
+        options:
+          - single
+          - range
+        default: 'single'
+      
+      version:
+        description: 'Target version (e.g., 2.4.15). For "single" mode: deletes this version only. For "range" mode: deletes all versions up to and including this version.'
+        required: true
+        type: string
+      
+      dry_run:
+        description: 'Dry run - preview what would be deleted without actually deleting'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  clean-releases:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Validate version format
+      run: |
+        VERSION="${{ inputs.version }}"
+        
+        if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "❌ ERROR: Invalid version format: $VERSION"
+          echo "Expected format: x.y.z (e.g., 2.4.15)"
+          exit 1
+        fi
+        
+        echo "✓ Version format valid: $VERSION"
+    
+    - name: Preview cleanup
+      run: |
+        echo "### 🗑️ Release Cleanup Configuration" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Mode:** ${{ inputs.mode }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Target Version:** ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Dry Run:** ${{ inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ inputs.mode }}" == "single" ]; then
+          echo "**Action:** Delete release v${{ inputs.version }} only" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Action:** Delete all releases with version ≤ v${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ inputs.dry_run }}" == "true" ]; then
+          echo "⚠️ **DRY RUN MODE** - No changes will be made" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **LIVE MODE** - Releases will be permanently deleted!" >> $GITHUB_STEP_SUMMARY
+        fi
+    
+    - name: Clean releases (single version)
+      if: inputs.mode == 'single'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        if [ "${{ inputs.dry_run }}" == "true" ]; then
+          ./scripts/clean-releases.sh --version ${{ inputs.version }} --dry-run
+        else
+          # For live deletion, automatically confirm
+          echo "y" | ./scripts/clean-releases.sh --version ${{ inputs.version }}
+        fi
+    
+    - name: Clean releases (range mode)
+      if: inputs.mode == 'range'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        if [ "${{ inputs.dry_run }}" == "true" ]; then
+          ./scripts/clean-releases.sh --up-to ${{ inputs.version }} --dry-run
+        else
+          # For live deletion, automatically confirm
+          echo "y" | ./scripts/clean-releases.sh --up-to ${{ inputs.version }}
+        fi
+    
+    - name: Summary
+      if: always()
+      run: |
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ inputs.dry_run }}" == "true" ]; then
+          echo "### ✅ Dry Run Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "No changes were made. Review the output above to see what would be deleted." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**To actually delete releases:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. Re-run this workflow" >> $GITHUB_STEP_SUMMARY
+          echo "2. Uncheck the 'Dry run' checkbox" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### ✅ Cleanup Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Releases have been permanently deleted." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** This action cannot be undone. Deleted releases are permanent." >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📖 Usage Examples" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Delete a single version:**" >> $GITHUB_STEP_SUMMARY
+        echo '- Mode: `single`' >> $GITHUB_STEP_SUMMARY
+        echo '- Version: `2.4.15`' >> $GITHUB_STEP_SUMMARY
+        echo '- Result: Deletes only v2.4.15' >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Delete multiple versions:**" >> $GITHUB_STEP_SUMMARY
+        echo '- Mode: `range`' >> $GITHUB_STEP_SUMMARY
+        echo '- Version: `2.4.20`' >> $GITHUB_STEP_SUMMARY
+        echo '- Result: Deletes all versions ≤ v2.4.20 (e.g., v2.3.52, v2.4.13, v2.4.14, ..., v2.4.20)' >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Safety tip:** Always run with dry run enabled first to preview changes!" >> $GITHUB_STEP_SUMMARY

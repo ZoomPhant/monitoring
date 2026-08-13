@@ -89,6 +89,7 @@ Please reach us using email at [info@zervice.us](mailto:info@zervice.us)
 - **[Automated Release Process](AUTOMATED_RELEASE.md)** - NEW! Fully automated release system using bootstrap images
 - **[Release Process](RELEASE.md)** - Complete guide for releasing new versions (manual process)
 - **[Release Quick Start](RELEASE_QUICKSTART.md)** - Quick reference for the release process
+- **[Release Cleanup Tool](CLEAN_RELEASES.md)** - Clean up old GitHub releases (single version or batch)
 - **[Release Component Utility](scripts/update-release-component.sh)** - Script to update component versions
 
 ### Build and Deployment
