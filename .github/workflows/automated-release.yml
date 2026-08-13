@@ -62,8 +62,14 @@ jobs:
         echo "Pulling bootstrap image from ${BOOTSTRAP_IMAGE}"
         docker pull ${BOOTSTRAP_IMAGE}
         
-        # Extract RELEASE file
-        docker run --rm ${BOOTSTRAP_IMAGE} cat /release/RELEASE > /tmp/RELEASE
+        # Extract RELEASE file from scratch-based image
+        # Can't use 'docker run' because there's no shell/cat in scratch images
+        # Instead, create container and use 'docker cp'
+        
+        echo "Extracting RELEASE file from bootstrap image..."
+        CONTAINER_ID=$(docker create ${BOOTSTRAP_IMAGE})
+        docker cp ${CONTAINER_ID}:/release/RELEASE /tmp/RELEASE
+        docker rm ${CONTAINER_ID}
         
         echo "Bootstrap image contents:"
         cat /tmp/RELEASE
