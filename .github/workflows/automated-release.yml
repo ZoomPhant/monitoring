@@ -63,12 +63,22 @@ jobs:
         docker pull ${BOOTSTRAP_IMAGE}
         
         # Extract RELEASE file from scratch-based image
-        # Can't use 'docker run' because there's no shell/cat in scratch images
-        # Instead, create container and use 'docker cp'
+        # For scratch images without CMD, we need to use docker export
         
         echo "Extracting RELEASE file from bootstrap image..."
-        CONTAINER_ID=$(docker create ${BOOTSTRAP_IMAGE})
-        docker cp ${CONTAINER_ID}:/release/RELEASE /tmp/RELEASE
+        CONTAINER_ID=$(docker create ${BOOTSTRAP_IMAGE} /bin/sh 2>/dev/null || docker create ${BOOTSTRAP_IMAGE})
+        
+        # Try docker cp first (works if CMD is set)
+        if docker cp ${CONTAINER_ID}:/release/RELEASE /tmp/RELEASE 2>/dev/null; then
+          echo "✓ Extracted using docker cp"
+        else
+          # Fallback: export entire container filesystem and extract
+          echo "Using docker export method..."
+          docker export ${CONTAINER_ID} | tar -xf - -C /tmp release/RELEASE
+          mv /tmp/release/RELEASE /tmp/RELEASE
+          rm -rf /tmp/release
+        fi
+        
         docker rm ${CONTAINER_ID}
         
         echo "Bootstrap image contents:"
