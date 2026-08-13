@@ -19,13 +19,8 @@ on:
     - cron: "0 2 * * *"  # 2 AM UTC daily
 
 env:
-  # Source registry where component images are built
-  SOURCE_REGISTRY: ${{ vars.SOURCE_REGISTRY || 'docker.io' }}
-  SOURCE_ORG: ${{ vars.SOURCE_ORG || 'zpcloud' }}
-  
-  # Target registry for public releases
-  TARGET_REGISTRY: docker.io
-  TARGET_ORG: zoomphant
+  # Source registry where component images are built (same as k8s/build.sh uses)
+  REPO_BASE: ${{ vars.REPO_BASE || 'zpcloud' }}
 
 jobs:
   detect-and-release:
@@ -40,21 +35,34 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v3
     
-    - name: Login to source registry
+    - name: Login to Docker Hub (for pulling base images)
       uses: docker/login-action@v3
       with:
-        registry: ${{ env.SOURCE_REGISTRY }}
-        username: ${{ vars.SOURCE_REGISTRY_USERNAME }}
-        password: ${{ secrets.SOURCE_REGISTRY_PASSWORD }}
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Login to ZP Registry (if different from Docker Hub)
+      if: vars.ZPDOCKER_REGISTRY != ''
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ vars.ZPDOCKER_REGISTRY }}
+        username: ${{ vars.ZPDOCKER_USERNAME }}
+        password: ${{ secrets.ZPDOCKER_PASSWORD }}
     
     - name: Pull bootstrap image and detect version
       id: detect
       run: |
-        echo "Pulling bootstrap image from ${SOURCE_REGISTRY}/${SOURCE_ORG}/zoomphant-release:latest"
-        docker pull ${SOURCE_REGISTRY}/${SOURCE_ORG}/zoomphant-release:latest
+        # REPO_BASE format can be:
+        # - Just org name: "zpcloud" → defaults to docker.io/zpcloud
+        # - Full registry path: "registry.example.com/zpcloud"
+        
+        BOOTSTRAP_IMAGE="${REPO_BASE}/zoomphant-release:latest"
+        
+        echo "Pulling bootstrap image from ${BOOTSTRAP_IMAGE}"
+        docker pull ${BOOTSTRAP_IMAGE}
         
         # Extract RELEASE file
-        docker run --rm ${SOURCE_REGISTRY}/${SOURCE_ORG}/zoomphant-release:latest cat /release/RELEASE > /tmp/RELEASE
+        docker run --rm ${BOOTSTRAP_IMAGE} cat /release/RELEASE > /tmp/RELEASE
         
         echo "Bootstrap image contents:"
         cat /tmp/RELEASE
@@ -108,15 +116,18 @@ jobs:
       run: |
         VERSION="${{ steps.detect.outputs.collector_version }}"
         
-        echo "Pulling collector-packages:v${VERSION} from source registry..."
-        docker pull ${SOURCE_REGISTRY}/${SOURCE_ORG}/collector-packages:v${VERSION}
+        # Use same REPO_BASE as k8s/build.sh
+        COLLECTOR_IMAGE="${REPO_BASE}/collector-packages:v${VERSION}"
+        
+        echo "Pulling collector-packages:v${VERSION} from ${REPO_BASE}..."
+        docker pull ${COLLECTOR_IMAGE}
         
         # Create temp directory for extraction
         mkdir -p /tmp/installers
         
         echo "Extracting installers from image..."
         # Create a container from the image
-        CONTAINER_ID=$(docker create ${SOURCE_REGISTRY}/${SOURCE_ORG}/collector-packages:v${VERSION})
+        CONTAINER_ID=$(docker create ${COLLECTOR_IMAGE})
         
         # Extract installer files
         # Note: Adjust paths based on where installers are stored in the image
