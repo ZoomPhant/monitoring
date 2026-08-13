@@ -25,6 +25,7 @@ env:
 jobs:
   detect-and-release:
     runs-on: ubuntu-latest
+    environment: Build
     
     steps:
     - name: Checkout repository
