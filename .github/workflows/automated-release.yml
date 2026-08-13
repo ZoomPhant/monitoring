@@ -1,0 +1,273 @@
+name: Automated Agent Release
+
+on:
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      force_version:
+        description: 'Force specific collector version (e.g., 2.4.67). Leave empty to auto-detect from bootstrap image.'
+        required: false
+        type: string
+      skip_github_release:
+        description: 'Skip creating GitHub release (testing mode)'
+        required: false
+        default: false
+        type: boolean
+  
+  # Nightly check for new versions
+  schedule:
+    - cron: "0 2 * * *"  # 2 AM UTC daily
+
+env:
+  # Source registry where component images are built
+  SOURCE_REGISTRY: ${{ vars.SOURCE_REGISTRY || 'docker.io' }}
+  SOURCE_ORG: ${{ vars.SOURCE_ORG || 'zpcloud' }}
+  
+  # Target registry for public releases
+  TARGET_REGISTRY: docker.io
+  TARGET_ORG: zoomphant
+
+jobs:
+  detect-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Login to source registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.SOURCE_REGISTRY }}
+        username: ${{ vars.SOURCE_REGISTRY_USERNAME }}
+        password: ${{ secrets.SOURCE_REGISTRY_PASSWORD }}
+    
+    - name: Pull bootstrap image and detect version
+      id: detect
+      run: |
+        echo "Pulling bootstrap image from ${SOURCE_REGISTRY}/${SOURCE_ORG}/zoomphant-release:latest"
+        docker pull ${SOURCE_REGISTRY}/${SOURCE_ORG}/zoomphant-release:latest
+        
+        # Extract RELEASE file
+        docker run --rm ${SOURCE_REGISTRY}/${SOURCE_ORG}/zoomphant-release:latest cat /release/RELEASE > /tmp/RELEASE
+        
+        echo "Bootstrap image contents:"
+        cat /tmp/RELEASE
+        
+        # Parse collector version
+        COLLECTOR_VERSION=$(grep "^collector#" /tmp/RELEASE | cut -d# -f2)
+        
+        # Check if force version provided
+        if [ -n "${{ inputs.force_version }}" ]; then
+          COLLECTOR_VERSION="${{ inputs.force_version }}"
+          echo "Using forced version: $COLLECTOR_VERSION"
+        else
+          echo "Detected version from bootstrap: $COLLECTOR_VERSION"
+        fi
+        
+        if [ -z "$COLLECTOR_VERSION" ]; then
+          echo "ERROR: Could not detect collector version"
+          exit 1
+        fi
+        
+        echo "collector_version=$COLLECTOR_VERSION" >> $GITHUB_OUTPUT
+        
+        # Also extract other component versions for later use
+        grep "^operator#" /tmp/RELEASE | cut -d# -f2 > /tmp/operator_version || echo "unknown"
+        grep "^central#" /tmp/RELEASE | cut -d# -f2 > /tmp/central_version || echo "unknown"
+        grep "^normal#" /tmp/RELEASE | cut -d# -f2 > /tmp/normal_version || echo "unknown"
+    
+    - name: Check if GitHub release exists
+      id: check_release
+      run: |
+        VERSION="${{ steps.detect.outputs.collector_version }}"
+        
+        # Check if release exists
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/releases/tags/v${VERSION}")
+        
+        if [ "$HTTP_CODE" == "200" ]; then
+          echo "Release v${VERSION} already exists"
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "need_release=false" >> $GITHUB_OUTPUT
+        else
+          echo "Release v${VERSION} does not exist - will create"
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "need_release=true" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Pull collector-packages image and extract installers
+      if: steps.check_release.outputs.need_release == 'true'
+      run: |
+        VERSION="${{ steps.detect.outputs.collector_version }}"
+        
+        echo "Pulling collector-packages:v${VERSION} from source registry..."
+        docker pull ${SOURCE_REGISTRY}/${SOURCE_ORG}/collector-packages:v${VERSION}
+        
+        # Create temp directory for extraction
+        mkdir -p /tmp/installers
+        
+        echo "Extracting installers from image..."
+        # Create a container from the image
+        CONTAINER_ID=$(docker create ${SOURCE_REGISTRY}/${SOURCE_ORG}/collector-packages:v${VERSION})
+        
+        # Extract installer files
+        # Note: Adjust paths based on where installers are stored in the image
+        # This is a placeholder - you'll need to verify actual paths
+        docker cp ${CONTAINER_ID}:/installers/. /tmp/installers/ 2>/dev/null || \
+        docker cp ${CONTAINER_ID}:/opt/installers/. /tmp/installers/ 2>/dev/null || \
+        docker cp ${CONTAINER_ID}:/app/installers/. /tmp/installers/ 2>/dev/null || \
+        echo "WARNING: Could not find installers in standard paths, you may need to adjust extraction logic"
+        
+        # Clean up container
+        docker rm ${CONTAINER_ID}
+        
+        echo "Extracted files:"
+        find /tmp/installers -type f
+        
+        # Generate MD5 checksums for extracted files
+        echo "Generating MD5 checksums..."
+        find /tmp/installers -type f -name "*.bin" -o -name "*.exe" -o -name "*.zip" | while read file; do
+          md5sum "$file" | awk '{print $1}' > "${file}.md5"
+          echo "Generated checksum for $(basename $file)"
+        done
+        
+        # Map to expected names
+        mkdir -p /tmp/release-assets
+        
+        # Map extracted files to GitHub release asset names
+        # Adjust these mappings based on your actual file structure
+        if [ -f /tmp/installers/agent.zip ] || [ -f /tmp/installers/upgrader.zip ]; then
+          cp /tmp/installers/agent.zip /tmp/release-assets/upgrader.zip 2>/dev/null || \
+          cp /tmp/installers/upgrader.zip /tmp/release-assets/upgrader.zip 2>/dev/null || true
+        fi
+        
+        # Copy installers with standard naming
+        find /tmp/installers -name "*linux*x64*.bin" -exec cp {} /tmp/release-assets/installer-linux-x64.bin \; 2>/dev/null || true
+        find /tmp/installers -name "*linux*x86*.bin" ! -name "*x64*" -exec cp {} /tmp/release-assets/installer-linux-x86.bin \; 2>/dev/null || true
+        find /tmp/installers -name "*windows*x64*.exe" -exec cp {} /tmp/release-assets/installer-windows-x64.exe \; 2>/dev/null || true
+        find /tmp/installers -name "*windows*x86*.exe" ! -name "*x64*" -exec cp {} /tmp/release-assets/installer-windows-x86.exe \; 2>/dev/null || true
+        
+        # Copy MD5 files
+        find /tmp/installers -name "*.md5" -exec cp {} /tmp/release-assets/ \; 2>/dev/null || true
+        
+        echo "Release assets prepared:"
+        ls -lh /tmp/release-assets/
+    
+    - name: Create GitHub release and upload assets
+      if: steps.check_release.outputs.need_release == 'true' && inputs.skip_github_release != true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        VERSION="${{ steps.detect.outputs.collector_version }}"
+        TAG="v${VERSION}"
+        
+        # Create git tag
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        git tag -a "$TAG" -m "Release version $TAG" || echo "Tag already exists"
+        git push origin "$TAG" || echo "Tag already pushed"
+        
+        # Create GitHub release
+        RELEASE_DATA=$(cat <<EOF
+        {
+          "tag_name": "$TAG",
+          "name": "$TAG",
+          "body": "Release version $TAG\n\nAutomatically generated from collector-packages:v${VERSION}",
+          "draft": false,
+          "prerelease": false
+        }
+        EOF
+        )
+        
+        RELEASE_RESPONSE=$(curl -s -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: Bearer $GITHUB_TOKEN" \
+          "https://api.github.com/repos/${{ github.repository }}/releases" \
+          -d "$RELEASE_DATA")
+        
+        RELEASE_ID=$(echo "$RELEASE_RESPONSE" | jq -r '.id')
+        
+        if [ "$RELEASE_ID" == "null" ] || [ -z "$RELEASE_ID" ]; then
+          echo "ERROR: Failed to create release"
+          echo "$RELEASE_RESPONSE" | jq .
+          exit 1
+        fi
+        
+        echo "Created release with ID: $RELEASE_ID"
+        
+        # Upload assets
+        for asset in /tmp/release-assets/*; do
+          if [ -f "$asset" ]; then
+            ASSET_NAME=$(basename "$asset")
+            echo "Uploading $ASSET_NAME..."
+            
+            curl -s -X POST \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary @"$asset" \
+              "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=${ASSET_NAME}" \
+              | jq -r '.name + " uploaded successfully"'
+          fi
+        done
+        
+        echo "✓ Release $TAG created with all assets"
+    
+    - name: Update RELEASE file and releases directory
+      if: steps.check_release.outputs.need_release == 'true'
+      run: |
+        VERSION="${{ steps.detect.outputs.collector_version }}"
+        
+        # Update RELEASE file
+        echo "Updating RELEASE file with collector version $VERSION..."
+        
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+          sed -i.bak "s/^collector#.*/collector#$VERSION/" RELEASE
+          rm -f RELEASE.bak
+        else
+          sed -i "s/^collector#.*/collector#$VERSION/" RELEASE
+        fi
+        
+        # Create releases directory with MD5 files
+        RELEASE_DIR="releases/v${VERSION}"
+        mkdir -p "$RELEASE_DIR"
+        
+        # Copy MD5 files to releases directory
+        cp /tmp/release-assets/*.md5 "$RELEASE_DIR/" 2>/dev/null || echo "No MD5 files to copy"
+        
+        # Commit changes
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        git add RELEASE "$RELEASE_DIR"
+        git commit -m "Release $VERSION" || echo "No changes to commit"
+        git push || echo "Nothing to push"
+        
+        echo "✓ Updated RELEASE file and releases directory"
+    
+    - name: Summary
+      if: always()
+      run: |
+        echo "### Release Automation Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Detected Version:** ${{ steps.detect.outputs.collector_version }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Release Needed:** ${{ steps.check_release.outputs.need_release }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Release Exists:** ${{ steps.check_release.outputs.exists }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.check_release.outputs.need_release }}" == "true" ]; then
+          echo "✅ New release v${{ steps.detect.outputs.collector_version }} created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Next: Docker images will be built automatically via docker-image.yml workflow" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "ℹ️ No action needed - release already exists" >> $GITHUB_STEP_SUMMARY
+        fi

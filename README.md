@@ -5,7 +5,7 @@ Using ZoomPhant, customers can focus on their valuable businesses while owning t
 
 ## About The Creators
 
-ZoomPhant is created by people who have been working in the data-center and application monitoring indrustries for 10+ years. The same people had created a world known monitoring solution and had served thousands of enterprise customers world-wide (among them many of the Fortune Global 500s). It's from that unique background and experience that we know what the next generation of monitoring solution shall be and we are driving to that direction. 
+ZoomPhant is created by people who have been working in the data-center and application monitoring indrustries for 15+ years. The same people had created a world known monitoring solution and had served thousands of enterprise customers world-wide (among them many of the Fortune Global 500s). It's from that unique background and experience that we know what the next generation of monitoring solution shall be and we are driving to that direction. 
 
 *We want to help all customers be able to (and **should**) use an **affordable** and **enterprise-level** monitoring solution!*
 
@@ -44,3 +44,23 @@ Please open an issue for us [here](https://github.com/ZoomPhant/monitoring/issue
 
 ## Contact US
 Please reach us using email at [info@zervice.us](mailto:info@zervice.us) 
+
+## Documentation
+
+### For Developers and Maintainers
+
+- **[Automated Release Process](AUTOMATED_RELEASE.md)** - NEW! Fully automated release system using bootstrap images
+- **[Release Process](RELEASE.md)** - Complete guide for releasing new versions (manual process)
+- **[Release Quick Start](RELEASE_QUICKSTART.md)** - Quick reference for the release process
+- **[Release Component Utility](scripts/update-release-component.sh)** - Script to update component versions
+
+### Build and Deployment
+
+This repository contains:
+- **Automated release system** (`release-bootstrap/`, `.github/workflows/automated-release.yml`)
+- **Docker image build scripts** (`k8s/build.sh`)
+- **Release automation** (`scripts/bamboo.sh`)
+- **GitHub Actions workflows** (`.github/workflows/`)
+- **Version management** (`RELEASE` file)
+
+For questions about the build and release process, see the documentation above or contact the DevOps team.
