@@ -4,7 +4,7 @@
 # Format: component#version
 #
 # AUTOMATIC UPDATES:
-#   - collector: Updated automatically by scripts/bamboo.sh when processing a new release
+#   - collector: Updated automatically by aio/release-bootstrap/build.sh when processing a new AIO release
 #
 # MANUAL UPDATES REQUIRED:
 #   - launcher: Update manually when launcher version changes (rarely)
@@ -12,10 +12,14 @@
 #   - central: Update manually when central metrics version changes (rarely)  
 #   - normal: Update manually when normal metrics version changes (rarely)
 #
-# The Docker build process (k8s/build.sh) reads these versions to tag the appropriate images.
+# The public release repo (monitoring) build process (k8s/build.sh) reads these versions to tag the appropriate images.
+#
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# IMPORTANT: except collector version, all other versions shall be correctly manually updated to reflect LATEST versions
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 launcher#1.0.0
-collector#2.5.4
 operator#4.1.7
 central#4.1.7
 normal#4.1.7
+collector#2.5.5
