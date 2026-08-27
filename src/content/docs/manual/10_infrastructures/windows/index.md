@@ -19,7 +19,7 @@ To monitor a Windows server, you must first install the Windows collector agent 
 
 ## Install the Windows Collector
 
-Follow the instructions in [Install Collectors](../collector/) and choose **Windows** as the underlying infrastructure.
+Follow the instructions in [Install Collectors](../../02_collector/) and choose **Windows** as the underlying infrastructure.
 
 In step 2, provide basic information about the Windows system where the collector will be installed:
 

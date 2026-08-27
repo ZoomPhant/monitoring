@@ -27,9 +27,9 @@ Once the collector is running, the host infrastructure itself becomes monitored.
 
 First, determine which collector package matches your underlying host infrastructure. ZoomPhant supports several collector types:
 
-* **Linux Infrastructure Collector**: Designed for Linux and Unix-like systems. It gathers host metrics and runs local check scripts. For installation details, see [Linux Collector](../linux/).
-* **Windows Infrastructure Collector**: Tailored to collect Windows-specific performance counters and events. For installation details, see [Windows Collector](../windows/).
-* **Kubernetes Infrastructure Collector**: Deployed inside a Kubernetes cluster to collect cluster-wide metrics using native Kubernetes mechanisms. For installation details, see [Kubernetes Collector](../kubernetes/).
+* **Linux Infrastructure Collector**: Designed for Linux and Unix-like systems. It gathers host metrics and runs local check scripts. For installation details, see [Linux Collector](../10_infrastructures/linux/).
+* **Windows Infrastructure Collector**: Tailored to collect Windows-specific performance counters and events. For installation details, see [Windows Collector](../10_infrastructures/windows/).
+* **Kubernetes Infrastructure Collector**: Deployed inside a Kubernetes cluster to collect cluster-wide metrics using native Kubernetes mechanisms. For installation details, see [Kubernetes Collector](../10_infrastructures/kubernetes/).
 
 *Note: In addition to these system-specific agents, we offer a general Docker-based collector, which only requires a running Docker daemon.*
 
@@ -52,9 +52,9 @@ Adding a collector involves three main steps:
 3. **Install & Verify**: Execute the installation script and verify the connection.
 
 For details on platform-specific settings, visit the respective guides:
-* [Linux Collector](../linux/)
-* [Windows Collector](../windows/)
-* [Kubernetes Collector](../kubernetes/)
+* [Linux Collector](../10_infrastructures/linux/)
+* [Windows Collector](../10_infrastructures/windows/)
+* [Kubernetes Collector](../10_infrastructures/kubernetes/)
 
 ### 1. Select Infrastructure
 First, select one of the supported infrastructure types:

@@ -14,7 +14,7 @@ Kubernetes is widely used for modern application deployment. ZoomPhant provides 
 
 ## Install the Kubernetes Collector
 
-Follow the instructions in [Install Collectors](../collector/) and choose **Kubernetes** as the underlying infrastructure. This will guide you through creating a Kubernetes collector and its corresponding monitoring service.
+Follow the instructions in [Install Collectors](../../02_collector/) and choose **Kubernetes** as the underlying infrastructure. This will guide you through creating a Kubernetes collector and its corresponding monitoring service.
 
 ### Providing Kubernetes Cluster Information
 

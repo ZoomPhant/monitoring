@@ -20,7 +20,7 @@ Sometimes, you may want to monitor Windows servers remotely using WMI (Windows M
 
 To start monitoring a Windows server, ensure you have set up a Data Collection Agent on a Windows host. If not, follow the instructions to [add a Windows Collector](../../10_infrastructures/windows/) first.
 
-Once you have the Windows collector, follow the steps in [Add Monitor Service](../service/) and select the **Windows (WMI)** monitoring plugin:
+Once you have the Windows collector, follow the steps in [Add Monitor Service](../../01_service/) and select the **Windows (WMI)** monitoring plugin:
 
 ![image-20240408141318315](./image-20240408141318315.png)
 
