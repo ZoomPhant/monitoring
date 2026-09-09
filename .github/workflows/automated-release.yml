@@ -8,8 +8,13 @@ on:
         description: 'Force specific collector version (e.g., 2.4.67). Leave empty to auto-detect from bootstrap image.'
         required: false
         type: string
+      force_release:
+        description: 'Force release'
+        required: false
+        default: false
+        type: boolean
       skip_github_release:
-        description: 'Skip creating GitHub release (testing mode)'
+        description: 'Skip creating GitHub release'
         required: false
         default: false
         type: boolean
@@ -111,6 +116,7 @@ jobs:
       id: check_release
       run: |
         VERSION="${{ steps.detect.outputs.collector_version }}"
+        FORCE_RELEASE="${{ inputs.force_release }}"
         
         # Check if release exists
         HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
@@ -121,7 +127,12 @@ jobs:
         if [ "$HTTP_CODE" == "200" ]; then
           echo "Release v${VERSION} already exists"
           echo "exists=true" >> $GITHUB_OUTPUT
-          echo "need_release=false" >> $GITHUB_OUTPUT
+          if [ "$FORCE_RELEASE" == "true" ]; then
+            echo "force_release enabled - will re-run release process"
+            echo "need_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "need_release=false" >> $GITHUB_OUTPUT
+          fi
         else
           echo "Release v${VERSION} does not exist - will create"
           echo "exists=false" >> $GITHUB_OUTPUT
