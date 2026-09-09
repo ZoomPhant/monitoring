@@ -8,7 +8,7 @@ on:
         required: false
         type: string
       source_registry:
-        description: 'Source registry override (default: REPO_BASE from vars)'
+        description: 'Source registry (default: SOURCE_DOCKER_REGISTRY var, then REPO_BASE var)'
         required: false
         type: string
       target_registry:
@@ -24,6 +24,9 @@ on:
 env:
   REPO_BASE: ${{ vars.REPO_BASE || 'zpcloud' }}
   ZPDOCKER_REGISTRY: ${{ vars.ZPDOCKER_REGISTRY }}
+  SOURCE_DOCKER_REGISTRY: ${{ vars.SOURCE_DOCKER_REGISTRY }}
+  SOURCE_DOCKER_USERNAME: ${{ vars.SOURCE_DOCKER_USERNAME }}
+  SOURCE_DOCKER_PASSWORD: ${{ secrets.SOURCE_DOCKER_PASSWORD }}
 
 jobs:
   sync-images:
@@ -37,11 +40,12 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v3
 
-    - name: Log in to Source Registry (Docker Hub)
+    - name: Log in to Source Registry
       uses: docker/login-action@v3
       with:
-        username: ${{ vars.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        registry: ${{ env.SOURCE_DOCKER_REGISTRY }}
+        username: ${{ env.SOURCE_DOCKER_USERNAME || vars.DOCKER_USERNAME }}
+        password: ${{ env.SOURCE_DOCKER_PASSWORD || secrets.DOCKER_PASSWORD }}
 
     - name: Log in to Target Registry
       if: vars.ZPDOCKER_REGISTRY != ''
@@ -54,7 +58,7 @@ jobs:
     - name: Determine images to sync
       id: images
       run: |
-        SOURCE_REG="${{ inputs.source_registry || env.REPO_BASE }}"
+        SOURCE_REG="${{ inputs.source_registry || env.SOURCE_DOCKER_REGISTRY || env.REPO_BASE }}"
         TARGET_REG="${{ inputs.target_registry || env.ZPDOCKER_REGISTRY }}"
         
         if [ -z "$TARGET_REG" ]; then
