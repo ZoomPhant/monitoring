@@ -1,0 +1,36 @@
+# Docker Images to Sync
+# Format: SOURCE_IMAGE:TAG
+# Source: REPO_BASE (e.g., zpcloud on Docker Hub)
+# Target: ZPDOCKER_REGISTRY (private registry)
+
+# Collector images
+zpdemo/collector:v2.5.5
+zpdemo/collector:latest
+
+# AIO images
+zpdemo/aio:v2.5.5
+zpdemo/aio:latest
+
+# Collector packages
+zpdemo/collector-packages:v2.5.5
+zpdemo/collector-packages:latest
+
+# Collector installer
+zpdemo/collector-installer:v2.5.5
+zpdemo/collector-installer:latest
+
+# PACK images
+zpdemo/pack:v2.5.5
+zpdemo/pack:latest
+
+# Operator
+zpdemo/zp-operator:v4.1.7
+zpdemo/zp-operator:latest
+
+# Central metrics
+zpdemo/zpmetrics:v4.1.7
+zpdemo/zpmetrics:latest
+
+# Normal metrics
+zpdemo/dockermetrics:v4.1.7
+zpdemo/dockermetrics:latest

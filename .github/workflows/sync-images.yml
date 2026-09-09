@@ -1,0 +1,227 @@
+name: Sync Docker Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Specific image to sync (e.g., zpcloud/collector:v2.5.5). Leave empty to sync all images from IMAGES file.'
+        required: false
+        type: string
+      source_registry:
+        description: 'Source registry override (default: REPO_BASE from vars)'
+        required: false
+        type: string
+      target_registry:
+        description: 'Target registry override (default: ZPDOCKER_REGISTRY from vars)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run - show what would be synced without actually syncing'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  REPO_BASE: ${{ vars.REPO_BASE || 'zpcloud' }}
+  ZPDOCKER_REGISTRY: ${{ vars.ZPDOCKER_REGISTRY }}
+
+jobs:
+  sync-images:
+    runs-on: ubuntu-latest
+    environment: Build
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Source Registry (Docker Hub)
+      uses: docker/login-action@v3
+      with:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Log in to Target Registry
+      if: vars.ZPDOCKER_REGISTRY != ''
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ vars.ZPDOCKER_REGISTRY }}
+        username: ${{ vars.ZPDOCKER_USERNAME }}
+        password: ${{ secrets.ZPDOCKER_PASSWORD }}
+
+    - name: Determine images to sync
+      id: images
+      run: |
+        SOURCE_REG="${{ inputs.source_registry || env.REPO_BASE }}"
+        TARGET_REG="${{ inputs.target_registry || env.ZPDOCKER_REGISTRY }}"
+        
+        if [ -z "$TARGET_REG" ]; then
+          echo "❌ ERROR: Target registry not configured. Set ZPDOCKER_REGISTRY variable or provide target_registry input."
+          exit 1
+        fi
+        
+        echo "source_registry=$SOURCE_REG" >> $GITHUB_OUTPUT
+        echo "target_registry=$TARGET_REG" >> $GITHUB_OUTPUT
+        
+        if [ -n "${{ inputs.image }}" ]; then
+          # Single image from manual input
+          IMAGE="${{ inputs.image }}"
+          # Extract image name without source registry prefix if present
+          IMAGE_NAME="${IMAGE#$SOURCE_REG/}"
+          IMAGE_NAME="${IMAGE_NAME#*/}"
+          echo "images=$IMAGE" >> $GITHUB_OUTPUT
+          echo "image_names=$IMAGE_NAME" >> $GITHUB_OUTPUT
+          echo "mode=single" >> $GITHUB_OUTPUT
+          echo "Syncing single image: $IMAGE"
+        else
+          # Read from IMAGES file
+          if [ ! -f IMAGES ]; then
+            echo "❌ ERROR: IMAGES file not found in repository root"
+            exit 1
+          fi
+          
+          # Filter out comments and empty lines
+          IMAGES_LIST=$(grep -v '^#' IMAGES | grep -v '^[[:space:]]*$' | tr '\n' ' ')
+          IMAGE_NAMES=$(grep -v '^#' IMAGES | grep -v '^[[:space:]]*$' | sed 's|.*/||' | tr '\n' ' ')
+          
+          echo "images=$IMAGES_LIST" >> $GITHUB_OUTPUT
+          echo "image_names=$IMAGE_NAMES" >> $GITHUB_OUTPUT
+          echo "mode=file" >> $GITHUB_OUTPUT
+          
+          echo "Found images to sync:"
+          grep -v '^#' IMAGES | grep -v '^[[:space:]]*$' | while read img; do
+            echo "  - $img"
+          done
+        fi
+
+    - name: Sync images
+      id: sync
+      if: steps.images.outputs.mode != ''
+      env:
+        SOURCE_REG: ${{ steps.images.outputs.source_registry }}
+        TARGET_REG: ${{ steps.images.outputs.target_registry }}
+        DRY_RUN: ${{ inputs.dry_run }}
+      run: |
+        IMAGES="${{ steps.images.outputs.images }}"
+        IMAGE_NAMES="${{ steps.images.outputs.image_names }}"
+        MODE="${{ steps.images.outputs.mode }}"
+        
+        echo "### 🐳 Sync Configuration" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Mode:** $MODE" >> $GITHUB_STEP_SUMMARY
+        echo "**Source Registry:** $SOURCE_REG" >> $GITHUB_STEP_SUMMARY
+        echo "**Target Registry:** $TARGET_REG" >> $GITHUB_STEP_SUMMARY
+        echo "**Dry Run:** $DRY_RUN" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "$DRY_RUN" == "true" ]; then
+          echo "⚠️ **DRY RUN MODE** - No images will be pushed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "### 📋 Images to Sync" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        SUCCESS_COUNT=0
+        FAILED_IMAGES=""
+        
+        for SOURCE_IMAGE in $IMAGES; do
+          # Extract image name and tag
+          IMAGE_NAME=$(echo "$SOURCE_IMAGE" | sed 's|.*/||')
+          
+          # Construct target image name
+          TARGET_IMAGE="$TARGET_REG/$IMAGE_NAME"
+          
+          echo "| $SOURCE_IMAGE | $TARGET_IMAGE |" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$DRY_RUN" == "true" ]; then
+            echo "✅ Would sync: $SOURCE_IMAGE → $TARGET_IMAGE"
+            SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+            continue
+          fi
+          
+          echo "Syncing: $SOURCE_IMAGE → $TARGET_IMAGE"
+          
+          # Pull from source
+          if docker pull "$SOURCE_IMAGE"; then
+            echo "  ✓ Pulled $SOURCE_IMAGE"
+          else
+            echo "  ❌ Failed to pull $SOURCE_IMAGE"
+            FAILED_IMAGES="$FAILED_IMAGES $SOURCE_IMAGE"
+            continue
+          fi
+          
+          # Tag for target
+          if docker tag "$SOURCE_IMAGE" "$TARGET_IMAGE"; then
+            echo "  ✓ Tagged as $TARGET_IMAGE"
+          else
+            echo "  ❌ Failed to tag $SOURCE_IMAGE"
+            FAILED_IMAGES="$FAILED_IMAGES $SOURCE_IMAGE"
+            continue
+          fi
+          
+          # Push to target
+          if docker push "$TARGET_IMAGE"; then
+            echo "  ✓ Pushed $TARGET_IMAGE"
+            SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+          else
+            echo "  ❌ Failed to push $TARGET_IMAGE"
+            FAILED_IMAGES="$FAILED_IMAGES $SOURCE_IMAGE"
+          fi
+        done
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Successfully synced:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -n "$FAILED_IMAGES" ]; then
+          echo "**Failed:** $(echo $FAILED_IMAGES | wc -w)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Failed images:" >> $GITHUB_STEP_SUMMARY
+          for fail in $FAILED_IMAGES; do
+            echo "- $fail" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "sync_failed=true" >> $GITHUB_OUTPUT
+          exit 1
+        else
+          echo "**Failed:** 0" >> $GITHUB_STEP_SUMMARY
+          echo "sync_failed=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Sync Summary
+      if: always()
+      run: |
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.sync.outputs.sync_failed }}" == "true" ]; then
+          echo "### ❌ Sync Completed with Errors" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### ✅ Sync Completed Successfully" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Source:** ${{ steps.images.outputs.source_registry }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Target:** ${{ steps.images.outputs.target_registry }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Mode:** ${{ steps.images.outputs.mode }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 💡 Usage" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Sync all images from IMAGES file:**" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "gh workflow run sync-images.yml" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Sync a specific image:**" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "gh workflow run sync-images.yml -f image=zpcloud/collector:v2.5.5" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Dry run:**" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "gh workflow run sync-images.yml -f dry_run=true" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

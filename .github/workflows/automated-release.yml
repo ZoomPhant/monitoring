@@ -301,7 +301,7 @@ jobs:
         echo "✓ RELEASE file synced and committed"
     
     - name: Build Docker images
-      if: steps.check_release.outputs.need_release == 'true' && inputs.skip_github_release != true
+      if: steps.check_release.outputs.need_release == 'true'
       run: |
         VERSION="${{ steps.detect.outputs.collector_version }}"
         
