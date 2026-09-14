@@ -3,6 +3,16 @@
 set -e
 set -euo pipefail
 
+# ⚠️ KNOWN ISSUE - Image Naming Mismatch
+# This script builds images with names like: zoomphant/pack, zoomphant/aio
+# But public documentation references: zoomphant/zoomphant-pack, zoomphant/zoomphant-aio
+# 
+# This causes users to be unable to pull images mentioned in docs!
+# See IMAGE_NAMING_ISSUE.md for details and solutions.
+# 
+# TODO: Either:
+#   1. Change build() calls to use "zoomphant-pack" and "zoomphant-aio" (recommended)
+
 IS_MAC=0; # FALSE
 if [ `uname` == 'Darwin' ]; then
     IS_MAC=1;

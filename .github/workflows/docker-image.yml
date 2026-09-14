@@ -1,9 +1,30 @@
 name: ZP AIO Build
 
+# ⚠️ IMPORTANT: This workflow is currently DISABLED (no active triggers)
+# 
+# KNOWN ISSUE - Image Naming Mismatch:
+# The k8s/build.sh script builds images as:
+#   - zoomphant/pack:vX.Y.Z
+#   - zoomphant/aio:vX.Y.Z
+#
+# But our public documentation (README.md, docs/start/index.md) tells users to run:
+#   - docker run zoomphant/zoomphant-pack:latest
+#   - docker run zoomphant/zoomphant-aio:latest
+#
+# BEFORE RE-ENABLING THIS WORKFLOW:
+# 1. Decide on image naming convention:
+#    Option A: Update build.sh to use "zoomphant-pack" and "zoomphant-aio" (recommended)
+#    Option B: Update all documentation to use "pack" and "aio" without prefix
+# 2. Update IMAGES file in sync-images.yml to match chosen names
+# 3. Ensure k8s/build.sh Dockerfiles match (may need to rename Dockerfile.pack → Dockerfile.zoomphant-pack)
+#
+# See IMAGE_NAMING_ISSUE.md for full details.
+
 on:
-  push:
-    paths:
-      - 'releases/**'
+  # DISABLED: Uncomment to re-enable automatic builds
+  # push:
+  #   paths:
+  #     - 'releases/**'
       
   workflow_dispatch:
     inputs:

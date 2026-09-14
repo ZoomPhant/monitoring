@@ -14,10 +14,14 @@
 
 # Collector-based images (use collector version)
 collector:collector
-aio:collector
 collector-packages:collector
 collector-installer:collector
-pack:collector
+
+# Public-facing images - IMPORTANT: Check actual source image names!
+# Documentation references zoomphant-pack and zoomphant-aio, but build.sh might create pack and aio
+# TODO: Verify source registry has these exact names before syncing
+zoomphant-pack:collector
+zoomphant-aio:collector
 
 # Operator image
 zp-operator:operator
