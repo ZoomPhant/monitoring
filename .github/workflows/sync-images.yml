@@ -5,7 +5,7 @@ on:
     # This workflow is MANUAL only — it will not run on push or schedule.
     inputs:
       image:
-        description: 'Specific image:tag to sync (e.g., collector:v2.5.5). Leave empty to sync all from IMAGES file.'
+        description: 'Specific image:tag to sync (e.g., collector:v2.5.5). Leave empty to auto-sync all from IMAGES file with versions from RELEASE.'
         required: false
         type: string
       source_registry:
@@ -113,21 +113,62 @@ jobs:
           echo "mode=single" >> $GITHUB_OUTPUT
           echo "Syncing single image: $IMAGE_TAG"
         else
-          # Read from IMAGES file (format: image:tag per line)
+          # Read RELEASE file to get component versions
+          if [ ! -f RELEASE ]; then
+            echo "❌ ERROR: RELEASE file not found in repository root"
+            exit 1
+          fi
+          
+          declare -A VERSIONS
+          while IFS='#' read -r key value; do
+            # Skip empty lines and comments
+            [[ -z "$key" || "$key" =~ ^[[:space:]]*$ || "$key" =~ ^[[:space:]]*# ]] && continue
+            VERSIONS[$key]="v$value"
+          done < RELEASE
+          
+          echo "📦 Versions from RELEASE file:"
+          for key in "${!VERSIONS[@]}"; do
+            echo "  $key = ${VERSIONS[$key]}"
+          done
+          
+          # Read from IMAGES file (format: image_name:release_key per line)
           if [ ! -f IMAGES ]; then
             echo "❌ ERROR: IMAGES file not found in repository root"
             exit 1
           fi
           
-          IMAGES_LIST=$(grep -v '^#' IMAGES | grep -v '^[[:space:]]*$' | tr '\n' ' ')
+          IMAGES_LIST=""
+          echo ""
+          echo "🐳 Expanding images from IMAGES file:"
+          while IFS=':' read -r image_name release_key; do
+            # Skip empty lines and comments
+            [[ -z "$image_name" || "$image_name" =~ ^[[:space:]]*$ || "$image_name" =~ ^[[:space:]]*# ]] && continue
+            
+            # Trim whitespace
+            image_name=$(echo "$image_name" | xargs)
+            release_key=$(echo "$release_key" | xargs)
+            
+            # Look up version from RELEASE
+            version="${VERSIONS[$release_key]}"
+            if [ -z "$version" ]; then
+              echo "  ⚠️  WARNING: No version found for release_key='$release_key' (image: $image_name)"
+              continue
+            fi
+            
+            echo "  $image_name:$version ($release_key)"
+            echo "  $image_name:latest"
+            
+            # Add both versioned and latest tags
+            IMAGES_LIST="$IMAGES_LIST ${image_name}:${version} ${image_name}:latest"
+          done < <(grep -v '^#' IMAGES | grep -v '^[[:space:]]*$')
+          
+          if [ -z "$IMAGES_LIST" ]; then
+            echo "❌ ERROR: No valid images found in IMAGES file"
+            exit 1
+          fi
           
           echo "images=$IMAGES_LIST" >> $GITHUB_OUTPUT
           echo "mode=file" >> $GITHUB_OUTPUT
-          
-          echo "Found images to sync:"
-          grep -v '^#' IMAGES | grep -v '^[[:space:]]*$' | while read img; do
-            echo "  - $img"
-          done
         fi
 
     - name: Sync images

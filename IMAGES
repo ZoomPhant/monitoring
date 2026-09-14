@@ -1,36 +1,27 @@
-# Docker Images to Sync
-# Format: IMAGE:TAG (without registry/org prefix)
-# Source: SOURCE_DOCKER_REGISTRY/SOURCE_DOCKER_ORG/IMAGE:TAG
-# Target: ZPDOCKER_REGISTRY/TARGET_DOCKER_ORG/IMAGE:TAG
+# Docker Images to Sync - Auto-versioned from RELEASE file
+# Format: IMAGE_NAME:RELEASE_KEY
+# The sync workflow reads RELEASE file to get actual versions
+# For each image, it syncs both vX.Y.Z and latest tags
+#
+# Source: SOURCE_DOCKER_REGISTRY/SOURCE_DOCKER_ORG/IMAGE_NAME:{vX.Y.Z,latest}
+# Target: ZPDOCKER_REGISTRY/TARGET_DOCKER_ORG/IMAGE_NAME:{vX.Y.Z,latest}
+#
+# RELEASE_KEY mapping:
+#   collector → collector#X.Y.Z in RELEASE (auto-updated)
+#   operator  → operator#X.Y.Z in RELEASE (manual update)
+#   central   → central#X.Y.Z in RELEASE (manual update)
+#   normal    → normal#X.Y.Z in RELEASE (manual update)
 
-# Collector images
-collector:v2.6.0
-collector:latest
+# Collector-based images (use collector version)
+collector:collector
+aio:collector
+collector-packages:collector
+collector-installer:collector
+pack:collector
 
-# AIO images
-aio:v2.5.5
-aio:latest
+# Operator image
+zp-operator:operator
 
-# Collector packages
-collector-packages:v2.6.0
-collector-packages:latest
-
-# Collector installer
-collector-installer:v2.6.0
-collector-installer:latest
-
-# PACK images
-pack:v2.6.0
-pack:latest
-
-# Operator
-zp-operator:v4.2.0
-zp-operator:latest
-
-# Central metrics
-zpmetrics:v4.2.0
-zpmetrics:latest
-
-# Normal metrics
-dockermetrics:v4.2.0
-dockermetrics:latest
+# Metrics images
+zpmetrics:central
+dockermetrics:normal
