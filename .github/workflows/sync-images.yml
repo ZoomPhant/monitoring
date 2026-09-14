@@ -9,19 +9,19 @@ on:
         required: false
         type: string
       source_registry:
-        description: 'Source registry (default: SOURCE_DOCKER_REGISTRY var)'
+        description: 'Source registry (default: ZPDOCKER_REGISTRY var)'
         required: false
         type: string
       source_org:
-        description: 'Source organization (default: SOURCE_DOCKER_ORG var, then REPO_BASE var)'
+        description: 'Source organization (default: REPO_BASE var, typically registry.cn-chengdu.aliyuncs.com/zpdemo)'
         required: false
         type: string
       target_registry:
-        description: 'Target registry (default: ZPDOCKER_REGISTRY var)'
+        description: 'Target registry (default: docker.io)'
         required: false
         type: string
       target_org:
-        description: 'Target organization (default: TARGET_DOCKER_ORG var, then source_org)'
+        description: 'Target organization (default: zoomphant)'
         required: false
         type: string
       dry_run:
@@ -31,14 +31,13 @@ on:
         type: boolean
 
 env:
-  SOURCE_DOCKER_REGISTRY: ${{ vars.SOURCE_DOCKER_REGISTRY || 'docker.io' }}
-  SOURCE_DOCKER_ORG: ${{ vars.SOURCE_DOCKER_ORG }}
-  SOURCE_DOCKER_USERNAME: ${{ vars.SOURCE_DOCKER_USERNAME }}
-  SOURCE_DOCKER_PASSWORD: ${{ secrets.SOURCE_DOCKER_PASSWORD }}
-  TARGET_DOCKER_REGISTRY: ${{ vars.ZPDOCKER_REGISTRY }}
-  TARGET_DOCKER_ORG: ${{ vars.TARGET_DOCKER_ORG }}
-  TARGET_DOCKER_USERNAME: ${{ vars.ZPDOCKER_USERNAME }}
-  TARGET_DOCKER_PASSWORD: ${{ secrets.ZPDOCKER_PASSWORD }}
+  # Source: ZP Registry (Aliyun) - where images are pulled from
+  SOURCE_DOCKER_REGISTRY: ${{ vars.ZPDOCKER_REGISTRY }}
+  SOURCE_DOCKER_USERNAME: ${{ vars.ZPDOCKER_USERNAME }}
+  SOURCE_DOCKER_PASSWORD: ${{ secrets.ZPDOCKER_PASSWORD }}
+  # Target: Docker Hub - where images are pushed to
+  TARGET_DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+  TARGET_DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
   sync-images:
@@ -52,33 +51,32 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v3
 
-    - name: Log in to Source Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.SOURCE_DOCKER_REGISTRY }}
-        username: ${{ env.SOURCE_DOCKER_USERNAME || vars.DOCKER_USERNAME }}
-        password: ${{ env.SOURCE_DOCKER_PASSWORD || secrets.DOCKER_PASSWORD }}
-
-    - name: Log in to Target Registry
-      if: vars.ZPDOCKER_REGISTRY != ''
+    - name: Log in to Source Registry (ZP Registry)
       uses: docker/login-action@v3
       with:
         registry: ${{ vars.ZPDOCKER_REGISTRY }}
         username: ${{ vars.ZPDOCKER_USERNAME }}
         password: ${{ secrets.ZPDOCKER_PASSWORD }}
 
+    - name: Log in to Target Registry (Docker Hub)
+      uses: docker/login-action@v3
+      with:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
     - name: Determine images to sync
       id: images
       run: |
+        # Source: Use REPO_BASE (same as k8s/build.sh)
+        # REPO_BASE format: "registry.cn-chengdu.aliyuncs.com/zpdemo" or just "zpdemo"
+        REPO_BASE_VAR="${{ vars.REPO_BASE || 'registry.cn-chengdu.aliyuncs.com/zpdemo' }}"
         SOURCE_REG="${{ inputs.source_registry || env.SOURCE_DOCKER_REGISTRY }}"
-        SOURCE_ORG="${{ inputs.source_org || env.SOURCE_DOCKER_ORG || vars.REPO_BASE || 'zpdemo' }}"
-        TARGET_REG="${{ inputs.target_registry || env.TARGET_DOCKER_REGISTRY }}"
-        TARGET_ORG="${{ inputs.target_org || env.TARGET_DOCKER_ORG }}"
-        # Fall back to SOURCE_ORG if TARGET_ORG is empty
-        if [ -z "$TARGET_ORG" ]; then
-          TARGET_ORG="$SOURCE_ORG"
-        fi
-
+        SOURCE_ORG="${{ inputs.source_org || vars.REPO_BASE || 'registry.cn-chengdu.aliyuncs.com/zpdemo' }}"
+        
+        # Target: Docker Hub defaults
+        TARGET_REG="${{ inputs.target_registry || 'docker.io' }}"
+        TARGET_ORG="${{ inputs.target_org || 'zoomphant' }}"
+        
         # If SOURCE_ORG already contains the registry hostname (e.g. REPO_BASE = registry.host/org),
         # use it as-is; otherwise prepend SOURCE_REG.
         if [[ "$SOURCE_ORG" == *"/"* && "$SOURCE_ORG" == *"."* ]]; then
@@ -92,11 +90,6 @@ jobs:
           TARGET_PREFIX="$TARGET_ORG"
         else
           TARGET_PREFIX="$TARGET_REG/$TARGET_ORG"
-        fi
-        
-        if [ -z "$TARGET_REG" ]; then
-          echo "❌ ERROR: Target registry not configured. Set ZPDOCKER_REGISTRY variable or provide target_registry input."
-          exit 1
         fi
         
         echo "source_registry=$SOURCE_REG" >> $GITHUB_OUTPUT
