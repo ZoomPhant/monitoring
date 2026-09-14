@@ -78,6 +78,21 @@ jobs:
         if [ -z "$TARGET_ORG" ]; then
           TARGET_ORG="$SOURCE_ORG"
         fi
+
+        # If SOURCE_ORG already contains the registry hostname (e.g. REPO_BASE = registry.host/org),
+        # use it as-is; otherwise prepend SOURCE_REG.
+        if [[ "$SOURCE_ORG" == *"/"* && "$SOURCE_ORG" == *"."* ]]; then
+          SOURCE_PREFIX="$SOURCE_ORG"
+        else
+          SOURCE_PREFIX="$SOURCE_REG/$SOURCE_ORG"
+        fi
+
+        # Same for target
+        if [[ "$TARGET_ORG" == *"/"* && "$TARGET_ORG" == *"."* ]]; then
+          TARGET_PREFIX="$TARGET_ORG"
+        else
+          TARGET_PREFIX="$TARGET_REG/$TARGET_ORG"
+        fi
         
         if [ -z "$TARGET_REG" ]; then
           echo "❌ ERROR: Target registry not configured. Set ZPDOCKER_REGISTRY variable or provide target_registry input."
@@ -88,6 +103,8 @@ jobs:
         echo "source_org=$SOURCE_ORG" >> $GITHUB_OUTPUT
         echo "target_registry=$TARGET_REG" >> $GITHUB_OUTPUT
         echo "target_org=$TARGET_ORG" >> $GITHUB_OUTPUT
+        echo "source_prefix=$SOURCE_PREFIX" >> $GITHUB_OUTPUT
+        echo "target_prefix=$TARGET_PREFIX" >> $GITHUB_OUTPUT
         
         if [ -n "${{ inputs.image }}" ]; then
           # Single image from manual input (format: image:tag)
@@ -121,6 +138,8 @@ jobs:
         SOURCE_ORG: ${{ steps.images.outputs.source_org }}
         TARGET_REG: ${{ steps.images.outputs.target_registry }}
         TARGET_ORG: ${{ steps.images.outputs.target_org }}
+        SOURCE_PREFIX: ${{ steps.images.outputs.source_prefix }}
+        TARGET_PREFIX: ${{ steps.images.outputs.target_prefix }}
         DRY_RUN: ${{ inputs.dry_run }}
       run: |
         IMAGES="${{ steps.images.outputs.images }}"
@@ -129,8 +148,8 @@ jobs:
         echo "### 🐳 Sync Configuration" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Mode:** $MODE" >> $GITHUB_STEP_SUMMARY
-        echo "**Source:** $SOURCE_REG/$SOURCE_ORG" >> $GITHUB_STEP_SUMMARY
-        echo "**Target:** $TARGET_REG/$TARGET_ORG" >> $GITHUB_STEP_SUMMARY
+        echo "**Source:** $SOURCE_PREFIX" >> $GITHUB_STEP_SUMMARY
+        echo "**Target:** $TARGET_PREFIX" >> $GITHUB_STEP_SUMMARY
         echo "**Dry Run:** $DRY_RUN" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         
@@ -149,8 +168,8 @@ jobs:
         
         for IMAGE_TAG in $IMAGES; do
           # Construct full source and target image names
-          SOURCE_IMAGE="$SOURCE_REG/$SOURCE_ORG/$IMAGE_TAG"
-          TARGET_IMAGE="$TARGET_REG/$TARGET_ORG/$IMAGE_TAG"
+          SOURCE_IMAGE="$SOURCE_PREFIX/$IMAGE_TAG"
+          TARGET_IMAGE="$TARGET_PREFIX/$IMAGE_TAG"
           
           echo "| $SOURCE_IMAGE | $TARGET_IMAGE |" >> $GITHUB_STEP_SUMMARY
           
