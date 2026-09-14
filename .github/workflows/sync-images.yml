@@ -220,8 +220,12 @@ jobs:
           
           # Check if images have the same digest (quick check without pulling)
           echo "🔍 Checking image digests..."
+          
+          # Temporarily disable exit-on-error for manifest inspection
+          set +e
           SOURCE_DIGEST=$(docker manifest inspect "$SOURCE_IMAGE" 2>/dev/null | jq -r '.config.digest' 2>/dev/null || echo "")
           TARGET_DIGEST=$(docker manifest inspect "$TARGET_IMAGE" 2>/dev/null | jq -r '.config.digest' 2>/dev/null || echo "")
+          set -e
           
           if [ -n "$SOURCE_DIGEST" ] && [ "$SOURCE_DIGEST" == "$TARGET_DIGEST" ] && [ "$SOURCE_DIGEST" != "null" ]; then
             echo "  ⏭️  SKIPPED: Images are identical (digest: ${SOURCE_DIGEST:0:12}...)"
@@ -278,8 +282,12 @@ jobs:
         echo "**Successfully synced:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
         echo "**Skipped (identical):** $SKIPPED_COUNT" >> $GITHUB_STEP_SUMMARY
         
+        # Trim whitespace from FAILED_IMAGES
+        FAILED_IMAGES=$(echo "$FAILED_IMAGES" | xargs)
+        
         if [ -n "$FAILED_IMAGES" ]; then
-          echo "**Failed:** $(echo $FAILED_IMAGES | wc -w)" >> $GITHUB_STEP_SUMMARY
+          FAILED_COUNT=$(echo "$FAILED_IMAGES" | wc -w)
+          echo "**Failed:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Failed images:" >> $GITHUB_STEP_SUMMARY
           for fail in $FAILED_IMAGES; do
@@ -290,6 +298,7 @@ jobs:
         else
           echo "**Failed:** 0" >> $GITHUB_STEP_SUMMARY
           echo "sync_failed=false" >> $GITHUB_OUTPUT
+          exit 0
         fi
 
     - name: Sync Summary
@@ -306,8 +315,8 @@ jobs:
         fi
         
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Source:** ${{ steps.images.outputs.source_registry }}/${{ steps.images.outputs.source_org }}" >> $GITHUB_STEP_SUMMARY
-        echo "**Target:** ${{ steps.images.outputs.target_registry }}/${{ steps.images.outputs.target_org }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Source:** ${{ steps.images.outputs.source_prefix }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Target:** ${{ steps.images.outputs.target_prefix }}" >> $GITHUB_STEP_SUMMARY
         echo "**Mode:** ${{ steps.images.outputs.mode }}" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 💡 Usage" >> $GITHUB_STEP_SUMMARY
