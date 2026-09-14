@@ -4,7 +4,7 @@
 # Target: ZPDOCKER_REGISTRY/TARGET_DOCKER_ORG/IMAGE:TAG
 
 # Collector images
-collector:v2.5.5
+collector:v2.6.0
 collector:latest
 
 # AIO images
@@ -12,25 +12,25 @@ aio:v2.5.5
 aio:latest
 
 # Collector packages
-collector-packages:v2.5.5
+collector-packages:v2.6.0
 collector-packages:latest
 
 # Collector installer
-collector-installer:v2.5.5
+collector-installer:v2.6.0
 collector-installer:latest
 
 # PACK images
-pack:v2.5.5
+pack:v2.6.0
 pack:latest
 
 # Operator
-zp-operator:v4.1.7
+zp-operator:v4.2.0
 zp-operator:latest
 
 # Central metrics
-zpmetrics:v4.1.7
+zpmetrics:v4.2.0
 zpmetrics:latest
 
 # Normal metrics
-dockermetrics:v4.1.7
+dockermetrics:v4.2.0
 dockermetrics:latest
