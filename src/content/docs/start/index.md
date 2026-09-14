@@ -16,19 +16,19 @@ Getting started with ZoomPhant is simple. The steps below will help you get the 
 To deploy locally, ensure your environment has Docker 20+ installed. For stable performance, we recommend allocating 2 CPU cores and 8GB of free memory. Start the deployment using the following command:
 
 ```bash
-docker run --hostname zoomphant -it -d -v /root/data:/data -p 8080:80 --name zoomphant zoomphant/pack:latest
+docker run --hostname zoomphant -it -d -v /root/data:/data -p 8080:80 --name zoomphant zoomphant/zoomphant-pack:latest
 ```
 
 - `-v /root/data:/data`: Specifies the persistent data storage directory. You can modify this path as needed. Failure to configure this will result in data loss when the container restarts.
 - `-p 8080:80`: Sets the external port. If external access is required, replace `8080` with your desired port number.
-- Two image options are available: `zoomphant/pack:latest` and `zoomphant/aio:latest`. The former downloads collectors directly from GitHub, while the latter integrates the latest collectors into the image (resulting in a larger image size).
+- Two image options are available: `zoomphant/zoomphant-pack:latest` and `zoomphant/zoomphant-aio:latest`. The former downloads collectors directly from GitHub, while the latter integrates the latest collectors into the image (resulting in a larger image size).
 
 ## Cloud Deployment
 
 For cloud deployment (using AWS ECS as an example), follow these steps:
 
 1. Create a Task Definition in ECS and configure the container:
-    - Set the Image URI to `zoomphant/pack:latest`.
+    - Set the Image URI to `zoomphant/zoomphant-pack:latest`.
     - Map at least port 80 to enable UI access and collector data reporting.
 
 ![img.png](img.png)

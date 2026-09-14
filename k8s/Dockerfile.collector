@@ -12,4 +12,4 @@ LABEL name="ZoomPhant Collector" image="zoomphant-collector" vendor="Zervice"
 
 ENV GIN_MODE release
 
-ENTRYPOINT ["/scripts/start.sh"]
+ENTRYPOINT ["supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

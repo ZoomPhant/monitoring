@@ -1,0 +1,36 @@
+# Docker Images to Sync
+# Format: IMAGE:TAG (without registry/org prefix)
+# Source: SOURCE_DOCKER_REGISTRY/SOURCE_DOCKER_ORG/IMAGE:TAG
+# Target: ZPDOCKER_REGISTRY/TARGET_DOCKER_ORG/IMAGE:TAG
+
+# Collector images
+collector:v2.6.0
+collector:latest
+
+# AIO images
+aio:v2.5.5
+aio:latest
+
+# Collector packages
+collector-packages:v2.6.0
+collector-packages:latest
+
+# Collector installer
+collector-installer:v2.6.0
+collector-installer:latest
+
+# PACK images
+pack:v2.6.0
+pack:latest
+
+# Operator
+zp-operator:v4.2.0
+zp-operator:latest
+
+# Central metrics
+zpmetrics:v4.2.0
+zpmetrics:latest
+
+# Normal metrics
+dockermetrics:v4.2.0
+dockermetrics:latest

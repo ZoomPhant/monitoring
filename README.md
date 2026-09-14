@@ -29,7 +29,7 @@ Starting with ZoomPhant is simple and straightforward. Please refer to [Quick St
 3. Run following command and follow the instructions printed in the console:
    
 ```
-docker run zoomphant/pack:latest
+docker run zoomphant/zoomphant-pack:latest
 ```
 You will be asked to open in browser a link like below:
 ```
