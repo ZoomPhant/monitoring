@@ -194,10 +194,11 @@ jobs:
         
         echo "### 📋 Images to Sync" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "| Source | Target |" >> $GITHUB_STEP_SUMMARY
-        echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Source | Target | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|--------|--------|--------|" >> $GITHUB_STEP_SUMMARY
         
         SUCCESS_COUNT=0
+        SKIPPED_COUNT=0
         FAILED_IMAGES=""
         
         for IMAGE_TAG in $IMAGES; do
@@ -205,21 +206,46 @@ jobs:
           SOURCE_IMAGE="$SOURCE_PREFIX/$IMAGE_TAG"
           TARGET_IMAGE="$TARGET_PREFIX/$IMAGE_TAG"
           
-          echo "| $SOURCE_IMAGE | $TARGET_IMAGE |" >> $GITHUB_STEP_SUMMARY
-          
           if [ "$DRY_RUN" == "true" ]; then
+            echo "| $SOURCE_IMAGE | $TARGET_IMAGE | Would check |" >> $GITHUB_STEP_SUMMARY
             echo "✅ Would sync: $SOURCE_IMAGE → $TARGET_IMAGE"
             SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
             continue
           fi
           
-          echo "Syncing: $SOURCE_IMAGE → $TARGET_IMAGE"
+          echo ""
+          echo "================================================"
+          echo "Checking: $SOURCE_IMAGE → $TARGET_IMAGE"
+          echo "================================================"
+          
+          # Check if images have the same digest (quick check without pulling)
+          echo "🔍 Checking image digests..."
+          SOURCE_DIGEST=$(docker manifest inspect "$SOURCE_IMAGE" 2>/dev/null | jq -r '.config.digest' 2>/dev/null || echo "")
+          TARGET_DIGEST=$(docker manifest inspect "$TARGET_IMAGE" 2>/dev/null | jq -r '.config.digest' 2>/dev/null || echo "")
+          
+          if [ -n "$SOURCE_DIGEST" ] && [ "$SOURCE_DIGEST" == "$TARGET_DIGEST" ] && [ "$SOURCE_DIGEST" != "null" ]; then
+            echo "  ⏭️  SKIPPED: Images are identical (digest: ${SOURCE_DIGEST:0:12}...)"
+            echo "| $SOURCE_IMAGE | $TARGET_IMAGE | ⏭️ Skipped (identical) |" >> $GITHUB_STEP_SUMMARY
+            SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
+            continue
+          fi
+          
+          if [ -z "$SOURCE_DIGEST" ] || [ "$SOURCE_DIGEST" == "null" ]; then
+            echo "  ℹ️  Could not get source digest, will sync"
+          elif [ -z "$TARGET_DIGEST" ] || [ "$TARGET_DIGEST" == "null" ]; then
+            echo "  ℹ️  Target image doesn't exist or not accessible, will sync"
+          else
+            echo "  ℹ️  Digests differ, will sync"
+            echo "     Source: ${SOURCE_DIGEST:0:20}..."
+            echo "     Target: ${TARGET_DIGEST:0:20}..."
+          fi
           
           # Pull from source
           if docker pull "$SOURCE_IMAGE"; then
             echo "  ✓ Pulled $SOURCE_IMAGE"
           else
             echo "  ❌ Failed to pull $SOURCE_IMAGE"
+            echo "| $SOURCE_IMAGE | $TARGET_IMAGE | ❌ Pull failed |" >> $GITHUB_STEP_SUMMARY
             FAILED_IMAGES="$FAILED_IMAGES $SOURCE_IMAGE"
             continue
           fi
@@ -229,6 +255,7 @@ jobs:
             echo "  ✓ Tagged as $TARGET_IMAGE"
           else
             echo "  ❌ Failed to tag $SOURCE_IMAGE"
+            echo "| $SOURCE_IMAGE | $TARGET_IMAGE | ❌ Tag failed |" >> $GITHUB_STEP_SUMMARY
             FAILED_IMAGES="$FAILED_IMAGES $SOURCE_IMAGE"
             continue
           fi
@@ -236,9 +263,11 @@ jobs:
           # Push to target
           if docker push "$TARGET_IMAGE"; then
             echo "  ✓ Pushed $TARGET_IMAGE"
+            echo "| $SOURCE_IMAGE | $TARGET_IMAGE | ✅ Synced |" >> $GITHUB_STEP_SUMMARY
             SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
           else
             echo "  ❌ Failed to push $TARGET_IMAGE"
+            echo "| $SOURCE_IMAGE | $TARGET_IMAGE | ❌ Push failed |" >> $GITHUB_STEP_SUMMARY
             FAILED_IMAGES="$FAILED_IMAGES $SOURCE_IMAGE"
           fi
         done
@@ -247,6 +276,7 @@ jobs:
         echo "### 📊 Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Successfully synced:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "**Skipped (identical):** $SKIPPED_COUNT" >> $GITHUB_STEP_SUMMARY
         
         if [ -n "$FAILED_IMAGES" ]; then
           echo "**Failed:** $(echo $FAILED_IMAGES | wc -w)" >> $GITHUB_STEP_SUMMARY
