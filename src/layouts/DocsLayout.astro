@@ -7,7 +7,7 @@ import '../styles/global.css';
 export interface Props {
   title: string;
   description?: string;
-  sidebar?: { title: string; href: string; children?: { title: string; href: string }[] }[];
+  sidebar?: { title: string; href: string; children?: { title: string; href: string; children?: { title: string; href: string }[] }[] }[];
   currentPath?: string;
 }
 
@@ -54,6 +54,27 @@ const { title, description, sidebar = [], currentPath = '' } = Astro.props;
                           >
                             {child.title}
                           </a>
+                          {child.children && child.children.length > 0 && (
+                            <ul class="ml-3 mt-1 space-y-1 border-l border-gray-200 pl-3">
+                              {
+                                child.children.map((grandchild) => (
+                                  <li>
+                                    <a
+                                      href={grandchild.href}
+                                      class:list={[
+                                        'block rounded-lg px-3 py-1.5 text-xs transition-colors',
+                                        currentPath === grandchild.href
+                                          ? 'bg-brand-50 text-brand-600 font-medium'
+                                          : 'text-gray-400 hover:text-gray-900'
+                                      ]}
+                                    >
+                                      {grandchild.title}
+                                    </a>
+                                  </li>
+                                ))
+                              }
+                            </ul>
+                          )}
                         </li>
                       ))
                     }

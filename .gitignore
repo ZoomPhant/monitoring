@@ -6,3 +6,6 @@ _site
 .astro
 node_modules
 dist
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
+/docs-github/
