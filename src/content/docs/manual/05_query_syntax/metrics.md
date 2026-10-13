@@ -514,6 +514,3 @@ TODO
 For questions about query syntax or to request support for new query features, please contact the technical support team.
 
 ----
-
-**Document Version:** 2.0  
-**Last Updated:** 2026-10-13
