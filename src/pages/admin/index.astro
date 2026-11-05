@@ -1,0 +1,426 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+---
+
+<BaseLayout title="Admin Console — ZoomPhant TSDB">
+  <Header currentPath={Astro.url.pathname} />
+
+  <main class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto space-y-8">
+      
+      <!-- Top Title -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-200 pb-6">
+        <div>
+          <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Admin Console</h1>
+          <p class="text-sm text-gray-500 mt-1">Manage self-service trial deployments, registered users, and TSDB releases.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <input
+            type="email"
+            id="adminEmailInput"
+            placeholder="admin@zoomphant.com"
+            value="admin@zoomphant.com"
+            class="hidden sm:block rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+          />
+          <input
+            type="password"
+            id="adminKeyInput"
+            placeholder="Password or Secret Key"
+            class="rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 font-mono"
+          />
+          <button
+            id="loadDataBtn"
+            class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 transition-colors cursor-pointer"
+          >
+            Sign In & Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Deployments</span>
+          <div id="metricDeployments" class="text-3xl font-extrabold text-gray-900 mt-2">—</div>
+          <span class="text-xs text-emerald-600 font-medium mt-1 inline-block">BYOC Cloudflare Deployments</span>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Community Registrations</span>
+          <div id="metricUsers" class="text-3xl font-extrabold text-gray-900 mt-2">—</div>
+          <span class="text-xs text-brand-600 font-medium mt-1 inline-block">Registered Businesses</span>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Active TSDB Release</span>
+          <div id="metricRelease" class="text-3xl font-extrabold text-brand-600 mt-2">v3.0.0</div>
+          <span class="text-xs text-gray-500 font-medium mt-1 inline-block">Production Release</span>
+        </div>
+      </div>
+
+      <!-- Deployments Table -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 class="text-base font-bold text-gray-900">Recent Trial Deployments</h2>
+          <span class="text-xs text-gray-500">Live deployment audit</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-600">
+            <thead class="bg-gray-50 text-xs font-semibold text-gray-500 uppercase border-b border-gray-100">
+              <tr>
+                <th class="px-6 py-3">ID / Time</th>
+                <th class="px-6 py-3">Worker URL</th>
+                <th class="px-6 py-3">Cloudflare Account</th>
+                <th class="px-6 py-3">Version</th>
+                <th class="px-6 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="deploymentsTableBody" class="divide-y divide-gray-100 font-mono text-xs">
+              <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-gray-400 font-sans">
+                  Enter Admin Secret Key above and click Refresh to view live deployments.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Registrations Table -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 class="text-base font-bold text-gray-900">Registered Companies & Users</h2>
+          <span class="text-xs text-gray-500">Business license signups</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-600">
+            <thead class="bg-gray-50 text-xs font-semibold text-gray-500 uppercase border-b border-gray-100">
+              <tr>
+                <th class="px-6 py-3">Company</th>
+                <th class="px-6 py-3">Email</th>
+                <th class="px-6 py-3">Size</th>
+                <th class="px-6 py-3">Website</th>
+                <th class="px-6 py-3">Date</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody" class="divide-y divide-gray-100 text-xs">
+              <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-gray-400">
+                  Enter Admin Secret Key above and click Refresh to view registrations.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Email & Provider Settings Card -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-bold text-gray-900">Email & Mail Provider Credentials</h2>
+            <p class="text-xs text-gray-500">Configures transactional email delivery for welcome and deployment confirmation emails.</p>
+          </div>
+          <button
+            id="saveSettingsBtn"
+            class="rounded-xl bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 transition-colors cursor-pointer"
+          >
+            Save Email Settings
+          </button>
+        </div>
+        <div class="p-6">
+          <form id="settingsForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Email Provider</label>
+              <select id="settingProvider" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none">
+                <option value="sendpulse">SendPulse</option>
+                <option value="resend">Resend</option>
+                <option value="mailchannels">MailChannels</option>
+                <option value="sendgrid">SendGrid</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Sender Email (From)</label>
+              <input type="email" id="settingFromEmail" placeholder="support@zoomphant.com" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">SendPulse API User ID / API Key</label>
+              <input type="text" id="settingApiUser" placeholder="SendPulse User ID or Resend API Key" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs text-gray-900 font-mono shadow-sm focus:border-brand-500 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">SendPulse API Secret</label>
+              <input type="password" id="settingApiSecret" placeholder="SendPulse Secret Key" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs text-gray-900 font-mono shadow-sm focus:border-brand-500 focus:outline-none" />
+            </div>
+          </form>
+          <div id="settingsMsg" class="mt-3 text-xs hidden"></div>
+        </div>
+      </div>
+
+      <!-- Change Super Admin Password Card -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-bold text-gray-900">Change Admin Password</h2>
+            <p class="text-xs text-gray-500">Update your super admin password (default: <code class="font-mono bg-gray-100 px-1 py-0.5 rounded text-gray-800">ZoomPhantAdmin2026!</code>).</p>
+          </div>
+          <button
+            id="changePasswordBtn"
+            class="rounded-xl bg-gray-900 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800 transition-colors cursor-pointer"
+          >
+            Update Password
+          </button>
+        </div>
+        <div class="p-6">
+          <form id="passwordForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Current Password</label>
+              <input type="password" id="oldPasswordInput" placeholder="Current Password" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">New Strong Password</label>
+              <input type="password" id="newPasswordInput" placeholder="At least 8 characters" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none" />
+            </div>
+          </form>
+          <div id="passwordMsg" class="mt-3 text-xs hidden"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <Footer />
+
+  <script>
+    const adminKeyInput = document.getElementById('adminKeyInput') as HTMLInputElement;
+    const loadBtn = document.getElementById('loadDataBtn');
+    const depBody = document.getElementById('deploymentsTableBody');
+    const usersBody = document.getElementById('usersTableBody');
+    const metricDep = document.getElementById('metricDeployments');
+    const metricUsers = document.getElementById('metricUsers');
+
+    let activeAuthToken = '';
+
+    loadBtn?.addEventListener('click', async () => {
+      const email = (document.getElementById('adminEmailInput') as HTMLInputElement)?.value.trim();
+      const inputVal = adminKeyInput.value.trim();
+      if (!inputVal) {
+        alert('Please enter your Admin Password or Secret Key');
+        return;
+      }
+
+      loadBtn.textContent = 'Signing in...';
+
+      // 1. Try password login first if it looks like a password
+      let tokenToUse = inputVal;
+      try {
+        const loginRes = await fetch('https://api.zoomphant.com/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email || 'admin@zoomphant.com', password: inputVal }),
+        });
+        const loginData = await loginRes.json();
+        if (loginRes.ok && loginData.token) {
+          tokenToUse = loginData.token;
+          activeAuthToken = tokenToUse;
+        }
+      } catch {
+        // Fallback to direct bearer key
+      }
+
+      activeAuthToken = tokenToUse;
+
+      try {
+        const [depRes, userRes] = await Promise.all([
+          fetch('https://api.zoomphant.com/api/admin/deployments', {
+            headers: { 'Authorization': `Bearer ${tokenToUse}` }
+          }),
+          fetch('https://api.zoomphant.com/api/admin/users', {
+            headers: { 'Authorization': `Bearer ${tokenToUse}` }
+          }),
+        ]);
+
+        const depData = await depRes.json();
+        const userData = await userRes.json();
+
+        if (!depRes.ok || !userRes.ok) {
+          throw new Error(depData.error || userData.error || 'Authentication failed');
+        }
+
+        // Render metrics
+        if (metricDep) metricDep.textContent = (depData.deployments?.length || 0).toString();
+        if (metricUsers) metricUsers.textContent = (userData.registrations?.length || 0).toString();
+
+        // Render deployments
+        if (depBody) {
+          if (!depData.deployments || depData.deployments.length === 0) {
+            depBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400 font-sans">No deployments found.</td></tr>';
+          } else {
+            depBody.innerHTML = depData.deployments.map((d: any) => `
+              <tr class="hover:bg-gray-50/50">
+                <td class="px-6 py-3 font-semibold text-gray-800">${d.id}<br><span class="text-gray-400 font-normal">${new Date(d.created_at).toLocaleString()}</span></td>
+                <td class="px-6 py-3"><a href="${d.worker_url || '#'}" target="_blank" class="text-brand-600 underline">${d.worker_url || '—'}</a></td>
+                <td class="px-6 py-3 text-gray-500">${d.cf_account_id}</td>
+                <td class="px-6 py-3">v${d.release_version}</td>
+                <td class="px-6 py-3">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${d.status === 'success' ? 'bg-emerald-50 text-emerald-700' : d.status === 'failed' ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700'}">
+                    ${d.status}
+                  </span>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+
+        // Render users / registrations
+        if (usersBody) {
+          if (!userData.registrations || userData.registrations.length === 0) {
+            usersBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No registrations found.</td></tr>';
+          } else {
+            usersBody.innerHTML = userData.registrations.map((r: any) => `
+              <tr class="hover:bg-gray-50/50">
+                <td class="px-6 py-3 font-semibold text-gray-900">${r.company}</td>
+                <td class="px-6 py-3 text-gray-600">${r.email}</td>
+                <td class="px-6 py-3 text-gray-500">${r.company_size}</td>
+                <td class="px-6 py-3"><a href="${r.website}" target="_blank" class="text-brand-600 underline">${r.website}</a></td>
+                <td class="px-6 py-3 text-gray-400">${new Date(r.created_at).toLocaleDateString()}</td>
+              </tr>
+            `).join('');
+          }
+        }
+
+        // Load Settings
+        try {
+          const setRes = await fetch('https://api.zoomphant.com/api/admin/settings', {
+            headers: { 'Authorization': `Bearer ${key}` }
+          });
+          const setData = await setRes.json();
+          if (setData.success && setData.settings) {
+            const s = setData.settings;
+            const prov = document.getElementById('settingProvider') as HTMLSelectElement;
+            const fromE = document.getElementById('settingFromEmail') as HTMLInputElement;
+            const apiU = document.getElementById('settingApiUser') as HTMLInputElement;
+            const apiS = document.getElementById('settingApiSecret') as HTMLInputElement;
+
+            if (prov && s['email_provider']) prov.value = s['email_provider'];
+            if (fromE && s['email_from']) fromE.value = s['email_from'];
+            if (apiU && (s['sendpulse_user_id'] || s['email_api_key'])) apiU.value = s['sendpulse_user_id'] || s['email_api_key'];
+            if (apiS && s['sendpulse_secret']) apiS.value = s['sendpulse_secret'];
+          }
+        } catch {
+          // ignore
+        }
+
+      } catch (err: any) {
+        alert(err.message || 'Failed to load admin data');
+      } finally {
+        loadBtn.textContent = 'Authenticate & Refresh';
+      }
+    });
+
+    // Change Password Handler
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    const passwordMsg = document.getElementById('passwordMsg');
+    const oldPasswordInput = document.getElementById('oldPasswordInput') as HTMLInputElement;
+    const newPasswordInput = document.getElementById('newPasswordInput') as HTMLInputElement;
+
+    changePasswordBtn?.addEventListener('click', async () => {
+      const token = activeAuthToken || adminKeyInput.value.trim();
+      if (!token) {
+        alert('Please sign in at the top first');
+        return;
+      }
+
+      const oldPassword = oldPasswordInput.value.trim();
+      const newPassword = newPasswordInput.value.trim();
+
+      if (!newPassword || newPassword.length < 8) {
+        alert('New password must be at least 8 characters long');
+        return;
+      }
+
+      changePasswordBtn.textContent = 'Updating...';
+
+      try {
+        const res = await fetch('https://api.zoomphant.com/api/auth/change-password', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ oldPassword, newPassword }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Failed to update password');
+        }
+
+        if (passwordMsg) {
+          passwordMsg.textContent = '✅ ' + (data.message || 'Password updated successfully!');
+          passwordMsg.className = 'mt-3 text-xs text-emerald-600 font-semibold block';
+          setTimeout(() => passwordMsg.classList.add('hidden'), 5000);
+        }
+
+        oldPasswordInput.value = '';
+        newPasswordInput.value = '';
+      } catch (err: any) {
+        if (passwordMsg) {
+          passwordMsg.textContent = '❌ ' + (err.message || 'Error updating password');
+          passwordMsg.className = 'mt-3 text-xs text-red-600 block';
+        }
+      } finally {
+        changePasswordBtn.textContent = 'Update Password';
+      }
+    });
+
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    const settingsMsg = document.getElementById('settingsMsg');
+
+    saveSettingsBtn?.addEventListener('click', async () => {
+      const key = adminKeyInput.value.trim();
+      if (!key) {
+        alert('Please enter Admin Secret Key at the top');
+        return;
+      }
+
+      const prov = (document.getElementById('settingProvider') as HTMLSelectElement).value;
+      const fromE = (document.getElementById('settingFromEmail') as HTMLInputElement).value;
+      const apiU = (document.getElementById('settingApiUser') as HTMLInputElement).value;
+      const apiS = (document.getElementById('settingApiSecret') as HTMLInputElement).value;
+
+      saveSettingsBtn.textContent = 'Saving...';
+
+      try {
+        const res = await fetch('https://api.zoomphant.com/api/admin/settings', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${key}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email_provider: prov,
+            email_from: fromE,
+            sendpulse_user_id: apiU,
+            sendpulse_secret: apiS,
+            email_api_key: apiU,
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save settings');
+
+        if (settingsMsg) {
+          settingsMsg.textContent = 'Settings saved successfully!';
+          settingsMsg.className = 'mt-3 text-xs text-emerald-600 block';
+          setTimeout(() => settingsMsg.classList.add('hidden'), 4000);
+        }
+      } catch (err: any) {
+        alert(err.message || 'Error saving settings');
+      } finally {
+        saveSettingsBtn.textContent = 'Save Email Settings';
+      }
+    });
+  </script>
+</BaseLayout>
+

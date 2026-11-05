@@ -1,0 +1,328 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout title="Self-Service Trial — Deploy ZoomPhant TSDB on Cloudflare">
+  <Header currentPath={Astro.url.pathname} />
+
+  <main class="min-h-screen bg-gray-50/50 py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+      
+      <!-- Top Header / Value Prop -->
+      <div class="text-center mb-10">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold text-brand-700 ring-1 ring-inset ring-brand-700/10">
+          <svg class="h-1.5 w-1.5 fill-brand-500" viewBox="0 0 6 6" aria-hidden="true">
+            <circle cx="3" cy="3" r="3" />
+          </svg>
+          Bring Your Own Cloud (BYOC)
+        </span>
+        <h1 class="mt-4 text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">
+          Launch TSDB on Your Cloudflare
+        </h1>
+        <p class="mt-3 text-base text-gray-600 max-w-xl mx-auto">
+          Deploy a complete, production-grade TSDB cluster (Durable Objects, R2, and Portal UI) into your own Cloudflare account in under 60 seconds.
+        </p>
+      </div>
+
+      <!-- Main Wizard Card -->
+      <div class="bg-white rounded-3xl border border-gray-200/80 shadow-xl shadow-gray-100/50 overflow-hidden">
+        
+        <!-- Form View -->
+        <div id="formSection" class="p-8 sm:p-10">
+          <form id="deployForm" class="space-y-6">
+            
+            <!-- Step 1: Cloudflare Account ID -->
+            <div>
+              <div class="flex items-center justify-between">
+                <label for="accountId" class="block text-sm font-semibold text-gray-900">
+                  1. Cloudflare Account ID
+                </label>
+                <span class="text-xs text-gray-500">32-character hex ID</span>
+              </div>
+              <p class="text-xs text-gray-500 mt-0.5 mb-2">
+                Found on the right sidebar of your Cloudflare <strong>Workers & Pages</strong> dashboard overview.
+              </p>
+              <input
+                type="text"
+                id="accountId"
+                name="accountId"
+                required
+                placeholder="e.g. 457d7f2f5113f6a89dd35d6b28d24835"
+                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 font-mono shadow-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition-all"
+              />
+            </div>
+
+            <!-- Step 2: Cloudflare API Token -->
+            <div>
+              <div class="flex items-center justify-between">
+                <label for="apiToken" class="block text-sm font-semibold text-gray-900">
+                  2. Cloudflare API Token
+                </label>
+                <a
+                  href="https://dash.cloudflare.com/profile/api-tokens?template=edit-cloudflare-workers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:text-brand-700"
+                >
+                  Create Token (1-Click Template) →
+                </a>
+              </div>
+              <p class="text-xs text-gray-500 mt-0.5 mb-2">
+                Needs <strong>Workers Scripts: Edit</strong>, <strong>Workers KV: Edit</strong>, and <strong>Workers R2: Edit</strong>. Tokens are used in-memory only and never saved.
+              </p>
+              <input
+                type="password"
+                id="apiToken"
+                name="apiToken"
+                required
+                placeholder="Cloudflare API Bearer Token"
+                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 font-mono shadow-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition-all"
+              />
+            </div>
+
+            <!-- Step 3: Admin Password / Token -->
+            <div>
+              <label for="adminPassword" class="block text-sm font-semibold text-gray-900">
+                3. Super-Admin Token
+              </label>
+              <p class="text-xs text-gray-500 mt-0.5 mb-2">
+                Bearer token used to authenticate to your TSDB Portal UI and ingest APIs.
+              </p>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="adminPassword"
+                  name="adminPassword"
+                  value=""
+                  placeholder="Generating secure token..."
+                  class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 font-mono shadow-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            <!-- Error Banner -->
+            <div id="errorBanner" class="hidden rounded-xl bg-red-50 p-4 border border-red-200 text-sm text-red-700">
+              <span id="errorMessage"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              id="submitBtn"
+              class="w-full rounded-xl bg-brand-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-brand-500/25 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Deploy TSDB into My Account
+            </button>
+
+            <!-- Guarantees -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-center text-xs text-gray-500">
+              <div class="flex items-center justify-center gap-1.5">
+                <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Zero local setup
+              </div>
+              <div class="flex items-center justify-center gap-1.5">
+                <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                100% Data Sovereignty
+              </div>
+              <div class="flex items-center justify-center gap-1.5">
+                <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Tokens never stored
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Progress / Deploying View (Hidden by default) -->
+        <div id="progressSection" class="hidden p-10 sm:p-14 text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-50 text-brand-600 mb-6">
+            <svg class="animate-spin h-8 w-8" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900">Provisioning Your TSDB Cluster...</h3>
+          <p class="mt-2 text-sm text-gray-500 max-w-sm mx-auto">
+            Please keep this tab open while Cloudflare provisions your storage, KV caches, and Durable Objects.
+          </p>
+
+          <div class="mt-8 max-w-md mx-auto space-y-3 text-left">
+            <div id="step1" class="flex items-center gap-3 text-sm text-brand-600 font-medium">
+              <span class="step-icon">⏳</span> Validating credentials & Workers Paid plan...
+            </div>
+            <div id="step2" class="flex items-center gap-3 text-sm text-gray-400">
+              <span class="step-icon">○</span> Provisioning R2 bucket (tsdb-blocks) & KV cache...
+            </div>
+            <div id="step3" class="flex items-center gap-3 text-sm text-gray-400">
+              <span class="step-icon">○</span> Uploading TSDB engine & React Portal assets...
+            </div>
+            <div id="step4" class="flex items-center gap-3 text-sm text-gray-400">
+              <span class="step-icon">○</span> Setting up security secrets & live routing...
+            </div>
+          </div>
+        </div>
+
+        <!-- Success View (Hidden by default) -->
+        <div id="successSection" class="hidden p-8 sm:p-12 text-center bg-gradient-to-b from-white to-emerald-50/30">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mb-6">
+            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 class="text-3xl font-extrabold text-gray-900">Deployment Complete!</h2>
+          <p class="mt-2 text-base text-gray-600">Your TSDB instance is live on Cloudflare's edge network.</p>
+
+          <!-- Live Endpoint Card -->
+          <div class="mt-8 p-6 bg-white rounded-2xl border border-gray-200 shadow-sm text-left">
+            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Live Worker URL</span>
+            <div class="mt-1 flex items-center justify-between">
+              <a id="liveUrlLink" href="#" target="_blank" class="text-base sm:text-lg font-bold text-brand-600 hover:text-brand-700 underline truncate"></a>
+              <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">Healthy</span>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-gray-100">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Quick Ingestion Test</span>
+              <p class="text-xs text-gray-500 mt-1 mb-2">Run this command in your terminal to ingest your first test metric:</p>
+              <pre id="curlBox" class="p-3 bg-gray-900 text-gray-100 rounded-xl text-xs overflow-x-auto font-mono select-all"></pre>
+            </div>
+          </div>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              id="openPortalBtn"
+              href="#"
+              target="_blank"
+              class="rounded-xl bg-brand-600 px-6 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all text-center"
+            >
+              Open TSDB Portal →
+            </a>
+            <a
+              href="/docs/quickstart/"
+              class="rounded-xl border border-gray-300 bg-white px-6 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all text-center"
+            >
+              Read Quickstart Guide
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <Footer />
+
+  <script>
+    // Auto-generate random secure admin token
+    const adminInput = document.getElementById('adminPassword') as HTMLInputElement;
+    if (adminInput && !adminInput.value) {
+      const randomHex = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+      adminInput.value = `tsdb_admin_${randomHex}`;
+    }
+
+    const form = document.getElementById('deployForm');
+    const formSection = document.getElementById('formSection');
+    const progressSection = document.getElementById('progressSection');
+    const successSection = document.getElementById('successSection');
+    const errorBanner = document.getElementById('errorBanner');
+    const errorMessage = document.getElementById('errorMessage');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBanner?.classList.add('hidden');
+
+      const accountId = (document.getElementById('accountId') as HTMLInputElement).value.trim();
+      const apiToken = (document.getElementById('apiToken') as HTMLInputElement).value.trim();
+      const adminPassword = (document.getElementById('adminPassword') as HTMLInputElement).value.trim();
+
+      // Show Progress View
+      formSection?.classList.add('hidden');
+      progressSection?.classList.remove('hidden');
+
+      const s1 = document.getElementById('step1');
+      const s2 = document.getElementById('step2');
+      const s3 = document.getElementById('step3');
+      const s4 = document.getElementById('step4');
+
+      // Animate progress indicators
+      const timer1 = setTimeout(() => {
+        if (s1 && s2) {
+          s1.innerHTML = '<span>✅</span> Credentials & Workers plan verified';
+          s1.className = 'flex items-center gap-3 text-sm text-emerald-600 font-medium';
+          s2.innerHTML = '<span class="step-icon">⏳</span> Provisioning R2 bucket & KV cache...';
+          s2.className = 'flex items-center gap-3 text-sm text-brand-600 font-medium';
+        }
+      }, 3500);
+
+      const timer2 = setTimeout(() => {
+        if (s2 && s3) {
+          s2.innerHTML = '<span>✅</span> R2 & KV cache provisioned';
+          s2.className = 'flex items-center gap-3 text-sm text-emerald-600 font-medium';
+          s3.innerHTML = '<span class="step-icon">⏳</span> Uploading TSDB engine & React Portal assets...';
+          s3.className = 'flex items-center gap-3 text-sm text-brand-600 font-medium';
+        }
+      }, 9000);
+
+      try {
+        const res = await fetch('https://api.zoomphant.com/api/deploy-trial', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accountId, apiToken, adminPassword }),
+        });
+
+        const data = await res.json();
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Deployment failed. Please check your token and account permissions.');
+        }
+
+        // Show Success View
+        progressSection?.classList.add('hidden');
+        successSection?.classList.remove('hidden');
+
+        const liveUrl = data.liveUrl;
+        const liveUrlLink = document.getElementById('liveUrlLink') as HTMLAnchorElement;
+        const openPortalBtn = document.getElementById('openPortalBtn') as HTMLAnchorElement;
+        const curlBox = document.getElementById('curlBox');
+
+        if (liveUrlLink) {
+          liveUrlLink.href = liveUrl;
+          liveUrlLink.textContent = liveUrl;
+        }
+        if (openPortalBtn) {
+          openPortalBtn.href = liveUrl;
+        }
+        if (curlBox) {
+          curlBox.textContent = data.curlSample;
+        }
+
+      } catch (err: any) {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        progressSection?.classList.add('hidden');
+        formSection?.classList.remove('hidden');
+        if (errorBanner && errorMessage) {
+          errorMessage.textContent = err.message || 'An error occurred during deployment.';
+          errorBanner.classList.remove('hidden');
+        }
+      }
+    });
+  </script>
+</BaseLayout>
+
