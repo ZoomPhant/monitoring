@@ -22,7 +22,7 @@ import '../styles/global.css';
         </p>
       </div>
 
-      <form class="mt-8 space-y-6" action="https://api.zoomphant.com/api/register" method="POST" id="registrationForm">
+      <form class="mt-8 space-y-6" id="registrationForm">
         <!-- Section 1: Required Details -->
         <div class="space-y-4">
           <h3 class="text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2 flex items-center justify-between">
@@ -147,18 +147,22 @@ import '../styles/global.css';
 
   <Footer />
 
-  <script is:inline>
-    const form = document.getElementById('registrationForm');
+  <script>
+    import { apiClient } from '../utils/apiClient';
+
+    const form = document.getElementById('registrationForm') as HTMLFormElement;
     const successDiv = document.getElementById('registrationSuccess');
     const errorDiv = document.getElementById('registrationError');
     if (form) {
       // Setup Custom Dropdowns
-      function setupDropdown(btnId, optionsId, inputId, textId, defaultValueText) {
+      function setupDropdown(btnId: string, optionsId: string, inputId: string, textId: string, defaultValueText: string) {
         const btn = document.getElementById(btnId);
         const optionsList = document.getElementById(optionsId);
-        const input = document.getElementById(inputId);
+        const input = document.getElementById(inputId) as HTMLInputElement;
         const textSpan = document.getElementById(textId);
-        const options = optionsList.querySelectorAll('li');
+        const options = optionsList?.querySelectorAll('li');
+
+        if (!btn || !optionsList || !input || !textSpan || !options) return;
 
         // Toggle open/close dropdown
         btn.addEventListener('click', (e) => {
@@ -175,7 +179,7 @@ import '../styles/global.css';
         options.forEach(option => {
           option.addEventListener('click', () => {
             const val = option.getAttribute('data-val');
-            input.value = val;
+            input.value = val || '';
             
             // Highlight selected item, remove highlight from others
             options.forEach(opt => {
@@ -184,7 +188,7 @@ import '../styles/global.css';
             
             if (val !== '') {
               option.classList.add('font-semibold', 'bg-brand-50', 'text-brand-900');
-              textSpan.textContent = option.textContent.trim();
+              textSpan.textContent = option.textContent?.trim() || '';
               textSpan.classList.remove('text-gray-400');
               textSpan.classList.add('text-gray-900');
             } else {
@@ -199,51 +203,53 @@ import '../styles/global.css';
       setupDropdown('companySizeDropdownBtn', 'companySizeOptions', 'companySizeInput', 'companySizeSelectedText', 'Select company size...');
       setupDropdown('infrastructureDropdownBtn', 'infrastructureOptions', 'infrastructureInput', 'infrastructureSelectedText', 'Select infrastructure type...');
 
-      const submitBtn = form.querySelector('button[type="submit"]');
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        errorDiv.classList.add('hidden');
-        submitBtn.disabled = true;
-        const originalBtnText = submitBtn.textContent;
-        submitBtn.textContent = 'Submitting...';
+        errorDiv?.classList.add('hidden');
+        if (submitBtn) submitBtn.disabled = true;
+        const originalBtnText = submitBtn?.textContent || 'Register';
+        if (submitBtn) submitBtn.textContent = 'Submitting...';
         
         const formData = new FormData(form);
-        const data = {};
-        
+        const data: Record<string, any> = {};
         formData.forEach((value, key) => {
           data[key] = value;
         });
         
         try {
-          const res = await fetch(form.action, {
+          const result = await apiClient('/api/register', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
           });
           
-          const result = await res.json();
-          
-          if (res.status === 200 && result.success) {
+          if (result.success) {
             form.classList.add('hidden');
-            successDiv.classList.remove('hidden');
+            successDiv?.classList.remove('hidden');
             setTimeout(() => {
               window.location.href = '/';
             }, 3000);
           } else {
-            errorDiv.textContent = result.error || 'Failed to submit registration. Please try again.';
+            if (errorDiv) {
+              errorDiv.textContent = result.error || 'Failed to submit registration. Please try again.';
+              errorDiv.classList.remove('hidden');
+            }
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalBtnText;
+            }
+          }
+        } catch (err: any) {
+          console.error('Registration submission error:', err);
+          if (errorDiv) {
+            errorDiv.textContent = err.message || 'Network error. Please check your internet connection and try again.';
             errorDiv.classList.remove('hidden');
+          }
+          if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.textContent = originalBtnText;
           }
-        } catch (err) {
-          console.error('Registration submission error:', err);
-          errorDiv.textContent = 'Network error. Please check your internet connection and try again.';
-          errorDiv.classList.remove('hidden');
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalBtnText;
         }
       });
     }

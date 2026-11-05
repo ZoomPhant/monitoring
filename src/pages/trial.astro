@@ -225,6 +225,8 @@ import '../styles/global.css';
   <Footer />
 
   <script>
+    import { apiClient } from '../utils/apiClient';
+
     // Auto-generate random secure admin token
     const adminInput = document.getElementById('adminPassword') as HTMLInputElement;
     if (adminInput && !adminInput.value) {
@@ -278,19 +280,13 @@ import '../styles/global.css';
       }, 9000);
 
       try {
-        const res = await fetch('https://api.zoomphant.com/api/deploy-trial', {
+        const data = await apiClient('/api/deploy-trial', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ accountId, apiToken, adminPassword }),
         });
 
-        const data = await res.json();
         clearTimeout(timer1);
         clearTimeout(timer2);
-
-        if (!res.ok || !data.success) {
-          throw new Error(data.error || 'Deployment failed. Please check your token and account permissions.');
-        }
 
         // Show Success View
         progressSection?.classList.add('hidden');
