@@ -9,10 +9,10 @@ import '../styles/global.css';
   <Header currentPath={Astro.url.pathname} />
 
   <main class="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full bg-white p-8 sm:p-10 rounded-3xl border border-gray-200 shadow-xl shadow-gray-100/50">
+    <div class="max-w-3xl w-full bg-white p-8 sm:p-10 rounded-3xl border border-gray-200 shadow-xl shadow-gray-100/50">
       
       <!-- Brand Header -->
-      <div class="text-center">
+      <div class="text-center mb-8">
         <a href="/" class="inline-flex items-center gap-2 text-2xl font-bold text-gray-900 mb-2">
           <img src="/logo.svg" alt="ZoomPhant" class="h-9 w-9" />
           ZoomPhant
@@ -21,197 +21,174 @@ import '../styles/global.css';
         <p id="pageSubtitle" class="text-xs text-gray-500 mt-1">Sign in to manage your deployments and access the console.</p>
       </div>
 
-      <!-- Tab Buttons: Sign In / Create Account -->
-      <div class="flex rounded-xl bg-gray-100 p-1 mt-6 text-xs font-semibold">
-        <button
-          type="button"
-          id="tabSignIn"
-          class="flex-1 rounded-lg py-2 text-center text-gray-900 bg-white shadow-sm transition-all cursor-pointer"
-        >
-          Sign In
-        </button>
-        <button
-          type="button"
-          id="tabSignUp"
-          class="flex-1 rounded-lg py-2 text-center text-gray-500 hover:text-gray-900 transition-all cursor-pointer"
-        >
-          Create Account
-        </button>
-      </div>
-
-      <!-- Social Sign In Buttons -->
-      <div class="mt-6 space-y-2.5">
-        <!-- Google Sign-In -->
-        <a
-          id="googleAuthLink"
-          href="#"
-          class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-all"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-          </svg>
-          <span id="googleBtnText">Continue with Google</span>
-        </a>
-
-        <!-- GitHub Sign-In -->
-        <a
-          id="githubAuthLink"
-          href="#"
-          class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-all"
-        >
-          <svg class="h-4 w-4 fill-gray-900" viewBox="0 0 24 24">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-          </svg>
-          <span id="githubBtnText">Continue with GitHub</span>
-        </a>
-      </div>
-
-      <!-- Divider -->
-      <div class="relative my-6">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-200"></div>
-        </div>
-        <div class="relative flex justify-center text-xs">
-          <span class="bg-white px-3 text-gray-400">or continue with email</span>
-        </div>
-      </div>
-
-      <!-- Social Sign In Buttons -->
-      <div class="mt-6 space-y-2.5">
-        <!-- Google Sign-In -->
-        <a
-          id="googleAuthLink"
-          href="#"
-          class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-all"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-          </svg>
-          <span id="googleBtnText">Continue with Google</span>
-        </a>
-
-        <!-- GitHub Sign-In -->
-        <a
-          id="githubAuthLink"
-          href="#"
-          class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-all"
-        >
-          <svg class="h-4 w-4 fill-gray-900" viewBox="0 0 24 24">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-          </svg>
-          <span id="githubBtnText">Continue with GitHub</span>
-        </a>
-      </div>
-
-      <!-- Divider -->
-      <div class="relative my-6">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-200"></div>
-        </div>
-        <div class="relative flex justify-center text-xs">
-          <span class="bg-white px-3 text-gray-400">or continue with email</span>
-        </div>
-      </div>
-
       <!-- Error / Alert Banner -->
-      <div id="authAlert" class="hidden p-3 rounded-xl text-xs font-medium border mb-4"></div>
+      <div id="authAlert" class="hidden p-3.5 rounded-xl text-xs font-medium border mb-6"></div>
 
-      <!-- Sign In Form -->
-      <form id="signInForm" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
-          <input
-            type="email"
-            id="signInEmail"
-            required
-            placeholder="admin@zoomphant.com"
-            class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
-          />
-        </div>
+      <!-- 2-Column Auth Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 relative">
 
-        <div>
-          <div class="flex items-center justify-between mb-1">
-            <label class="block text-xs font-semibold text-gray-700">Password</label>
-            <span class="text-xs text-gray-400">Default: <code class="font-mono bg-gray-50 px-1 py-0.5 rounded">ZoomPhantAdmin2026!</code></span>
+        <!-- Column 1: Email & Password (Sign In / Sign Up) -->
+        <div class="space-y-5">
+          <!-- Tab Buttons: Sign In / Create Account -->
+          <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-semibold">
+            <button
+              type="button"
+              id="tabSignIn"
+              class="flex-1 rounded-lg py-2 text-center text-gray-900 bg-white shadow-sm transition-all cursor-pointer"
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              id="tabSignUp"
+              class="flex-1 rounded-lg py-2 text-center text-gray-500 hover:text-gray-900 transition-all cursor-pointer"
+            >
+              Create Account
+            </button>
           </div>
-          <input
-            type="password"
-            id="signInPassword"
-            required
-            placeholder="••••••••"
-            class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
-          />
+
+          <!-- Sign In Form -->
+          <form id="signInForm" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
+              <input
+                type="email"
+                id="signInEmail"
+                required
+                placeholder="name@company.com"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-semibold text-gray-700">Password</label>
+              </div>
+              <input
+                type="password"
+                id="signInPassword"
+                required
+                placeholder="••••••••"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              id="signInBtn"
+              class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer mt-2"
+            >
+              Sign In
+            </button>
+          </form>
+
+          <!-- Create Account Form (Hidden by default) -->
+          <form id="signUpForm" class="hidden space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
+              <input
+                type="text"
+                id="signUpName"
+                required
+                placeholder="Alex Rivera"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Business Email</label>
+              <input
+                type="email"
+                id="signUpEmail"
+                required
+                placeholder="alex@company.com"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Company / Organization</label>
+              <input
+                type="text"
+                id="signUpCompany"
+                placeholder="Acme Inc."
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+              <input
+                type="password"
+                id="signUpPassword"
+                required
+                minlength="8"
+                placeholder="At least 8 characters"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              id="signUpBtn"
+              class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer mt-2"
+            >
+              Create Free Account
+            </button>
+          </form>
         </div>
 
-        <button
-          type="submit"
-          id="signInBtn"
-          class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer mt-2"
-        >
-          Sign In
-        </button>
-      </form>
+        <!-- Column 2: Social Single Sign-On -->
+        <div class="flex flex-col justify-between pt-6 md:pt-0 border-t md:border-t-0 md:border-l md:border-gray-200 md:pl-10 space-y-6">
+          <div>
+            <h3 class="text-sm font-bold text-gray-900 mb-1">Instant Single Sign-On</h3>
+            <p class="text-xs text-gray-500 mb-5">Access your dashboard and self-service deployments instantly via your existing provider.</p>
 
-      <!-- Create Account Form (Hidden by default) -->
-      <form id="signUpForm" class="hidden space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
-          <input
-            type="text"
-            id="signUpName"
-            required
-            placeholder="Alex Rivera"
-            class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
-          />
+            <div class="space-y-3">
+              <!-- Google Sign-In -->
+              <a
+                id="googleAuthLink"
+                href="#"
+                class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-3 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-all"
+              >
+                <svg class="h-4 w-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+                <span>Continue with Google</span>
+              </a>
+
+              <!-- GitHub Sign-In -->
+              <a
+                id="githubAuthLink"
+                href="#"
+                class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-3 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-all"
+              >
+                <svg class="h-4 w-4 fill-gray-900" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                </svg>
+                <span>Continue with GitHub</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4 text-xs text-gray-500 space-y-1.5">
+            <div class="font-semibold text-gray-700 flex items-center gap-1.5">
+              <svg class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              No Credit Card Required
+            </div>
+            <p>Sign up to receive free business trial licenses and deploy TSDB to your own Cloudflare infrastructure.</p>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1">Business Email</label>
-          <input
-            type="email"
-            id="signUpEmail"
-            required
-            placeholder="alex@company.com"
-            class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
-          />
-        </div>
+      </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1">Company / Organization</label>
-          <input
-            type="text"
-            id="signUpCompany"
-            placeholder="Acme Inc."
-            class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
-          <input
-            type="password"
-            id="signUpPassword"
-            required
-            minlength="8"
-            placeholder="At least 8 characters"
-            class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
-          />
-        </div>
-
-        <button
-          type="submit"
-          id="signUpBtn"
-          class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer mt-2"
-        >
-          Create Free Account
-        </button>
-      </form>
+    </div>
+  </main>
 
     </div>
   </main>
