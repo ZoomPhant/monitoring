@@ -197,6 +197,30 @@ import '../styles/global.css';
               </div>
             </div>
 
+            <!-- Step 4: Data Retention Policy -->
+            <div>
+              <div class="flex items-center justify-between">
+                <label for="retentionDays" class="block text-sm font-semibold text-gray-900">
+                  4. Data Retention Policy
+                </label>
+                <span class="text-xs font-sans text-gray-400">Cloudflare R2 Lifecycle</span>
+              </div>
+              <p class="text-xs text-gray-500 mt-0.5 mb-2">
+                Data older than this in your R2 bucket will automatically expire without extra storage cost.
+              </p>
+              <select
+                id="retentionDays"
+                name="retentionDays"
+                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 font-medium shadow-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition-all cursor-pointer"
+              >
+                <option value="90">3 Months (90 days) - Minimal Storage</option>
+                <option value="180">6 Months (180 days) - Standard Metrics</option>
+                <option value="365" selected>1 Year (365 days) - Recommended Default</option>
+                <option value="1095">3 Years (1,095 days) - Extended Compliance</option>
+                <option value="3650">10 Years (3,650 days) - Long-term Archive</option>
+              </select>
+            </div>
+
             <!-- Error Banner -->
             <div id="errorBanner" class="hidden rounded-xl bg-red-50 p-4 border border-red-200 text-sm text-red-700">
               <span id="errorMessage"></span>
@@ -371,6 +395,7 @@ import '../styles/global.css';
       const accountId = (document.getElementById('accountId') as HTMLInputElement).value.trim();
       const apiToken = (document.getElementById('apiToken') as HTMLInputElement).value.trim();
       const adminPassword = (document.getElementById('adminPassword') as HTMLInputElement).value.trim();
+      const retentionDays = parseInt((document.getElementById('retentionDays') as HTMLSelectElement)?.value || '365', 10);
 
       // Show Progress View
       formSection?.classList.add('hidden');
@@ -386,14 +411,14 @@ import '../styles/global.css';
         if (s1 && s2) {
           s1.innerHTML = '<span>✅</span> Credentials & Workers plan verified';
           s1.className = 'flex items-center gap-3 text-sm text-emerald-600 font-medium';
-          s2.innerHTML = '<span class="step-icon">⏳</span> Provisioning R2 bucket & KV cache...';
+          s2.innerHTML = '<span class="step-icon">⏳</span> Provisioning R2 bucket & lifecycle policy...';
           s2.className = 'flex items-center gap-3 text-sm text-brand-600 font-medium';
         }
       }, 3500);
 
       const timer2 = setTimeout(() => {
         if (s2 && s3) {
-          s2.innerHTML = '<span>✅</span> R2 & KV cache provisioned';
+          s2.innerHTML = '<span>✅</span> R2 bucket & lifecycle policy provisioned';
           s2.className = 'flex items-center gap-3 text-sm text-emerald-600 font-medium';
           s3.innerHTML = '<span class="step-icon">⏳</span> Uploading TSDB engine & React Portal assets...';
           s3.className = 'flex items-center gap-3 text-sm text-brand-600 font-medium';
@@ -403,7 +428,7 @@ import '../styles/global.css';
       try {
         const data = await apiClient('/api/deploy-trial', {
           method: 'POST',
-          body: JSON.stringify({ accountId, apiToken, adminPassword }),
+          body: JSON.stringify({ accountId, apiToken, adminPassword, retentionDays }),
         });
 
         clearTimeout(timer1);
