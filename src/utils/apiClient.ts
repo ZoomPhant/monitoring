@@ -2,7 +2,7 @@
  * Dynamic API Client for ZoomPhant
  * Automatically routes requests to the correct API domain based on environment:
  *   - Local test: http://localhost:3070
- *   - Test env (zoomphant.cn): https://api.zoomphant.cn
+ *   - Test env (zoomphant.cn): http://api.zoomphant.cn
  *   - Production (zoomphant.com): https://api.zoomphant.com
  */
 
@@ -21,12 +21,13 @@ export function getApiBaseUrl(): string {
 
   // 1. Local Development
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:3070';
+    return 'http://localhost:1070';
   }
 
-  // 2. Test Environment (.cn)
+  // 2. Test Environment (.cn) - Dev environment uses HTTP
   if (hostname.endsWith('zoomphant.cn')) {
-    return 'https://api.zoomphant.cn';
+    const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+    return `${protocol}//api.zoomphant.cn`;
   }
 
   // 3. Production Environment (.com)

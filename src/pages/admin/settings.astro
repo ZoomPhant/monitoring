@@ -1,0 +1,467 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import AdminNav from '../../components/AdminNav.astro';
+import '../../styles/global.css';
+---
+
+<BaseLayout title="Platform Settings — ZoomPhant Admin">
+  <Header currentPath={Astro.url.pathname} />
+  <AdminNav activeTab="settings" />
+
+  <main class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto space-y-8">
+      
+      <!-- Top Title Bar -->
+      <div>
+        <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Platform Settings & Security</h2>
+        <p class="text-xs text-gray-500 mt-0.5">Manage email provider credentials, default deployment parameters, and admin security.</p>
+      </div>
+
+      <!-- Main Settings Card with Sub-Tabs -->
+      <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+        
+        <!-- Settings Sub-Tabs Header -->
+        <div class="px-6 pt-5 border-b border-gray-200">
+          <div class="flex space-x-6 overflow-x-auto" id="settingsTabsHeader">
+            <button
+              type="button"
+              id="tabBtnEmail"
+              class="pb-4 px-1 border-b-2 border-brand-600 text-brand-600 font-bold text-sm flex items-center gap-2 cursor-pointer transition-colors"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span>Email & Delivery</span>
+            </button>
+
+            <button
+              type="button"
+              id="tabBtnDeploy"
+              class="pb-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm flex items-center gap-2 cursor-pointer transition-colors"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              <span>Deployment Defaults</span>
+            </button>
+
+            <button
+              type="button"
+              id="tabBtnSecurity"
+              class="pb-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm flex items-center gap-2 cursor-pointer transition-colors"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span>Admin Security</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Panel 1: Email & Delivery Settings -->
+        <div id="panelEmail" class="p-6 sm:p-8 block">
+          <form id="emailSettingsForm" class="space-y-6 max-w-3xl">
+            <div>
+              <h3 class="text-base font-bold text-gray-900">Transactional Email Delivery</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Used for sending trial confirmation notices and product updates.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="settingProvider" class="block text-xs font-semibold text-gray-700 mb-1.5">Email Provider</label>
+                <select id="settingProvider" class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none">
+                  <option value="sendpulse">SendPulse</option>
+                  <option value="resend">Resend</option>
+                  <option value="mailchannels">MailChannels</option>
+                  <option value="sendgrid">SendGrid</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="settingFromEmail" class="block text-xs font-semibold text-gray-700 mb-1.5">Sender Email Address (From)</label>
+                <input
+                  type="email"
+                  id="settingFromEmail"
+                  placeholder="admin@zoomphant.com"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="settingApiUser" class="block text-xs font-semibold text-gray-700 mb-1.5">API User ID / API Key</label>
+                <input
+                  type="text"
+                  id="settingApiUser"
+                  placeholder="SendPulse Client ID or Resend API Key"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 font-mono shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="settingApiSecret" class="block text-xs font-semibold text-gray-700 mb-1.5">API Secret Key</label>
+                <input
+                  type="password"
+                  id="settingApiSecret"
+                  placeholder="SendPulse Client Secret"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 font-mono shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div id="emailSettingsMsg" class="hidden text-xs"></div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                id="saveEmailBtn"
+                class="rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-brand-700 transition-colors cursor-pointer"
+              >
+                Save Email Settings
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Panel 2: Deployment Defaults Settings -->
+        <div id="panelDeploy" class="p-6 sm:p-8 hidden">
+          <form id="deploySettingsForm" class="space-y-6 max-w-3xl">
+            <div>
+              <h3 class="text-base font-bold text-gray-900">Default Trial Deployment Configuration</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Parameters applied when signed-in users click 1-Click Deploy TSDB.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="settingDefaultVersion" class="block text-xs font-semibold text-gray-700 mb-1.5">Default TSDB Version</label>
+                <input
+                  type="text"
+                  id="settingDefaultVersion"
+                  placeholder="3.0.0"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs font-mono text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+                <p class="text-[11px] text-gray-400 mt-1">Fallback if no active version is tagged in R2.</p>
+              </div>
+
+              <div>
+                <label for="settingDefaultWorkerName" class="block text-xs font-semibold text-gray-700 mb-1.5">Default Worker Script Name</label>
+                <input
+                  type="text"
+                  id="settingDefaultWorkerName"
+                  placeholder="tsdb"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs font-mono text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+                <p class="text-[11px] text-gray-400 mt-1">Worker name in user's Cloudflare account.</p>
+              </div>
+
+              <div>
+                <label for="settingMaxDeployments" class="block text-xs font-semibold text-gray-700 mb-1.5">Max Deployments Per User</label>
+                <input
+                  type="number"
+                  id="settingMaxDeployments"
+                  placeholder="3"
+                  min="1"
+                  max="50"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs font-mono text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="settingDefaultProfile" class="block text-xs font-semibold text-gray-700 mb-1.5">Storage Retention Profile</label>
+                <select id="settingDefaultProfile" class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none">
+                  <option value="paid">Workers Paid (60 days raw / 1 yr rollup)</option>
+                  <option value="free">Standard (14 days raw / 90 days rollup)</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="deploySettingsMsg" class="hidden text-xs"></div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                id="saveDeployBtn"
+                class="rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-brand-700 transition-colors cursor-pointer"
+              >
+                Save Deployment Defaults
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Panel 3: Admin Security Settings -->
+        <div id="panelSecurity" class="p-6 sm:p-8 hidden">
+          <form id="passwordForm" class="space-y-6 max-w-2xl">
+            <div>
+              <h3 class="text-base font-bold text-gray-900">Super Admin Credentials</h3>
+              <p class="text-xs text-gray-500 mt-0.5">
+                Change password for the master admin account (<code class="font-mono bg-gray-100 px-1 py-0.5 rounded text-gray-800">admin@zoomphant.com</code>).
+              </p>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label for="oldPasswordInput" class="block text-xs font-semibold text-gray-700 mb-1.5">Current Password</label>
+                <input
+                  type="password"
+                  id="oldPasswordInput"
+                  required
+                  placeholder="Current master password"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="newPasswordInput" class="block text-xs font-semibold text-gray-700 mb-1.5">New Strong Password</label>
+                <input
+                  type="password"
+                  id="newPasswordInput"
+                  required
+                  placeholder="At least 8 characters long"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div id="passwordMsg" class="hidden text-xs"></div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                id="changePasswordBtn"
+                class="rounded-xl bg-gray-900 px-5 py-2.5 text-xs font-semibold text-white hover:bg-gray-800 transition-colors cursor-pointer"
+              >
+                Update Master Password
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <Footer />
+
+  <script>
+    import { apiClient } from '../../utils/apiClient';
+
+    // 1. Guard route: Verify Admin Authentication
+    const token = localStorage.getItem('zp_token');
+    const userStr = localStorage.getItem('zp_user');
+    let user = null;
+
+    try {
+      if (userStr) user = JSON.parse(userStr);
+    } catch {}
+
+    if (!token || user?.role !== 'admin') {
+      window.location.href = '/login/?redirect=/admin/settings/';
+    }
+
+    // Sub-tab switching
+    const tabBtnEmail = document.getElementById('tabBtnEmail');
+    const tabBtnDeploy = document.getElementById('tabBtnDeploy');
+    const tabBtnSecurity = document.getElementById('tabBtnSecurity');
+
+    const panelEmail = document.getElementById('panelEmail');
+    const panelDeploy = document.getElementById('panelDeploy');
+    const panelSecurity = document.getElementById('panelSecurity');
+
+    function switchSettingsTab(tab: 'email' | 'deploy' | 'security') {
+      const activeClasses = ['border-brand-600', 'text-brand-600', 'font-bold'];
+      const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300'];
+
+      [tabBtnEmail, tabBtnDeploy, tabBtnSecurity].forEach((btn) => {
+        btn?.classList.remove(...activeClasses);
+        btn?.classList.add(...inactiveClasses);
+      });
+
+      panelEmail?.classList.add('hidden');
+      panelDeploy?.classList.add('hidden');
+      panelSecurity?.classList.add('hidden');
+
+      if (tab === 'email') {
+        tabBtnEmail?.classList.add(...activeClasses);
+        tabBtnEmail?.classList.remove(...inactiveClasses);
+        panelEmail?.classList.remove('hidden');
+      } else if (tab === 'deploy') {
+        tabBtnDeploy?.classList.add(...activeClasses);
+        tabBtnDeploy?.classList.remove(...inactiveClasses);
+        panelDeploy?.classList.remove('hidden');
+      } else {
+        tabBtnSecurity?.classList.add(...activeClasses);
+        tabBtnSecurity?.classList.remove(...inactiveClasses);
+        panelSecurity?.classList.remove('hidden');
+      }
+    }
+
+    tabBtnEmail?.addEventListener('click', () => switchSettingsTab('email'));
+    tabBtnDeploy?.addEventListener('click', () => switchSettingsTab('deploy'));
+    tabBtnSecurity?.addEventListener('click', () => switchSettingsTab('security'));
+
+    // Load initial settings
+    async function loadSettings() {
+      try {
+        const data = await apiClient('/api/admin/settings', { token });
+        if (data.success && data.settings) {
+          const s = data.settings;
+          const prov = document.getElementById('settingProvider') as HTMLSelectElement;
+          const fromE = document.getElementById('settingFromEmail') as HTMLInputElement;
+          const apiU = document.getElementById('settingApiUser') as HTMLInputElement;
+          const apiS = document.getElementById('settingApiSecret') as HTMLInputElement;
+
+          const defVer = document.getElementById('settingDefaultVersion') as HTMLInputElement;
+          const defWork = document.getElementById('settingDefaultWorkerName') as HTMLInputElement;
+          const maxDep = document.getElementById('settingMaxDeployments') as HTMLInputElement;
+          const defProf = document.getElementById('settingDefaultProfile') as HTMLSelectElement;
+
+          if (prov && s['email_provider']) prov.value = s['email_provider'];
+          if (fromE && s['email_from']) fromE.value = s['email_from'];
+          if (apiU && (s['sendpulse_user_id'] || s['email_api_key'])) apiU.value = s['sendpulse_user_id'] || s['email_api_key'];
+          if (apiS && s['sendpulse_secret']) apiS.value = s['sendpulse_secret'];
+
+          if (defVer && s['default_release_version']) defVer.value = s['default_release_version'];
+          if (defWork && s['default_worker_name']) defWork.value = s['default_worker_name'];
+          if (maxDep && s['max_deployments_per_user']) maxDep.value = s['max_deployments_per_user'];
+          if (defProf && s['profile']) defProf.value = s['profile'];
+        }
+      } catch (err) {
+        console.error('Failed to load settings:', err);
+      }
+    }
+
+    // Email Settings Form
+    const emailForm = document.getElementById('emailSettingsForm');
+    const emailMsg = document.getElementById('emailSettingsMsg');
+    const saveEmailBtn = document.getElementById('saveEmailBtn') as HTMLButtonElement;
+
+    emailForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const prov = (document.getElementById('settingProvider') as HTMLSelectElement).value;
+      const fromE = (document.getElementById('settingFromEmail') as HTMLInputElement).value;
+      const apiU = (document.getElementById('settingApiUser') as HTMLInputElement).value;
+      const apiS = (document.getElementById('settingApiSecret') as HTMLInputElement).value;
+
+      saveEmailBtn.disabled = true;
+      saveEmailBtn.textContent = 'Saving...';
+
+      try {
+        await apiClient('/api/admin/settings', {
+          method: 'POST',
+          token,
+          body: JSON.stringify({
+            email_provider: prov,
+            email_from: fromE,
+            sendpulse_user_id: apiU,
+            sendpulse_secret: apiS,
+            email_api_key: apiU,
+          }),
+        });
+
+        if (emailMsg) {
+          emailMsg.textContent = '✅ Email settings saved successfully!';
+          emailMsg.className = 'text-xs text-emerald-600 font-semibold block';
+          setTimeout(() => emailMsg.classList.add('hidden'), 4000);
+        }
+      } catch (err: any) {
+        alert(err.message || 'Error saving email settings');
+      } finally {
+        saveEmailBtn.disabled = false;
+        saveEmailBtn.textContent = 'Save Email Settings';
+      }
+    });
+
+    // Deploy Settings Form
+    const deployForm = document.getElementById('deploySettingsForm');
+    const deployMsg = document.getElementById('deploySettingsMsg');
+    const saveDeployBtn = document.getElementById('saveDeployBtn') as HTMLButtonElement;
+
+    deployForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const defVer = (document.getElementById('settingDefaultVersion') as HTMLInputElement).value;
+      const defWork = (document.getElementById('settingDefaultWorkerName') as HTMLInputElement).value;
+      const maxDep = (document.getElementById('settingMaxDeployments') as HTMLInputElement).value;
+      const defProf = (document.getElementById('settingDefaultProfile') as HTMLSelectElement).value;
+
+      saveDeployBtn.disabled = true;
+      saveDeployBtn.textContent = 'Saving...';
+
+      try {
+        await apiClient('/api/admin/settings', {
+          method: 'POST',
+          token,
+          body: JSON.stringify({
+            default_release_version: defVer,
+            default_worker_name: defWork,
+            max_deployments_per_user: maxDep,
+            profile: defProf,
+          }),
+        });
+
+        if (deployMsg) {
+          deployMsg.textContent = '✅ Deployment defaults saved successfully!';
+          deployMsg.className = 'text-xs text-emerald-600 font-semibold block';
+          setTimeout(() => deployMsg.classList.add('hidden'), 4000);
+        }
+      } catch (err: any) {
+        alert(err.message || 'Error saving deployment defaults');
+      } finally {
+        saveDeployBtn.disabled = false;
+        saveDeployBtn.textContent = 'Save Deployment Defaults';
+      }
+    });
+
+    // Password Update Form
+    const passwordForm = document.getElementById('passwordForm');
+    const passwordMsg = document.getElementById('passwordMsg');
+    const oldPasswordInput = document.getElementById('oldPasswordInput') as HTMLInputElement;
+    const newPasswordInput = document.getElementById('newPasswordInput') as HTMLInputElement;
+    const changePasswordBtn = document.getElementById('changePasswordBtn') as HTMLButtonElement;
+
+    passwordForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const oldPassword = oldPasswordInput.value.trim();
+      const newPassword = newPasswordInput.value.trim();
+
+      if (!newPassword || newPassword.length < 8) {
+        alert('New password must be at least 8 characters long');
+        return;
+      }
+
+      changePasswordBtn.disabled = true;
+      changePasswordBtn.textContent = 'Updating...';
+
+      try {
+        const data = await apiClient('/api/auth/change-password', {
+          method: 'POST',
+          token,
+          body: JSON.stringify({ oldPassword, newPassword }),
+        });
+
+        if (passwordMsg) {
+          passwordMsg.textContent = '✅ ' + (data.message || 'Password updated successfully!');
+          passwordMsg.className = 'text-xs text-emerald-600 font-semibold block';
+          setTimeout(() => passwordMsg.classList.add('hidden'), 5000);
+        }
+
+        oldPasswordInput.value = '';
+        newPasswordInput.value = '';
+      } catch (err: any) {
+        if (passwordMsg) {
+          passwordMsg.textContent = '❌ ' + (err.message || 'Error updating password');
+          passwordMsg.className = 'text-xs text-red-600 block';
+        }
+      } finally {
+        changePasswordBtn.disabled = false;
+        changePasswordBtn.textContent = 'Update Master Password';
+      }
+    });
+
+    // Initial load
+    loadSettings();
+  </script>
+</BaseLayout>
+

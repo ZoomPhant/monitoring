@@ -1,0 +1,87 @@
+---
+export interface Props {
+  activeTab: 'releases' | 'users' | 'settings';
+}
+
+const { activeTab } = Astro.props;
+---
+
+<div class="border-b border-gray-200 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Top Bar with Breadcrumb / Title -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between py-6 gap-4">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Admin Console</h1>
+          <span class="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-bold text-brand-700 ring-1 ring-inset ring-brand-700/10">
+            Super Admin
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-gray-500 mt-1">
+          Manage TSDB release packages, customer trial deployments, user accounts, and platform configuration.
+        </p>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a
+          href="/trial/"
+          target="_blank"
+          class="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 shadow-sm transition-all"
+        >
+          <span>🚀</span> Test BYOC Deploy
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Admin Tabs">
+      <a
+        href="/admin/releases/"
+        class:list={[
+          'whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2',
+          activeTab === 'releases'
+            ? 'border-brand-600 text-brand-600 font-bold'
+            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+        ]}
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+        TSDB Releases
+      </a>
+
+      <a
+        href="/admin/users/"
+        class:list={[
+          'whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2',
+          activeTab === 'users'
+            ? 'border-brand-600 text-brand-600 font-bold'
+            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+        ]}
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        Users & Deployments
+      </a>
+
+      <a
+        href="/admin/settings/"
+        class:list={[
+          'whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2',
+          activeTab === 'settings'
+            ? 'border-brand-600 text-brand-600 font-bold'
+            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+        ]}
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Settings
+      </a>
+    </nav>
+  </div>
+</div>

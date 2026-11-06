@@ -1,0 +1,574 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import AdminNav from '../../components/AdminNav.astro';
+import '../../styles/global.css';
+---
+
+<BaseLayout title="TSDB Release Management — ZoomPhant Admin">
+  <Header currentPath={Astro.url.pathname} />
+  <AdminNav activeTab="releases" />
+
+  <main class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto space-y-8">
+      
+      <!-- Summary Metrics Bar & Primary Action -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">TSDB Release Repository</h2>
+          <p class="text-xs text-gray-500 mt-0.5">Manage deployable builds, promote active versions, or upload new releases to Cloudflare R2.</p>
+        </div>
+
+        <!-- Open Publish Modal Button -->
+        <button
+          type="button"
+          id="openPublishModalBtn"
+          class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Publish TSDB Release
+        </button>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Active Release</span>
+          <div id="statActiveVersion" class="text-3xl font-extrabold text-brand-600 mt-2">—</div>
+          <span class="text-xs text-emerald-600 font-medium mt-1 inline-flex items-center gap-1.5">
+            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span> Production default
+          </span>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Registered Versions</span>
+          <div id="statTotalReleases" class="text-3xl font-extrabold text-gray-900 mt-2">—</div>
+          <span class="text-xs text-gray-500 font-medium mt-1 inline-block">Saved in Cloudflare D1</span>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Storage Registry</span>
+          <div class="text-xl font-bold font-mono text-gray-800 mt-3 truncate">zoomphant-releases</div>
+          <span class="text-xs text-gray-500 font-medium mt-1 inline-block">Cloudflare R2 Bucket</span>
+        </div>
+      </div>
+
+      <!-- Main Releases Table Card -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <h3 class="text-base font-bold text-gray-900">All TSDB Builds</h3>
+            <span id="releasesCountBadge" class="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-bold text-brand-700">0</span>
+          </div>
+          <button
+            type="button"
+            id="reloadReleasesBtn"
+            class="text-xs text-brand-600 font-semibold hover:text-brand-700 cursor-pointer"
+          >
+            Refresh
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-600">
+            <thead class="bg-gray-50 text-xs font-semibold text-gray-500 uppercase border-b border-gray-100">
+              <tr>
+                <th class="px-6 py-3.5">Version</th>
+                <th class="px-6 py-3.5">Deployment Status</th>
+                <th class="px-6 py-3.5">R2 Storage Key</th>
+                <th class="px-6 py-3.5">SHA-256</th>
+                <th class="px-6 py-3.5">Changelog</th>
+                <th class="px-6 py-3.5">Uploaded</th>
+                <th class="px-6 py-3.5 text-right">Quick Actions</th>
+              </tr>
+            </thead>
+            <tbody id="releasesTableBody" class="divide-y divide-gray-100 text-xs">
+              <tr>
+                <td colspan="7" class="px-6 py-8 text-center text-gray-400 font-sans">
+                  Loading releases...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Publish Release Modal Dialog -->
+  <div
+    id="publishModal"
+    class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+    aria-labelledby="modalTitle"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="relative w-full max-w-2xl rounded-3xl bg-white shadow-2xl border border-gray-200 overflow-hidden transform transition-all my-8">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+        <div>
+          <h3 id="modalTitle" class="text-lg font-bold text-gray-900">Publish TSDB Release</h3>
+          <p id="modalSubtitle" class="text-xs text-gray-500 mt-0.5">
+            Upload or overwrite a TSDB Worker distribution package in R2.
+          </p>
+        </div>
+        <button
+          type="button"
+          id="closeModalBtn"
+          class="rounded-xl p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <form id="uploadReleaseForm" class="p-6 sm:p-8 space-y-5">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Version Input -->
+          <div>
+            <label for="releaseVersion" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Release Version <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-sm font-semibold text-gray-400">v</span>
+              <input
+                type="text"
+                id="releaseVersion"
+                required
+                placeholder="3.0.0 or 3.1.0-rc1"
+                class="w-full rounded-xl border border-gray-300 bg-white pl-7 pr-3 py-2 text-sm font-mono text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+            <p class="text-[11px] text-gray-400 mt-1">Existing versions will be updated/overwritten.</p>
+          </div>
+
+          <!-- Set Active Toggle -->
+          <div class="flex items-center pt-2 sm:pt-5">
+            <label class="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                id="releaseSetActive"
+                checked
+                class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 mt-0.5"
+              />
+              <div class="text-xs">
+                <span class="font-bold text-gray-900 block">Promote as Active Release</span>
+                <span class="text-gray-500 text-[11px]">Serve to new 1-click customer trials.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Worker File Input -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              Worker Bundle (`index.js`) <span class="text-red-500">*</span>
+            </label>
+            <span class="text-[11px] text-gray-400 font-mono">tsdb/dist/index.js</span>
+          </div>
+
+          <div class="border-2 border-gray-300 border-dashed rounded-xl p-4 text-center hover:border-brand-400 transition-colors bg-gray-50/50">
+            <input id="workerFile" type="file" accept=".js,.mjs,.txt" class="hidden" />
+            <label for="workerFile" class="cursor-pointer">
+              <span class="text-xs font-semibold text-brand-600 hover:text-brand-700">Choose file</span>
+              <span class="text-xs text-gray-500"> or drag and drop</span>
+            </label>
+            <p id="workerFileInfo" class="text-xs text-gray-400 font-mono mt-1">Compiled ES module Worker JS</p>
+          </div>
+
+          <div class="mt-2 flex justify-between items-center">
+            <button
+              type="button"
+              id="togglePasteBtn"
+              class="text-xs text-brand-600 hover:text-brand-700 font-semibold cursor-pointer"
+            >
+              + Or paste code directly
+            </button>
+          </div>
+          <div id="pasteContainer" class="hidden mt-2">
+            <textarea
+              id="workerPasteText"
+              rows="5"
+              placeholder="// Paste Worker JS bundle text here..."
+              class="w-full rounded-xl border border-gray-300 bg-white p-3 text-xs font-mono text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Optional Manifest File -->
+        <div>
+          <label for="manifestFile" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+            Deployment Manifest (`manifest.json`) <span class="text-gray-400 font-normal lowercase">(optional)</span>
+          </label>
+          <input
+            type="file"
+            id="manifestFile"
+            accept=".json"
+            class="w-full rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-700 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+          />
+        </div>
+
+        <!-- Changelog Input -->
+        <div>
+          <label for="releaseChangelog" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+            Changelog / Release Notes
+          </label>
+          <textarea
+            id="releaseChangelog"
+            rows="2"
+            placeholder="Key updates, bugfixes, or features in this build..."
+            class="w-full rounded-xl border border-gray-300 bg-white p-2.5 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+          ></textarea>
+        </div>
+
+        <!-- Alert Notification -->
+        <div id="uploadAlert" class="hidden p-3 rounded-xl text-xs font-medium border"></div>
+
+        <!-- Modal Footer Actions -->
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+          <button
+            type="button"
+            id="cancelModalBtn"
+            class="rounded-xl border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            id="uploadSubmitBtn"
+            class="rounded-xl bg-brand-600 px-5 py-2 text-xs font-semibold text-white shadow-md hover:bg-brand-700 transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            Upload & Publish
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <Footer />
+
+  <script>
+    import { apiClient } from '../../utils/apiClient';
+
+    // 1. Guard route: Verify Admin Authentication
+    const token = localStorage.getItem('zp_token');
+    const userStr = localStorage.getItem('zp_user');
+    let user = null;
+
+    try {
+      if (userStr) user = JSON.parse(userStr);
+    } catch {}
+
+    if (!token || user?.role !== 'admin') {
+      window.location.href = '/login/?redirect=/admin/releases/';
+    }
+
+    // Modal elements
+    const modal = document.getElementById('publishModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalSubtitle = document.getElementById('modalSubtitle');
+    const openBtn = document.getElementById('openPublishModalBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('cancelModalBtn');
+
+    const form = document.getElementById('uploadReleaseForm') as HTMLFormElement;
+    const versionInput = document.getElementById('releaseVersion') as HTMLInputElement;
+    const workerFileInput = document.getElementById('workerFile') as HTMLInputElement;
+    const workerFileInfo = document.getElementById('workerFileInfo');
+    const workerPasteText = document.getElementById('workerPasteText') as HTMLTextAreaElement;
+    const manifestFileInput = document.getElementById('manifestFile') as HTMLInputElement;
+    const changelogInput = document.getElementById('releaseChangelog') as HTMLTextAreaElement;
+    const setActiveCheckbox = document.getElementById('releaseSetActive') as HTMLInputElement;
+    const uploadSubmitBtn = document.getElementById('uploadSubmitBtn') as HTMLButtonElement;
+    const uploadAlert = document.getElementById('uploadAlert');
+    const togglePasteBtn = document.getElementById('togglePasteBtn');
+    const pasteContainer = document.getElementById('pasteContainer');
+
+    const tableBody = document.getElementById('releasesTableBody');
+    const statActiveVersion = document.getElementById('statActiveVersion');
+    const statTotalReleases = document.getElementById('statTotalReleases');
+    const releasesCountBadge = document.getElementById('releasesCountBadge');
+    const reloadBtn = document.getElementById('reloadReleasesBtn');
+    const globalRefreshBtn = document.getElementById('globalRefreshBtn');
+
+    let loadedWorkerJs = '';
+    let loadedManifest = null;
+
+    function openModal(prefillVersion = '') {
+      if (uploadAlert) uploadAlert.classList.add('hidden');
+      if (prefillVersion) {
+        if (modalTitle) modalTitle.textContent = `Overwrite Release v${prefillVersion}`;
+        if (modalSubtitle) modalSubtitle.textContent = `Upload a replacement worker bundle for v${prefillVersion}.`;
+        versionInput.value = prefillVersion;
+      } else {
+        if (modalTitle) modalTitle.textContent = 'Publish TSDB Release';
+        if (modalSubtitle) modalSubtitle.textContent = 'Upload or overwrite a TSDB Worker distribution package in R2.';
+        versionInput.value = '';
+      }
+      modal?.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      modal?.classList.add('hidden');
+    }
+
+    openBtn?.addEventListener('click', () => openModal(''));
+    closeBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Toggle paste area
+    togglePasteBtn?.addEventListener('click', () => {
+      pasteContainer?.classList.toggle('hidden');
+    });
+
+    // File input handler for worker script
+    workerFileInput?.addEventListener('change', async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      if (workerFileInfo) {
+        workerFileInfo.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        workerFileInfo.className = 'text-xs text-brand-600 font-semibold font-mono mt-1';
+      }
+
+      loadedWorkerJs = await file.text();
+    });
+
+    // File input handler for manifest
+    manifestFileInput?.addEventListener('change', async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        loadedManifest = JSON.parse(text);
+      } catch (err: any) {
+        alert('Invalid manifest.json file: ' + err.message);
+      }
+    });
+
+    // Fetch and render releases table
+    async function loadReleases() {
+      try {
+        const data = await apiClient('/api/admin/releases', { token });
+        const releases = data.releases || [];
+
+        if (statTotalReleases) statTotalReleases.textContent = releases.length.toString();
+        if (releasesCountBadge) releasesCountBadge.textContent = releases.length.toString();
+
+        const activeRelease = releases.find((r: any) => r.is_active === 1);
+        if (statActiveVersion) {
+          statActiveVersion.textContent = activeRelease ? `v${activeRelease.version}` : 'None active';
+        }
+
+        if (!tableBody) return;
+
+        if (releases.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="7" class="px-6 py-8 text-center text-gray-400 font-sans">
+                No releases uploaded yet. Click <strong>"Publish TSDB Release"</strong> above to upload your first build.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tableBody.innerHTML = releases.map((r: any) => {
+          const isActive = r.is_active === 1;
+          const shortSha = r.sha256 ? `${r.sha256.slice(0, 8)}...` : '—';
+          const formattedDate = new Date(r.created_at).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+
+          return `
+            <tr class="hover:bg-gray-50/50 transition-colors">
+              <td class="px-6 py-3.5 font-mono font-bold text-gray-900">
+                v${r.version}
+              </td>
+              <td class="px-6 py-3.5">
+                ${isActive
+                  ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"><span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span> Active</span>'
+                  : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Inactive</span>'
+                }
+              </td>
+              <td class="px-6 py-3.5 font-mono text-gray-500 truncate max-w-[200px]" title="${r.r2_key}">
+                ${r.r2_key}
+              </td>
+              <td class="px-6 py-3.5 font-mono text-gray-500" title="${r.sha256 || ''}">
+                ${shortSha}
+              </td>
+              <td class="px-6 py-3.5 text-gray-600 max-w-[180px] truncate" title="${r.changelog || ''}">
+                ${r.changelog || '<span class="text-gray-400 italic">No notes</span>'}
+              </td>
+              <td class="px-6 py-3.5 text-gray-400 whitespace-nowrap">
+                ${formattedDate}
+              </td>
+              <td class="px-6 py-3.5 text-right space-x-2 whitespace-nowrap">
+                ${!isActive
+                  ? `<button data-activate-version="${r.version}" class="activate-btn text-xs font-semibold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg transition-colors cursor-pointer">Enable</button>`
+                  : ''
+                }
+                <button data-overwrite-version="${r.version}" class="overwrite-btn text-xs font-medium text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer">Edit</button>
+                ${!isActive
+                  ? `<button data-delete-version="${r.version}" class="delete-btn text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg transition-colors cursor-pointer">Delete</button>`
+                  : ''
+                }
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        // Wire up dynamic buttons
+        document.querySelectorAll('.activate-btn').forEach((btn) => {
+          btn.addEventListener('click', async (e) => {
+            const v = (e.currentTarget as HTMLElement).getAttribute('data-activate-version');
+            if (!v) return;
+            if (!confirm(`Promote release v${v} to active status?`)) return;
+
+            try {
+              await apiClient('/api/admin/releases/activate', {
+                method: 'POST',
+                token,
+                body: JSON.stringify({ version: v }),
+              });
+              await loadReleases();
+            } catch (err: any) {
+              alert(err.message || 'Error activating release');
+            }
+          });
+        });
+
+        document.querySelectorAll('.overwrite-btn').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            const v = (e.currentTarget as HTMLElement).getAttribute('data-overwrite-version');
+            if (!v) return;
+            openModal(v);
+          });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach((btn) => {
+          btn.addEventListener('click', async (e) => {
+            const v = (e.currentTarget as HTMLElement).getAttribute('data-delete-version');
+            if (!v) return;
+            if (!confirm(`Are you sure you want to permanently delete release v${v} from R2 and the database?`)) return;
+
+            try {
+              await apiClient(`/api/admin/releases/${v}`, {
+                method: 'DELETE',
+                token,
+              });
+              await loadReleases();
+            } catch (err: any) {
+              alert(err.message || 'Error deleting release');
+            }
+          });
+        });
+
+      } catch (err: any) {
+        console.error('Failed to load releases:', err);
+      }
+    }
+
+    // Submit handler for upload
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      uploadAlert?.classList.add('hidden');
+
+      const version = versionInput.value.trim().replace(/^v/, '');
+      const changelog = changelogInput.value.trim();
+      const setActive = setActiveCheckbox.checked;
+      const workerJs = loadedWorkerJs || workerPasteText.value.trim();
+
+      if (!version) {
+        showAlert('Please specify a release version.', 'error');
+        return;
+      }
+
+      if (!workerJs) {
+        showAlert('Please upload or paste the TSDB Worker JavaScript bundle (index.js).', 'error');
+        return;
+      }
+
+      uploadSubmitBtn.disabled = true;
+      uploadSubmitBtn.textContent = 'Uploading to R2...';
+
+      try {
+        const payload: any = {
+          version,
+          workerJs,
+          changelog,
+          setActive,
+        };
+
+        if (loadedManifest) {
+          payload.manifest = loadedManifest;
+        }
+
+        const res = await apiClient('/api/admin/releases/upload', {
+          method: 'POST',
+          token,
+          body: JSON.stringify(payload),
+        });
+
+        showAlert(`✅ ${res.message || `Release v${version} published successfully!`}`, 'success');
+
+        setTimeout(() => {
+          closeModal();
+          // Reset fields
+          versionInput.value = '';
+          changelogInput.value = '';
+          loadedWorkerJs = '';
+          loadedManifest = null;
+          if (workerFileInput) workerFileInput.value = '';
+          if (manifestFileInput) manifestFileInput.value = '';
+          if (workerFileInfo) workerFileInfo.textContent = 'Compiled ES module Worker JS';
+          if (workerPasteText) workerPasteText.value = '';
+        }, 800);
+
+        await loadReleases();
+      } catch (err: any) {
+        showAlert(`❌ ${err.message || 'Upload failed'}`, 'error');
+      } finally {
+        uploadSubmitBtn.disabled = false;
+        uploadSubmitBtn.textContent = 'Upload & Publish';
+      }
+    });
+
+    function showAlert(msg: string, type: 'success' | 'error') {
+      if (!uploadAlert) return;
+      uploadAlert.textContent = msg;
+      uploadAlert.className = `p-3 rounded-xl text-xs font-semibold border block ${
+        type === 'success'
+          ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+          : 'bg-red-50 border-red-200 text-red-800'
+      }`;
+    }
+
+    reloadBtn?.addEventListener('click', loadReleases);
+    globalRefreshBtn?.addEventListener('click', loadReleases);
+
+    // Initial load
+    loadReleases();
+  </script>
+</BaseLayout>

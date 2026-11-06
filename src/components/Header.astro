@@ -86,14 +86,28 @@ const isDocs = currentPath.startsWith('/docs');
             >
               🚀 Launch TSDB Cluster
             </a>
-            <!-- Admin link (only shown if role === 'admin') -->
-            <a
-              id="adminConsoleLink"
-              href="/admin/"
-              class="hidden flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-brand-700 bg-brand-50/50 hover:bg-brand-50 transition-colors"
-            >
-              ⚙️ Admin Console
-            </a>
+            <!-- Admin links (only shown if role === 'admin') -->
+            <div id="adminLinksGroup" class="hidden border-t border-gray-100 mt-1 pt-1">
+              <span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Admin</span>
+              <a
+                href="/admin/releases/"
+                class="flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-50 transition-colors"
+              >
+                📦 TSDB Releases
+              </a>
+              <a
+                href="/admin/users/"
+                class="flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-50 transition-colors"
+              >
+                👥 Users & Deployments
+              </a>
+              <a
+                href="/admin/settings/"
+                class="flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                ⚙️ Settings
+              </a>
+            </div>
           </div>
 
           <div class="pt-1">
@@ -122,7 +136,7 @@ const isDocs = currentPath.startsWith('/docs');
     const loggedInDiv = document.getElementById('loggedInProfile');
     const headerUserName = document.getElementById('headerUserName');
     const adminBadge = document.getElementById('adminBadge');
-    const adminConsoleLink = document.getElementById('adminConsoleLink');
+    const adminLinksGroup = document.getElementById('adminLinksGroup');
     const dropdownName = document.getElementById('dropdownName');
     const dropdownEmail = document.getElementById('dropdownEmail');
 
@@ -138,7 +152,7 @@ const isDocs = currentPath.startsWith('/docs');
 
         if (user.role === 'admin') {
           if (adminBadge) adminBadge.classList.remove('hidden');
-          if (adminConsoleLink) adminConsoleLink.classList.remove('hidden');
+          if (adminLinksGroup) adminLinksGroup.classList.remove('hidden');
         }
       } catch {
         // Corrupted session
