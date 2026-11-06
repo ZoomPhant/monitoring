@@ -32,6 +32,100 @@ import '../styles/global.css';
         
         <!-- Form View -->
         <div id="formSection" class="p-8 sm:p-10">
+
+          <!-- Connected Banner -->
+          <div id="cfConnectedNotice" class="hidden mb-6 rounded-2xl bg-emerald-50 p-4 border border-emerald-200">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h4 class="text-sm font-semibold text-emerald-900">Cloudflare Account Connected!</h4>
+                <p class="text-xs text-emerald-700 mt-0.5">
+                  Your Account ID and deploy credentials have been auto-configured below. Click <strong>Deploy TSDB into My Account</strong> to finish provisioning!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fallback Notice Banner -->
+          <div id="cfFallbackNotice" class="hidden mb-6 rounded-2xl bg-amber-50 p-4 border border-amber-200">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-amber-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h4 class="text-sm font-semibold text-amber-900">Cloudflare 1-Click Connect Early Access</h4>
+                <p class="text-xs text-amber-700 mt-0.5">
+                  1-Click OAuth app is undergoing verification. You can deploy instantly by entering your Cloudflare credentials manually below!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option 1: 1-Click Connect with Cloudflare -->
+          <div class="rounded-2xl border-2 border-orange-100 bg-gradient-to-br from-orange-50/60 via-amber-50/30 to-white p-5 sm:p-6 mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div class="space-y-1.5">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-100 text-[#F6821F] text-xs font-semibold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#F6821F] animate-pulse"></span>
+                  RECOMMENDED • 1-CLICK SETUP
+                </div>
+                <h3 class="text-base font-bold text-gray-900">
+                  Connect with Cloudflare
+                </h3>
+                <p class="text-xs text-gray-600 max-w-md">
+                  Authorize directly with Cloudflare to auto-detect your Account ID and configure permissions automatically. No manual copying or API token creation needed.
+                </p>
+              </div>
+              <div class="shrink-0">
+                <a
+                  id="cfOAuthBtn"
+                  href="#"
+                  class="inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-[#F6821F] hover:bg-[#e27315] text-white font-semibold text-sm shadow-md shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  <!-- Cloudflare Cloud SVG -->
+                  <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+                  </svg>
+                  <span>Connect with Cloudflare</span>
+                </a>
+              </div>
+            </div>
+            
+            <div class="mt-4 pt-3 border-t border-orange-100/80 flex flex-wrap gap-y-1 gap-x-4 text-[11px] text-gray-500">
+              <span class="flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                Auto-discovers Account ID
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                Scoped Workers & Storage access
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                100% Hosted in your account
+              </span>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="relative my-8">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+              <div class="w-full border-t border-gray-200"></div>
+            </div>
+            <div class="relative flex justify-center text-xs font-semibold uppercase tracking-wider">
+              <span class="bg-white px-4 text-gray-400">or enter cloudflare credentials manually</span>
+            </div>
+          </div>
+
+          <!-- Option 2: Manual Credentials Form -->
           <form id="deployForm" class="space-y-6">
             
             <!-- Step 1: Cloudflare Account ID -->
@@ -225,15 +319,42 @@ import '../styles/global.css';
   <Footer />
 
   <script>
-    import { apiClient } from '../utils/apiClient';
+    import { apiClient, getOAuthUrl } from '../utils/apiClient';
 
-    // Auto-generate random secure admin token
+    // Set OAuth Link for Cloudflare 1-Click Connect
+    const cfOAuthBtn = document.getElementById('cfOAuthBtn') as HTMLAnchorElement;
+    if (cfOAuthBtn) {
+      cfOAuthBtn.href = getOAuthUrl('cloudflare');
+    }
+
+    // Auto-generate random secure admin token if empty
     const adminInput = document.getElementById('adminPassword') as HTMLInputElement;
     if (adminInput && !adminInput.value) {
       const randomHex = Array.from(crypto.getRandomValues(new Uint8Array(16)))
         .map(b => b.toString(16).padStart(2, '0'))
         .join('');
       adminInput.value = `tsdb_admin_${randomHex}`;
+    }
+
+    // Check for incoming OAuth parameters or fallback notices
+    const urlParams = new URLSearchParams(window.location.search);
+    const cfConnected = urlParams.get('cf_connected');
+    const cfNotice = urlParams.get('cf_notice');
+    const accountIdParam = urlParams.get('account_id');
+    const tokenParam = urlParams.get('cf_token');
+
+    const accountInput = document.getElementById('accountId') as HTMLInputElement;
+    const tokenInput = document.getElementById('apiToken') as HTMLInputElement;
+    const cfConnectedNotice = document.getElementById('cfConnectedNotice');
+    const cfFallbackNotice = document.getElementById('cfFallbackNotice');
+
+    if (cfConnected === '1') {
+      if (accountIdParam && accountInput) accountInput.value = accountIdParam;
+      if (tokenParam && tokenInput) tokenInput.value = tokenParam;
+      cfConnectedNotice?.classList.remove('hidden');
+    } else if (cfNotice === 'oauth_unconfigured') {
+      cfFallbackNotice?.classList.remove('hidden');
+      accountInput?.focus();
     }
 
     const form = document.getElementById('deployForm');

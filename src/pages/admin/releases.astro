@@ -102,19 +102,19 @@ import '../../styles/global.css';
   <!-- Publish Release Modal Dialog -->
   <div
     id="publishModal"
-    class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+    class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 flex items-center justify-center p-4 sm:p-6"
     aria-labelledby="modalTitle"
     role="dialog"
     aria-modal="true"
   >
-    <div class="relative w-full max-w-2xl rounded-3xl bg-white shadow-2xl border border-gray-200 overflow-hidden transform transition-all my-8">
+    <div class="relative w-full max-w-2xl rounded-3xl bg-white shadow-2xl border border-gray-200 overflow-hidden my-8">
       
       <!-- Modal Header -->
       <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
         <div>
           <h3 id="modalTitle" class="text-lg font-bold text-gray-900">Publish TSDB Release</h3>
           <p id="modalSubtitle" class="text-xs text-gray-500 mt-0.5">
-            Upload or overwrite a TSDB Worker distribution package in R2.
+            Drop a tsdb-v*.zip package to publish into Cloudflare R2.
           </p>
         </div>
         <button
@@ -131,8 +131,39 @@ import '../../styles/global.css';
       <!-- Modal Body -->
       <form id="uploadReleaseForm" class="p-6 sm:p-8 space-y-5">
         
+        <!-- ZIP Drop / Select Area -->
+        <div id="dropZone" class="border-2 border-dashed border-brand-300 hover:border-brand-500 rounded-2xl p-6 text-center bg-brand-50/30 hover:bg-brand-50/60 transition-all cursor-pointer">
+          <input
+            id="releaseZipInput"
+            type="file"
+            accept=".zip"
+            class="hidden"
+          />
+          <div class="flex flex-col items-center justify-center">
+            <div class="h-12 w-12 rounded-2xl bg-brand-100 text-brand-600 flex items-center justify-center mb-2.5 shadow-sm pointer-events-none">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-gray-900">
+              Drag & drop <span id="browseZipLink" class="text-brand-600 underline cursor-pointer">tsdb-v*.zip</span> here, or <span class="text-brand-600 underline cursor-pointer">browse</span>
+            </p>
+            <p id="folderStatusText" class="text-xs text-gray-500 mt-1 pointer-events-none">
+              Select <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-gray-200">tsdb-v3.0.0.zip</code>
+            </p>
+            <div id="detectedFilesBadge" class="hidden mt-3 flex flex-wrap items-center justify-center gap-2">
+              <span id="badgeZip" class="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200">
+                ✓ ZIP bundle
+              </span>
+              <span id="badgeVersion" class="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200">
+                v3.0.0
+              </span>
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <!-- Version Input -->
+          <!-- Version Input (Auto-filled) -->
           <div>
             <label for="releaseVersion" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
               Release Version <span class="text-red-500">*</span>
@@ -143,11 +174,11 @@ import '../../styles/global.css';
                 type="text"
                 id="releaseVersion"
                 required
-                placeholder="3.0.0 or 3.1.0-rc1"
+                placeholder="3.0.0 (auto-filled on drop)"
                 class="w-full rounded-xl border border-gray-300 bg-white pl-7 pr-3 py-2 text-sm font-mono text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
               />
             </div>
-            <p class="text-[11px] text-gray-400 mt-1">Existing versions will be updated/overwritten.</p>
+            <p class="text-[11px] text-gray-400 mt-1">Auto-extracted from ZIP package name or manifest.json.</p>
           </div>
 
           <!-- Set Active Toggle -->
@@ -167,60 +198,10 @@ import '../../styles/global.css';
           </div>
         </div>
 
-        <!-- Worker File Input -->
-        <div>
-          <div class="flex items-center justify-between mb-1">
-            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-              Worker Bundle (`index.js`) <span class="text-red-500">*</span>
-            </label>
-            <span class="text-[11px] text-gray-400 font-mono">tsdb/dist/index.js</span>
-          </div>
-
-          <div class="border-2 border-gray-300 border-dashed rounded-xl p-4 text-center hover:border-brand-400 transition-colors bg-gray-50/50">
-            <input id="workerFile" type="file" accept=".js,.mjs,.txt" class="hidden" />
-            <label for="workerFile" class="cursor-pointer">
-              <span class="text-xs font-semibold text-brand-600 hover:text-brand-700">Choose file</span>
-              <span class="text-xs text-gray-500"> or drag and drop</span>
-            </label>
-            <p id="workerFileInfo" class="text-xs text-gray-400 font-mono mt-1">Compiled ES module Worker JS</p>
-          </div>
-
-          <div class="mt-2 flex justify-between items-center">
-            <button
-              type="button"
-              id="togglePasteBtn"
-              class="text-xs text-brand-600 hover:text-brand-700 font-semibold cursor-pointer"
-            >
-              + Or paste code directly
-            </button>
-          </div>
-          <div id="pasteContainer" class="hidden mt-2">
-            <textarea
-              id="workerPasteText"
-              rows="5"
-              placeholder="// Paste Worker JS bundle text here..."
-              class="w-full rounded-xl border border-gray-300 bg-white p-3 text-xs font-mono text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
-            ></textarea>
-          </div>
-        </div>
-
-        <!-- Optional Manifest File -->
-        <div>
-          <label for="manifestFile" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-            Deployment Manifest (`manifest.json`) <span class="text-gray-400 font-normal lowercase">(optional)</span>
-          </label>
-          <input
-            type="file"
-            id="manifestFile"
-            accept=".json"
-            class="w-full rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-700 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
-          />
-        </div>
-
-        <!-- Changelog Input -->
+        <!-- Optional Changelog Input -->
         <div>
           <label for="releaseChangelog" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-            Changelog / Release Notes
+            Changelog / Release Notes <span class="text-gray-400 font-normal lowercase">(optional)</span>
           </label>
           <textarea
             id="releaseChangelog"
@@ -229,6 +210,51 @@ import '../../styles/global.css';
             class="w-full rounded-xl border border-gray-300 bg-white p-2.5 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
           ></textarea>
         </div>
+
+        <!-- Advanced Details Accordion (Collapsed by default) -->
+        <details class="text-xs border border-gray-200 rounded-xl overflow-hidden bg-gray-50/50">
+          <summary class="px-4 py-2.5 font-semibold text-gray-600 hover:text-gray-900 cursor-pointer select-none">
+            Advanced: Individual Files & Manual Paste
+          </summary>
+          <div class="p-4 space-y-4 border-t border-gray-200 bg-white">
+            <!-- Worker File Input -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  Worker Bundle (`index.js`)
+                </label>
+                <span id="workerFileInfo" class="text-[11px] text-gray-400 font-mono">No file chosen</span>
+              </div>
+              <input id="workerFile" type="file" accept=".js,.mjs,.txt" class="w-full text-xs text-gray-500 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+            </div>
+
+            <!-- Manifest File Input -->
+            <div>
+              <label for="manifestFile" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                Deployment Manifest (`manifest.json`)
+              </label>
+              <input
+                type="file"
+                id="manifestFile"
+                accept=".json"
+                class="w-full text-xs text-gray-500 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+              />
+            </div>
+
+            <!-- Paste Worker Text Area -->
+            <div>
+              <label for="workerPasteText" class="block text-xs font-semibold text-gray-600 mb-1">
+                Or paste Worker JS bundle text directly:
+              </label>
+              <textarea
+                id="workerPasteText"
+                rows="4"
+                placeholder="// Paste Worker JS bundle text here..."
+                class="w-full rounded-xl border border-gray-300 bg-white p-2.5 text-xs font-mono text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+              ></textarea>
+            </div>
+          </div>
+        </details>
 
         <!-- Alert Notification -->
         <div id="uploadAlert" class="hidden p-3 rounded-xl text-xs font-medium border"></div>
@@ -245,15 +271,14 @@ import '../../styles/global.css';
           <button
             type="submit"
             id="uploadSubmitBtn"
-            class="rounded-xl bg-brand-600 px-5 py-2 text-xs font-semibold text-white shadow-md hover:bg-brand-700 transition-all flex items-center gap-1.5 cursor-pointer"
+            class="rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-brand-700 transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
-            Upload & Publish
+            <span id="uploadBtnText">Confirm & Publish Release</span>
           </button>
         </div>
-
       </form>
     </div>
   </div>
@@ -293,9 +318,19 @@ import '../../styles/global.css';
     const changelogInput = document.getElementById('releaseChangelog') as HTMLTextAreaElement;
     const setActiveCheckbox = document.getElementById('releaseSetActive') as HTMLInputElement;
     const uploadSubmitBtn = document.getElementById('uploadSubmitBtn') as HTMLButtonElement;
+    const uploadBtnText = document.getElementById('uploadBtnText');
     const uploadAlert = document.getElementById('uploadAlert');
-    const togglePasteBtn = document.getElementById('togglePasteBtn');
-    const pasteContainer = document.getElementById('pasteContainer');
+
+    // Folder dropzone elements
+    const dropZone = document.getElementById('dropZone');
+    const releaseFolderInput = document.getElementById('releaseFolderInput') as HTMLInputElement;
+    const folderStatusText = document.getElementById('folderStatusText');
+    const detectedFilesBadge = document.getElementById('detectedFilesBadge');
+    const badgeWorker = document.getElementById('badgeWorker');
+    const badgeManifest = document.getElementById('badgeManifest');
+    const badgeAssets = document.getElementById('badgeAssets');
+    const badgeZip = document.getElementById('badgeZip');
+    const badgeVersion = document.getElementById('badgeVersion');
 
     const tableBody = document.getElementById('releasesTableBody');
     const statActiveVersion = document.getElementById('statActiveVersion');
@@ -304,18 +339,41 @@ import '../../styles/global.css';
     const reloadBtn = document.getElementById('reloadReleasesBtn');
     const globalRefreshBtn = document.getElementById('globalRefreshBtn');
 
+    let selectedZipFile: File | null = null;
     let loadedWorkerJs = '';
-    let loadedManifest = null;
+    let loadedManifest: any = null;
+
+    function resetFormState() {
+      versionInput.value = '';
+      changelogInput.value = '';
+      selectedZipFile = null;
+      loadedWorkerJs = '';
+      loadedManifest = null;
+      if (workerFileInput) workerFileInput.value = '';
+      if (manifestFileInput) manifestFileInput.value = '';
+      if (releaseFolderInput) releaseFolderInput.value = '';
+      if (releaseZipInput) releaseZipInput.value = '';
+      if (workerFileInfo) workerFileInfo.textContent = 'No file chosen';
+      if (workerPasteText) workerPasteText.value = '';
+      if (uploadAlert) uploadAlert.classList.add('hidden');
+      if (folderStatusText) {
+        folderStatusText.innerHTML = 'Select <code class="font-mono bg-white px-1.5 py-0.5 rounded border border-gray-200">tsdb-v3.0.0.zip</code>';
+      }
+      if (detectedFilesBadge) detectedFilesBadge.classList.add('hidden');
+      if (badgeAssets) badgeAssets.classList.add('hidden');
+      if (badgeZip) badgeZip.classList.add('hidden');
+      if (dropZone) dropZone.className = 'border-2 border-dashed border-brand-300 hover:border-brand-500 rounded-2xl p-6 text-center bg-brand-50/30 hover:bg-brand-50/60 transition-all cursor-pointer';
+    }
 
     function openModal(prefillVersion = '') {
-      if (uploadAlert) uploadAlert.classList.add('hidden');
+      resetFormState();
       if (prefillVersion) {
         if (modalTitle) modalTitle.textContent = `Overwrite Release v${prefillVersion}`;
         if (modalSubtitle) modalSubtitle.textContent = `Upload a replacement worker bundle for v${prefillVersion}.`;
         versionInput.value = prefillVersion;
       } else {
         if (modalTitle) modalTitle.textContent = 'Publish TSDB Release';
-        if (modalSubtitle) modalSubtitle.textContent = 'Upload or overwrite a TSDB Worker distribution package in R2.';
+        if (modalSubtitle) modalSubtitle.textContent = 'Drop a release folder or select files to publish into Cloudflare R2.';
         versionInput.value = '';
       }
       modal?.classList.remove('hidden');
@@ -332,25 +390,209 @@ import '../../styles/global.css';
       if (e.target === modal) closeModal();
     });
 
-    // Toggle paste area
-    togglePasteBtn?.addEventListener('click', () => {
-      pasteContainer?.classList.toggle('hidden');
+    // Handle ZIP or Loose Files
+    async function processSelectedFiles(files: File[]) {
+      selectedZipFile = null;
+      loadedWorkerJs = '';
+      loadedManifest = null;
+
+      let zipFile: File | null = null;
+      let indexFile: File | null = null;
+      let manifestFile: File | null = null;
+
+      for (const file of files) {
+        const name = file.name.toLowerCase();
+        if (name.endsWith('.zip') && !zipFile) {
+          zipFile = file;
+        } else if (name === 'index.js' && !indexFile) {
+          indexFile = file;
+        } else if (name === 'manifest.json' && !manifestFile) {
+          manifestFile = file;
+        }
+      }
+
+      // Case A: Standalone ZIP package dropped or selected (Cleanest & Recommended)
+      if (zipFile) {
+        selectedZipFile = zipFile;
+        let extractedVersion = '';
+        const match = zipFile.name.match(/v?([0-9]+\.[0-9]+(?:\.[0-9]+)?(?:-[a-zA-Z0-9.]+)?)/);
+        if (match) extractedVersion = match[1];
+
+        if (extractedVersion) {
+          versionInput.value = extractedVersion;
+        }
+
+        if (dropZone) {
+          dropZone.className = 'border-2 border-emerald-400 bg-emerald-50/40 rounded-2xl p-6 text-center transition-all cursor-pointer';
+        }
+        if (folderStatusText) {
+          folderStatusText.innerHTML = `<span class="text-emerald-700 font-semibold">Ready to publish:</span> ${zipFile.name}`;
+        }
+        if (detectedFilesBadge) {
+          detectedFilesBadge.classList.remove('hidden');
+          if (badgeZip) {
+            badgeZip.textContent = `✓ ${zipFile.name} (${(zipFile.size / (1024 * 1024)).toFixed(2)} MB)`;
+            badgeZip.classList.remove('hidden');
+          }
+          if (badgeWorker) badgeWorker.classList.add('hidden');
+          if (badgeManifest) badgeManifest.classList.add('hidden');
+          if (badgeAssets) badgeAssets.classList.add('hidden');
+          if (badgeVersion) badgeVersion.textContent = `v${versionInput.value || '?'}`;
+        }
+
+        showAlert(`ZIP package verified: ${zipFile.name}. Click "Confirm & Publish Release" below to complete.`, 'success');
+        return;
+      }
+
+      // Case B: Loose index.js & manifest.json dropped
+      if (indexFile) {
+        loadedWorkerJs = await indexFile.text();
+        if (workerFileInfo) {
+          workerFileInfo.textContent = `Auto-loaded: ${indexFile.name} (${(indexFile.size / 1024).toFixed(1)} KB)`;
+          workerFileInfo.className = 'text-[11px] text-emerald-600 font-semibold font-mono';
+        }
+        if (manifestFile) {
+          try {
+            loadedManifest = JSON.parse(await manifestFile.text());
+            if (loadedManifest?.version) {
+              versionInput.value = String(loadedManifest.version).replace(/^v/, '');
+            }
+          } catch (e) {}
+        }
+        if (dropZone) {
+          dropZone.className = 'border-2 border-emerald-400 bg-emerald-50/40 rounded-2xl p-6 text-center transition-all cursor-pointer';
+        }
+        if (detectedFilesBadge) {
+          detectedFilesBadge.classList.remove('hidden');
+          if (badgeWorker) {
+            badgeWorker.textContent = `✓ index.js (${(indexFile.size / 1024).toFixed(0)} KB)`;
+            badgeWorker.classList.remove('hidden');
+          }
+          if (badgeManifest) {
+            badgeManifest.textContent = loadedManifest ? '✓ manifest.json' : 'manifest (defaulted)';
+            badgeManifest.classList.remove('hidden');
+          }
+          if (badgeZip) badgeZip.classList.add('hidden');
+          if (badgeVersion) badgeVersion.textContent = `v${versionInput.value || '?'}`;
+        }
+        showAlert('Worker files verified! Click "Confirm & Publish Release" below to complete.', 'success');
+        return;
+      }
+
+      showAlert('Please choose a valid .zip release package (e.g. tsdb-v3.0.0.zip) or index.js.', 'error');
+    }
+
+    const releaseZipInput = document.getElementById('releaseZipInput') as HTMLInputElement;
+    const browseZipLink = document.getElementById('browseZipLink');
+    const browseFolderLink = document.getElementById('browseFolderLink');
+
+    // Click triggers
+    browseZipLink?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      releaseZipInput?.click();
     });
 
-    // File input handler for worker script
+    browseFolderLink?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      releaseFolderInput?.click();
+    });
+
+    // Dropzone Click -> defaults to ZIP picker
+    dropZone?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      releaseZipInput?.click();
+    });
+
+    releaseZipInput?.addEventListener('change', async (e) => {
+      const input = e.target as HTMLInputElement;
+      if (input.files && input.files.length > 0) {
+        const fileList = Array.from(input.files);
+        await processSelectedFiles(fileList);
+      }
+    });
+
+    releaseFolderInput?.addEventListener('change', async (e) => {
+      const input = e.target as HTMLInputElement;
+      if (input.files && input.files.length > 0) {
+        const fileList = Array.from(input.files);
+        await processSelectedFiles(fileList);
+      }
+    });
+
+    // Drag and Drop support for folder/files
+    dropZone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('border-brand-600', 'bg-brand-100/50');
+    });
+
+    dropZone?.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-brand-600', 'bg-brand-100/50');
+    });
+
+    dropZone?.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      dropZone?.classList.remove('border-brand-600', 'bg-brand-100/50');
+
+      const items = e.dataTransfer?.items;
+      const droppedFiles: File[] = [];
+
+      if (items && items.length > 0) {
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (item.kind === 'file') {
+            const entry = item.webkitGetAsEntry?.();
+            if (entry) {
+              await readEntry(entry, droppedFiles);
+            } else {
+              const file = item.getAsFile();
+              if (file) droppedFiles.push(file);
+            }
+          }
+        }
+      } else if (e.dataTransfer?.files) {
+        droppedFiles.push(...Array.from(e.dataTransfer.files));
+      }
+
+      if (droppedFiles.length > 0) {
+        await processSelectedFiles(droppedFiles);
+      }
+    });
+
+    // Recursive directory reader for drag-and-drop folders
+    async function readEntry(entry: any, fileArray: File[]) {
+      if (entry.isFile) {
+        await new Promise<void>((resolve) => {
+          entry.file((file: File) => {
+            fileArray.push(file);
+            resolve();
+          }, () => resolve());
+        });
+      } else if (entry.isDirectory) {
+        const reader = entry.createReader();
+        const entries: any[] = await new Promise((resolve) => {
+          reader.readEntries((results: any[]) => resolve(results || []), () => resolve([]));
+        });
+        for (const child of entries) {
+          await readEntry(child, fileArray);
+        }
+      }
+    }
+
+    // Manual Worker file input
     workerFileInput?.addEventListener('change', async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
 
       if (workerFileInfo) {
         workerFileInfo.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-        workerFileInfo.className = 'text-xs text-brand-600 font-semibold font-mono mt-1';
+        workerFileInfo.className = 'text-[11px] text-brand-600 font-semibold font-mono';
       }
 
       loadedWorkerJs = await file.text();
     });
 
-    // File input handler for manifest
+    // Manual Manifest file input
     manifestFileInput?.addEventListener('change', async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
@@ -358,6 +600,9 @@ import '../../styles/global.css';
       try {
         const text = await file.text();
         loadedManifest = JSON.parse(text);
+        if (loadedManifest?.version && !versionInput.value) {
+          versionInput.value = String(loadedManifest.version).replace(/^v/, '');
+        }
       } catch (err: any) {
         alert('Invalid manifest.json file: ' + err.message);
       }
@@ -393,6 +638,13 @@ import '../../styles/global.css';
         tableBody.innerHTML = releases.map((r: any) => {
           const isActive = r.is_active === 1;
           const shortSha = r.sha256 ? `${r.sha256.slice(0, 8)}...` : '—';
+          let cfg: any = {};
+          try {
+            cfg = typeof r.config === 'string' ? JSON.parse(r.config || '{}') : (r.config || {});
+          } catch (e) {}
+          const assetBadge = cfg.asset_count
+            ? `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[11px] font-sans font-medium bg-blue-50 text-blue-700">${cfg.asset_count} assets</span>`
+            : '';
           const formattedDate = new Date(r.created_at).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -412,8 +664,8 @@ import '../../styles/global.css';
                   : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Inactive</span>'
                 }
               </td>
-              <td class="px-6 py-3.5 font-mono text-gray-500 truncate max-w-[200px]" title="${r.r2_key}">
-                ${r.r2_key}
+              <td class="px-6 py-3.5 font-mono text-gray-500 whitespace-nowrap" title="${r.r2_key}">
+                <span>${r.r2_key}</span>${assetBadge}
               </td>
               <td class="px-6 py-3.5 font-mono text-gray-500" title="${r.sha256 || ''}">
                 ${shortSha}
@@ -498,15 +750,14 @@ import '../../styles/global.css';
       const version = versionInput.value.trim().replace(/^v/, '');
       const changelog = changelogInput.value.trim();
       const setActive = setActiveCheckbox.checked;
-      const workerJs = loadedWorkerJs || workerPasteText.value.trim();
 
       if (!version) {
         showAlert('Please specify a release version.', 'error');
         return;
       }
 
-      if (!workerJs) {
-        showAlert('Please upload or paste the TSDB Worker JavaScript bundle (index.js).', 'error');
+      if (!selectedZipFile && !loadedWorkerJs && !workerPasteText.value.trim()) {
+        showAlert('Please drop or select a TSDB release ZIP file (e.g. tsdb-v3.0.0.zip).', 'error');
         return;
       }
 
@@ -514,36 +765,43 @@ import '../../styles/global.css';
       uploadSubmitBtn.textContent = 'Uploading to R2...';
 
       try {
-        const payload: any = {
-          version,
-          workerJs,
-          changelog,
-          setActive,
-        };
+        let res: any;
 
-        if (loadedManifest) {
-          payload.manifest = loadedManifest;
+        if (selectedZipFile) {
+          // Direct ZIP upload via FormData
+          const fd = new FormData();
+          fd.append('file', selectedZipFile);
+          fd.append('version', version);
+          fd.append('changelog', changelog);
+          fd.append('setActive', String(setActive));
+
+          res = await apiClient('/api/admin/releases/upload', {
+            method: 'POST',
+            token,
+            body: fd,
+          });
+        } else {
+          const workerJs = loadedWorkerJs || workerPasteText.value.trim();
+          const payload: any = {
+            version,
+            workerJs,
+            changelog,
+            setActive,
+          };
+          if (loadedManifest) payload.manifest = loadedManifest;
+
+          res = await apiClient('/api/admin/releases/upload', {
+            method: 'POST',
+            token,
+            body: JSON.stringify(payload),
+          });
         }
-
-        const res = await apiClient('/api/admin/releases/upload', {
-          method: 'POST',
-          token,
-          body: JSON.stringify(payload),
-        });
 
         showAlert(`✅ ${res.message || `Release v${version} published successfully!`}`, 'success');
 
         setTimeout(() => {
           closeModal();
-          // Reset fields
-          versionInput.value = '';
-          changelogInput.value = '';
-          loadedWorkerJs = '';
-          loadedManifest = null;
-          if (workerFileInput) workerFileInput.value = '';
-          if (manifestFileInput) manifestFileInput.value = '';
-          if (workerFileInfo) workerFileInfo.textContent = 'Compiled ES module Worker JS';
-          if (workerPasteText) workerPasteText.value = '';
+          resetFormState();
         }, 800);
 
         await loadReleases();
@@ -551,7 +809,7 @@ import '../../styles/global.css';
         showAlert(`❌ ${err.message || 'Upload failed'}`, 'error');
       } finally {
         uploadSubmitBtn.disabled = false;
-        uploadSubmitBtn.textContent = 'Upload & Publish';
+        uploadSubmitBtn.textContent = 'Confirm & Publish Release';
       }
     });
 

@@ -35,9 +35,9 @@ export function getApiBaseUrl(): string {
 }
 
 /**
- * Returns OAuth authorization URL for Google or GitHub
+ * Returns OAuth authorization URL for Google, GitHub, or Cloudflare
  */
-export function getOAuthUrl(provider: 'google' | 'github'): string {
+export function getOAuthUrl(provider: 'google' | 'github' | 'cloudflare'): string {
   const appOrigin = typeof window !== 'undefined' ? window.location.origin : '';
   const query = appOrigin ? `?redirect_origin=${encodeURIComponent(appOrigin)}` : '';
   return `${getApiBaseUrl()}/api/auth/oauth/${provider}${query}`;
