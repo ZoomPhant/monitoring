@@ -30,16 +30,6 @@ import '../styles/global.css';
         <div class="flex items-center gap-3">
           <button
             type="button"
-            id="openPasswordModalBtn"
-            class="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-gray-700 hover:bg-gray-50 shadow-xs transition-all cursor-pointer"
-          >
-            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-            </svg>
-            Change Password
-          </button>
-          <button
-            type="button"
             id="openLaunchModalBtn"
             class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-brand-500/20 hover:bg-brand-700 transition-all cursor-pointer"
           >
@@ -364,76 +354,6 @@ import '../styles/global.css';
     </div>
   </div>
 
-  <!-- Change Password Modal Dialog -->
-  <div
-    id="passwordModal"
-    class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 flex items-center justify-center p-4 sm:p-6"
-    aria-labelledby="passwordModalTitle"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div class="relative w-full max-w-md rounded-3xl bg-white shadow-2xl border border-gray-200 overflow-hidden my-8">
-      <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-        <div>
-          <h3 id="passwordModalTitle" class="text-base font-bold text-gray-900">Change Password</h3>
-          <p class="text-xs text-gray-500 mt-0.5">Update your account login password.</p>
-        </div>
-        <button
-          type="button"
-          id="closePasswordModalBtn"
-          class="rounded-xl p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
-        >
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <form id="changePasswordForm" class="p-6 space-y-4">
-        <div id="passwordAlert" class="hidden rounded-xl p-3 text-xs font-medium border"></div>
-
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1">Current Password</label>
-          <input
-            type="password"
-            id="oldPasswordInput"
-            placeholder="••••••••"
-            class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1">New Password (Min 8 chars)</label>
-          <input
-            type="password"
-            id="newPasswordInput"
-            required
-            minlength="8"
-            placeholder="At least 8 characters"
-            class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
-          />
-        </div>
-
-        <div class="pt-2 flex justify-end gap-2">
-          <button
-            type="button"
-            id="cancelPasswordBtn"
-            class="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50 cursor-pointer"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            id="savePasswordBtn"
-            class="rounded-xl bg-brand-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-brand-700 cursor-pointer"
-          >
-            Save Password
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <Footer />
 
   <script>
@@ -451,63 +371,6 @@ import '../styles/global.css';
     if (!token) {
       window.location.href = '/login/?redirect=/dashboard/';
     }
-
-    // Password change modal handlers
-    const passwordModal = document.getElementById('passwordModal');
-    const openPasswordModalBtn = document.getElementById('openPasswordModalBtn');
-    const closePasswordModalBtn = document.getElementById('closePasswordModalBtn');
-    const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
-    const changePasswordForm = document.getElementById('changePasswordForm') as HTMLFormElement;
-    const passwordAlert = document.getElementById('passwordAlert');
-    const oldPasswordInput = document.getElementById('oldPasswordInput') as HTMLInputElement;
-    const newPasswordInput = document.getElementById('newPasswordInput') as HTMLInputElement;
-
-    function openPasswordModal() {
-      if (passwordAlert) passwordAlert.className = 'hidden';
-      if (oldPasswordInput) oldPasswordInput.value = '';
-      if (newPasswordInput) newPasswordInput.value = '';
-      passwordModal?.classList.remove('hidden');
-      oldPasswordInput?.focus();
-    }
-
-    function closePasswordModal() {
-      passwordModal?.classList.add('hidden');
-    }
-
-    openPasswordModalBtn?.addEventListener('click', openPasswordModal);
-    closePasswordModalBtn?.addEventListener('click', closePasswordModal);
-    cancelPasswordBtn?.addEventListener('click', closePasswordModal);
-    passwordModal?.addEventListener('click', (e) => {
-      if (e.target === passwordModal) closePasswordModal();
-    });
-
-    changePasswordForm?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!passwordAlert) return;
-      passwordAlert.className = 'hidden';
-
-      const oldPassword = oldPasswordInput?.value || '';
-      const newPassword = newPasswordInput?.value || '';
-
-      try {
-        const res = await apiClient('/api/auth/change-password', {
-          method: 'POST',
-          token,
-          body: JSON.stringify({ oldPassword, newPassword }),
-        });
-
-        passwordAlert.textContent = res.message || 'Password updated successfully!';
-        passwordAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-emerald-50 text-emerald-700 border-emerald-200 block';
-
-        setTimeout(() => {
-          closePasswordModal();
-        }, 1200);
-
-      } catch (err: any) {
-        passwordAlert.textContent = err.message || 'Failed to change password.';
-        passwordAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-red-50 text-red-700 border-red-200 block';
-      }
-    });
 
     // Modal elements
     const launchModal = document.getElementById('launchModal');

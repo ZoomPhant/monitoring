@@ -1,0 +1,529 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout title="My Profile — ZoomPhant">
+  <Header currentPath="/profile/" />
+
+  <main class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+      <!-- Breadcrumbs & Navigation -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <a href="/" class="hover:text-gray-900 transition-colors">Home</a>
+          <span>/</span>
+          <a href="/dashboard/" class="hover:text-gray-900 transition-colors">Dashboard</a>
+          <span>/</span>
+          <span class="font-semibold text-gray-900">User Profile</span>
+        </div>
+        <a
+          href="/dashboard/"
+          class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to TSDB Clusters
+        </a>
+      </div>
+
+      <!-- Profile Header Banner Card -->
+      <div class="bg-white rounded-3xl border border-gray-200 shadow-xs p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div class="flex items-center gap-5">
+            <!-- Avatar -->
+            <div
+              id="avatarContainer"
+              class="h-20 w-20 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 text-white flex items-center justify-center text-2xl font-black shadow-md shrink-0 uppercase tracking-wider"
+            >
+              ZP
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <h1 id="profileDisplayName" class="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
+                  User Account
+                </h1>
+                <span
+                  id="profileRoleBadge"
+                  class="rounded-full bg-brand-50 border border-brand-200 px-2.5 py-0.5 text-xs font-bold text-brand-700"
+                >
+                  Member
+                </span>
+                <span
+                  id="profileVerifiedBadge"
+                  class="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-xs font-semibold text-emerald-700"
+                >
+                  <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                  </svg>
+                  Verified
+                </span>
+              </div>
+              <p id="profileDisplayEmail" class="text-xs sm:text-sm text-gray-500 mt-1">loading...</p>
+              <p id="profileJoinedDate" class="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Joined ZoomPhant
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <a
+              href="/dashboard/"
+              class="flex-1 sm:flex-none text-center rounded-xl bg-brand-50 border border-brand-200 px-4 py-2.5 text-xs font-bold text-brand-700 hover:bg-brand-100 transition-colors shadow-xs"
+            >
+              📊 My TSDB
+            </a>
+            <button
+              type="button"
+              id="profileSignOutBtn"
+              class="flex-1 sm:flex-none text-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors shadow-xs cursor-pointer"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Profile Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- 1. Personal Information Form -->
+        <div class="bg-white rounded-3xl border border-gray-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="h-8 w-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Personal Information</h3>
+                <p class="text-xs text-gray-500">Update your public display name</p>
+              </div>
+            </div>
+          </div>
+
+          <form id="profileInfoForm" class="p-6 space-y-4">
+            <div id="profileInfoAlert" class="hidden rounded-xl p-3 text-xs font-medium border"></div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Display Name</label>
+              <input
+                type="text"
+                id="inputName"
+                required
+                placeholder="Your full name"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
+              <input
+                type="email"
+                id="inputEmail"
+                disabled
+                class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-xs text-gray-500 cursor-not-allowed shadow-xs"
+              />
+              <span class="text-[11px] text-gray-400 mt-1 block">Primary email associated with your ZoomPhant account.</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">User Identifier</label>
+              <input
+                type="text"
+                id="inputUserId"
+                disabled
+                class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-xs font-mono text-gray-500 cursor-not-allowed shadow-xs"
+              />
+            </div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                id="saveProfileInfoBtn"
+                class="w-full sm:w-auto rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-brand-700 transition-colors cursor-pointer"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 2. Security & Change Password -->
+        <div class="bg-white rounded-3xl border border-gray-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="h-8 w-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Security & Password</h3>
+                <p class="text-xs text-gray-500">Change your login password</p>
+              </div>
+            </div>
+          </div>
+
+          <form id="changePasswordForm" class="p-6 space-y-4">
+            <div id="passwordAlert" class="hidden rounded-xl p-3 text-xs font-medium border"></div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Current Password</label>
+              <input
+                type="password"
+                id="oldPasswordInput"
+                placeholder="••••••••"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
+              />
+              <span class="text-[11px] text-gray-400 mt-1 block">Leave blank if you previously logged in with OAuth.</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">New Password (Min 8 characters)</label>
+              <input
+                type="password"
+                id="newPasswordInput"
+                required
+                minlength="8"
+                placeholder="Enter new strong password"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Confirm New Password</label>
+              <input
+                type="password"
+                id="confirmPasswordInput"
+                required
+                minlength="8"
+                placeholder="Re-enter new password"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                id="submitPasswordBtn"
+                class="w-full sm:w-auto rounded-xl bg-gray-900 px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-black transition-colors cursor-pointer"
+              >
+                Update Password
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- 3. Connected Authentication Providers -->
+      <div class="bg-white rounded-3xl border border-gray-200 shadow-xs p-6 sm:p-8">
+        <h3 class="text-sm font-bold text-gray-900 mb-1">Connected Sign-in Methods</h3>
+        <p class="text-xs text-gray-500 mb-5">Authentication providers linked with your ZoomPhant account</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="providersList">
+          <!-- Email / Password -->
+          <div class="rounded-2xl border border-gray-200 p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="h-9 w-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-700">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900">Email & Password</p>
+                <p class="text-[11px] text-gray-400">Standard credentials</p>
+              </div>
+            </div>
+            <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">Active</span>
+          </div>
+
+          <!-- GitHub -->
+          <div id="providerGithubCard" class="rounded-2xl border border-gray-200 p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="h-9 w-9 rounded-xl bg-gray-900 text-white flex items-center justify-center">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900">GitHub</p>
+                <p class="text-[11px] text-gray-400">OAuth 2.0</p>
+              </div>
+            </div>
+            <span id="providerGithubStatus" class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600">Available</span>
+          </div>
+
+          <!-- Google -->
+          <div id="providerGoogleCard" class="rounded-2xl border border-gray-200 p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="h-9 w-9 rounded-xl bg-gray-100 flex items-center justify-center">
+                <svg class="h-4 w-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900">Google</p>
+                <p class="text-[11px] text-gray-400">Google Identity</p>
+              </div>
+            </div>
+            <span id="providerGoogleStatus" class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600">Available</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <Footer />
+
+  <script>
+    import { apiClient } from '../utils/apiClient';
+
+    // 1. Guard route: Verify User Authentication
+    const token = localStorage.getItem('zp_token');
+    const userStr = localStorage.getItem('zp_user');
+
+    if (!token) {
+      window.location.href = '/login/?redirect=/profile/';
+    }
+
+    let currentUser: any = null;
+    try {
+      if (userStr) currentUser = JSON.parse(userStr);
+    } catch {}
+
+    // DOM Elements
+    const avatarContainer = document.getElementById('avatarContainer');
+    const profileDisplayName = document.getElementById('profileDisplayName');
+    const profileRoleBadge = document.getElementById('profileRoleBadge');
+    const profileVerifiedBadge = document.getElementById('profileVerifiedBadge');
+    const profileDisplayEmail = document.getElementById('profileDisplayEmail');
+    const profileJoinedDate = document.getElementById('profileJoinedDate');
+
+    const inputName = document.getElementById('inputName') as HTMLInputElement;
+    const inputEmail = document.getElementById('inputEmail') as HTMLInputElement;
+    const inputUserId = document.getElementById('inputUserId') as HTMLInputElement;
+    const profileInfoForm = document.getElementById('profileInfoForm') as HTMLFormElement;
+    const profileInfoAlert = document.getElementById('profileInfoAlert');
+    const saveProfileInfoBtn = document.getElementById('saveProfileInfoBtn');
+
+    const changePasswordForm = document.getElementById('changePasswordForm') as HTMLFormElement;
+    const passwordAlert = document.getElementById('passwordAlert');
+    const oldPasswordInput = document.getElementById('oldPasswordInput') as HTMLInputElement;
+    const newPasswordInput = document.getElementById('newPasswordInput') as HTMLInputElement;
+    const confirmPasswordInput = document.getElementById('confirmPasswordInput') as HTMLInputElement;
+    const submitPasswordBtn = document.getElementById('submitPasswordBtn');
+
+    const providerGithubStatus = document.getElementById('providerGithubStatus');
+    const providerGoogleStatus = document.getElementById('providerGoogleStatus');
+    const profileSignOutBtn = document.getElementById('profileSignOutBtn');
+
+    // Populate initial UI from cached user
+    function renderUser(u: any) {
+      if (!u) return;
+      const displayName = u.name || (u.email ? u.email.split('@')[0] : 'User');
+      if (profileDisplayName) profileDisplayName.textContent = displayName;
+      if (profileDisplayEmail) profileDisplayEmail.textContent = u.email || '—';
+      if (inputName) inputName.value = u.name || '';
+      if (inputEmail) inputEmail.value = u.email || '';
+      if (inputUserId) inputUserId.value = u.id || '—';
+
+      // Avatar initials
+      if (avatarContainer) {
+        const initials = displayName.slice(0, 2).toUpperCase();
+        avatarContainer.textContent = initials;
+      }
+
+      // Role badge
+      if (profileRoleBadge) {
+        if (u.role === 'admin') {
+          profileRoleBadge.textContent = 'Administrator';
+          profileRoleBadge.className = 'rounded-full bg-purple-100 border border-purple-200 px-2.5 py-0.5 text-xs font-bold text-purple-700';
+        } else {
+          profileRoleBadge.textContent = 'Standard Member';
+          profileRoleBadge.className = 'rounded-full bg-brand-50 border border-brand-200 px-2.5 py-0.5 text-xs font-bold text-brand-700';
+        }
+      }
+
+      // Verified badge
+      if (profileVerifiedBadge) {
+        if (u.emailVerified !== false) {
+          profileVerifiedBadge.classList.remove('hidden');
+        } else {
+          profileVerifiedBadge.classList.add('hidden');
+        }
+      }
+
+      // Joined date
+      if (profileJoinedDate && u.createdAt) {
+        const date = new Date(u.createdAt);
+        profileJoinedDate.innerHTML = `
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Member since ${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+        `;
+      }
+
+      // Providers
+      if (u.providers && Array.isArray(u.providers)) {
+        if (providerGithubStatus) {
+          if (u.providers.includes('github')) {
+            providerGithubStatus.textContent = 'Connected';
+            providerGithubStatus.className = 'rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700';
+          }
+        }
+        if (providerGoogleStatus) {
+          if (u.providers.includes('google')) {
+            providerGoogleStatus.textContent = 'Connected';
+            providerGoogleStatus.className = 'rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700';
+          }
+        }
+      }
+    }
+
+    // Initial render from local cache
+    if (currentUser) {
+      renderUser(currentUser);
+    }
+
+    // Load fresh profile details from API
+    async function loadFreshProfile() {
+      try {
+        const res = await apiClient('/api/auth/me', { token });
+        if (res && res.user) {
+          currentUser = { ...currentUser, ...res.user };
+          localStorage.setItem('zp_user', JSON.stringify(currentUser));
+          renderUser(currentUser);
+        }
+      } catch (err) {
+        console.warn('Could not fetch fresh user profile:', err);
+      }
+    }
+    loadFreshProfile();
+
+    // 2. Profile Info Form Submit
+    profileInfoForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!profileInfoAlert) return;
+      profileInfoAlert.className = 'hidden';
+
+      const name = inputName.value.trim();
+      if (!name) {
+        profileInfoAlert.textContent = 'Display name cannot be empty.';
+        profileInfoAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-red-50 text-red-700 border-red-200 block';
+        return;
+      }
+
+      if (saveProfileInfoBtn) {
+        saveProfileInfoBtn.textContent = 'Saving...';
+        saveProfileInfoBtn.setAttribute('disabled', 'true');
+      }
+
+      try {
+        const res = await apiClient('/api/auth/profile', {
+          method: 'PUT',
+          token,
+          body: JSON.stringify({ name }),
+        });
+
+        currentUser.name = name;
+        localStorage.setItem('zp_user', JSON.stringify(currentUser));
+        renderUser(currentUser);
+
+        profileInfoAlert.textContent = res.message || 'Profile updated successfully!';
+        profileInfoAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-emerald-50 text-emerald-700 border-emerald-200 block';
+
+        setTimeout(() => {
+          if (profileInfoAlert) profileInfoAlert.className = 'hidden';
+        }, 3000);
+
+      } catch (err: any) {
+        profileInfoAlert.textContent = err.message || 'Failed to update profile.';
+        profileInfoAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-red-50 text-red-700 border-red-200 block';
+      } finally {
+        if (saveProfileInfoBtn) {
+          saveProfileInfoBtn.textContent = 'Save Changes';
+          saveProfileInfoBtn.removeAttribute('disabled');
+        }
+      }
+    });
+
+    // 3. Change Password Form Submit
+    changePasswordForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!passwordAlert) return;
+      passwordAlert.className = 'hidden';
+
+      const oldPassword = oldPasswordInput.value;
+      const newPassword = newPasswordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (newPassword.length < 8) {
+        passwordAlert.textContent = 'New password must be at least 8 characters long.';
+        passwordAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-red-50 text-red-700 border-red-200 block';
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        passwordAlert.textContent = 'New passwords do not match. Please verify and retry.';
+        passwordAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-red-50 text-red-700 border-red-200 block';
+        return;
+      }
+
+      if (submitPasswordBtn) {
+        submitPasswordBtn.textContent = 'Updating...';
+        submitPasswordBtn.setAttribute('disabled', 'true');
+      }
+
+      try {
+        const res = await apiClient('/api/auth/change-password', {
+          method: 'POST',
+          token,
+          body: JSON.stringify({ oldPassword, newPassword }),
+        });
+
+        passwordAlert.textContent = res.message || 'Password changed successfully!';
+        passwordAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-emerald-50 text-emerald-700 border-emerald-200 block';
+
+        oldPasswordInput.value = '';
+        newPasswordInput.value = '';
+        confirmPasswordInput.value = '';
+
+        setTimeout(() => {
+          if (passwordAlert) passwordAlert.className = 'hidden';
+        }, 4000);
+
+      } catch (err: any) {
+        passwordAlert.textContent = err.message || 'Failed to update password.';
+        passwordAlert.className = 'p-3 rounded-xl text-xs font-medium border mb-3 bg-red-50 text-red-700 border-red-200 block';
+      } finally {
+        if (submitPasswordBtn) {
+          submitPasswordBtn.textContent = 'Update Password';
+          submitPasswordBtn.removeAttribute('disabled');
+        }
+      }
+    });
+
+    // Sign Out
+    profileSignOutBtn?.addEventListener('click', () => {
+      localStorage.removeItem('zp_token');
+      localStorage.removeItem('zp_user');
+      window.location.href = '/';
+    });
+  </script>
+</BaseLayout>
+
