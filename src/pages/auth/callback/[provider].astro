@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/global.css';
+
+export function getStaticPaths() {
+  return [
+    { params: { provider: 'github' } },
+    { params: { provider: 'google' } },
+    { params: { provider: 'cloudflare' } },
+  ];
+}
+
+const { provider = 'github' } = Astro.params;
+const providerNames: Record<string, string> = {
+  github: 'GitHub',
+  google: 'Google',
+  cloudflare: 'Cloudflare',
+};
+const displayProvider = providerNames[provider.toLowerCase()] || 'OAuth Provider';
+---
+
+<BaseLayout title={`Connecting with ${displayProvider} — ZoomPhant`}>
+  <main class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white p-8 rounded-3xl border border-gray-200/80 shadow-xl shadow-gray-100/50 text-center">
+      
+      <!-- Brand Logo -->
+      <div class="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-brand-50 text-brand-600 mb-5 shadow-xs">
+        <img src="/logo.svg" alt="ZoomPhant" class="h-8 w-8" />
+      </div>
+
+      <!-- State: Processing -->
+      <div id="processingState" class="space-y-4">
+        <div class="inline-flex items-center justify-center">
+          <svg class="animate-spin h-7 w-7 text-brand-600" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900">
+          Connecting with {displayProvider}...
+        </h2>
+        <p class="text-xs text-gray-500 max-w-xs mx-auto">
+          Securing your session and exchanging credentials. You will be redirected momentarily.
+        </p>
+      </div>
+
+      <!-- State: Error -->
+      <div id="errorState" class="hidden space-y-4 text-left">
+        <div class="rounded-xl bg-red-50 p-4 border border-red-200 text-xs text-red-700 space-y-1">
+          <div class="font-bold flex items-center gap-1.5 text-red-800">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Authentication Failed
+          </div>
+          <p id="errorMessage" class="break-words">Could not complete authorization.</p>
+        </div>
+
+        <div class="pt-2 flex flex-col gap-2">
+          <a
+            href="/login/"
+            class="w-full text-center rounded-xl bg-brand-600 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-brand-700 transition-colors"
+          >
+            Return to Sign In
+          </a>
+          <a
+            href="/"
+            class="w-full text-center rounded-xl border border-gray-200 bg-white py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Back to Home
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script define:vars={{ provider }}>
+    async function handleOAuthExchange() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const state = urlParams.get('state');
+      const error = urlParams.get('error') || urlParams.get('error_description');
+
+      const processingState = document.getElementById('processingState');
+      const errorState = document.getElementById('errorState');
+      const errorMessage = document.getElementById('errorMessage');
+
+      function showError(msg) {
+        if (processingState) processingState.classList.add('hidden');
+        if (errorState) errorState.classList.remove('hidden');
+        if (errorMessage) errorMessage.textContent = msg;
+      }
+
+      if (error) {
+        showError(decodeURIComponent(error));
+        return;
+      }
+
+      if (!code) {
+        showError('Missing authorization code from OAuth provider.');
+        return;
+      }
+
+      try {
+        // Dynamic API client resolution
+        let apiBase = 'https://api.zoomphant.com';
+        const hostname = window.location.hostname;
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+          apiBase = 'http://localhost:1070';
+        } else if (hostname.endsWith('zoomphant.cn')) {
+          const proto = window.location.protocol === 'https:' ? 'https:' : 'http:';
+          apiBase = `${proto}//api.zoomphant.cn`;
+        }
+
+        const redirectUri = `${window.location.origin}/auth/callback/${provider}`;
+
+        const res = await fetch(`${apiBase}/api/auth/oauth/${provider}/exchange`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            code,
+            state,
+            redirectUri,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Failed to exchange authorization code');
+        }
+
+        // Case A: Cloudflare BYOC deploy connect
+        if (data.type === 'cloudflare') {
+          const target = data.returnTo || '/dashboard/';
+          const params = new URLSearchParams();
+          params.set('cf_connected', '1');
+          if (data.cfAccountId) params.set('account_id', data.cfAccountId);
+          if (data.cfAccountName) params.set('account_name', data.cfAccountName);
+          if (data.cfToken) params.set('cf_token', data.cfToken);
+
+          const sep = target.includes('?') ? '&' : '?';
+          window.location.replace(`${target}${sep}${params.toString()}`);
+          return;
+        }
+
+        // Case B: GitHub / Google User sign-in
+        if (data.token && data.user) {
+          localStorage.setItem('zp_token', data.token);
+          localStorage.setItem('zp_user', JSON.stringify(data.user));
+
+          const destination = data.returnTo && data.returnTo !== '/'
+            ? data.returnTo
+            : (data.user.role === 'admin' ? '/admin/' : '/dashboard/');
+
+          window.location.replace(destination);
+          return;
+        }
+
+        throw new Error('Unexpected response format from auth service.');
+
+      } catch (err) {
+        console.error('OAuth Callback Wrapper Error:', err);
+        showError(err.message || 'An error occurred during authentication.');
+      }
+    }
+
+    handleOAuthExchange();
+  </script>
+</BaseLayout>
