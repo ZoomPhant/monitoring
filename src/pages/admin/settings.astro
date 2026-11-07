@@ -84,7 +84,7 @@ import '../../styles/global.css';
                 <input
                   type="email"
                   id="settingFromEmail"
-                  placeholder="admin@zoomphant.com"
+                  placeholder="noreply@zoomphant.com"
                   class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
                 />
               </div>
@@ -112,13 +112,23 @@ import '../../styles/global.css';
 
             <div id="emailSettingsMsg" class="hidden text-xs"></div>
 
-            <div class="pt-2">
+            <div class="pt-2 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
                 id="saveEmailBtn"
                 class="rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-brand-700 transition-colors cursor-pointer"
               >
                 Save Email Settings
+              </button>
+              <button
+                type="button"
+                id="testEmailBtn"
+                class="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+              >
+                <svg class="h-3.5 w-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Send Test Email to Admin
               </button>
             </div>
           </form>
@@ -373,6 +383,43 @@ import '../../styles/global.css';
       } finally {
         saveEmailBtn.disabled = false;
         saveEmailBtn.textContent = 'Save Email Settings';
+      }
+    });
+
+    // Test Email Button
+    const testEmailBtn = document.getElementById('testEmailBtn') as HTMLButtonElement;
+    testEmailBtn?.addEventListener('click', async () => {
+      const adminEmail = user?.email || 'admin@zoomphant.com';
+      if (!confirm(`Send a test email to the administrator email (${adminEmail})?`)) return;
+
+      testEmailBtn.disabled = true;
+      testEmailBtn.textContent = 'Sending test email...';
+
+      try {
+        const res = await apiClient('/api/admin/settings/test-email', {
+          method: 'POST',
+          token,
+          body: JSON.stringify({ recipientEmail: adminEmail }),
+        });
+
+        if (emailMsg) {
+          emailMsg.textContent = `✅ ${res.message || 'Test email dispatched successfully!'}`;
+          emailMsg.className = 'text-xs text-emerald-600 font-semibold block';
+          setTimeout(() => emailMsg.classList.add('hidden'), 6000);
+        }
+      } catch (err: any) {
+        if (emailMsg) {
+          emailMsg.textContent = `❌ ${err.message || 'Failed to dispatch test email.'}`;
+          emailMsg.className = 'text-xs text-red-600 font-semibold block';
+        }
+      } finally {
+        testEmailBtn.disabled = false;
+        testEmailBtn.innerHTML = `
+          <svg class="h-3.5 w-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          Send Test Email to Admin
+        `;
       }
     });
 
