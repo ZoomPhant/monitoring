@@ -5,494 +5,489 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 ---
 
-<BaseLayout title="ZoomPhant — Enterprise All-in-One Self-Hosted Monitoring">
+<BaseLayout
+  title="ZoomPhant TSDB — The Time-Series Database Built for AI Agents"
+  description="Give your AI Agent a private, high-speed database for monitoring, business metrics, and event analytics. 1-click deploy on your Cloudflare account. First cluster 100% free."
+>
   <Header currentPath={Astro.url.pathname} />
 
-  <main>
-    <!-- Hero -->
-    <section class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-blue-50" />
-      <div class="relative mx-auto max-w-7xl px-6 pb-24 pt-16 sm:pb-32 sm:pt-20 lg:px-8">
-        <div class="mx-auto max-w-3xl text-center">
-          <span class="inline-flex items-center rounded-full bg-brand-100 px-4 py-1.5 text-xs font-medium text-brand-700 ring-1 ring-inset ring-brand-200">
-            Open-core · Self-hosted · Enterprise-ready
-          </span>
-          <h1 class="mt-8 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            Your Data, Your Control.
-            <span class="mt-2 block text-brand-600">Enterprise Monitoring, Self-Hosted.</span>
+  <main class="overflow-hidden">
+    <!-- 1. HERO SECTION -->
+    <section class="relative overflow-hidden pt-14 pb-20 sm:pt-20 sm:pb-28 bg-gradient-to-b from-brand-50/70 via-white to-white">
+      <!-- Subtle background glow -->
+      <div class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[420px] bg-gradient-to-tr from-brand-200/40 via-sky-100/30 to-indigo-100/40 blur-3xl rounded-full -z-10"></div>
+
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-4xl text-center">
+          <!-- Pill Badge -->
+          <div class="inline-flex items-center gap-2 rounded-full bg-brand-50 border border-brand-200 px-4 py-1.5 text-xs font-bold text-brand-700 shadow-2xs">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-600"></span>
+            </span>
+            AI-Native TSDB · 100% In Your Cloud · First Cluster Free
+          </div>
+
+          <h1 class="mt-7 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-6xl lg:leading-[1.12]">
+            The Time-Series Database
+            <span class="mt-1.5 block bg-gradient-to-r from-brand-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              Built for AI Agents.
+            </span>
           </h1>
-          <p class="mt-6 text-lg leading-8 text-gray-600">
-            The next-gen all-in-one monitoring platform for Ops and DevOps teams. Replace Datadog, Zabbix,
-            Prometheus & Grafana with a single Docker image — fully self-hosted, open-core, and built for data sovereignty.
+
+          <p class="mt-6 text-lg sm:text-xl leading-8 text-gray-600 max-w-3xl mx-auto">
+            Give your AI agents a direct place to <strong>push data, ask questions, and build dashboards</strong>—whether for system monitoring, business intelligence, or product analytics. Deployed in one click into your own Cloudflare account.
           </p>
-          <div class="mt-10 flex items-center justify-center gap-4">
-            <a href="/docs/start/" class="rounded-xl bg-brand-600 px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600">
-              Start Monitoring in 1 Minute
+
+          <!-- Primary CTAs -->
+          <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="/dashboard/"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 px-8 py-4 text-sm sm:text-base font-bold text-white shadow-lg shadow-brand-500/25 transition-all hover:bg-brand-700 hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <span>Claim Your First Free TSDB</span>
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
             </a>
-            <a href="/docs/about/" class="rounded-xl border border-gray-300 bg-white px-8 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md">
-              Learn More
+            <a
+              href="#how-it-works"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-8 py-4 text-sm sm:text-base font-semibold text-gray-700 shadow-xs transition-all hover:bg-gray-50 hover:border-gray-300"
+            >
+              See How Agents Use It
             </a>
           </div>
-          <div class="mt-8 flex items-center justify-center gap-6 text-sm text-gray-500">
+
+          <!-- Trust Pills -->
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs sm:text-sm font-medium text-gray-500">
             <span class="flex items-center gap-1.5">
-              <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              No credit card
+              <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+              First TSDB Cluster 100% Free
             </span>
             <span class="flex items-center gap-1.5">
-              <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              Free for personal use
+              <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+              Runs on Cloudflare Free Tier ($0/mo)
             </span>
             <span class="flex items-center gap-1.5">
-              <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              Single Docker image
+              <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+              60-Second 1-Click Setup
             </span>
           </div>
         </div>
-      </div>
-      <div class="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
-    </section>
 
-    <!-- Quick Deploy -->
-    <section class="border-y border-gray-100 bg-gray-50/50">
-      <div class="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8">
-        <div class="mx-auto max-w-4xl">
-          <div class="text-center">
-            <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Quick Deploy</span>
-            <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">One command to start</h2>
-            <p class="mt-4 text-base text-gray-600">
-              Docker 20+ required. Runs in under a minute.
-            </p>
-          </div>
-          <div class="mt-8 overflow-hidden rounded-xl border border-gray-200 bg-gray-900 shadow-lg">
-            <div class="flex items-center gap-2 border-b border-gray-700 px-5 py-3">
-              <span class="h-3 w-3 rounded-full bg-red-500" />
-              <span class="h-3 w-3 rounded-full bg-yellow-500" />
-              <span class="h-3 w-3 rounded-full bg-green-500" />
-              <span class="ml-2 text-xs text-gray-400">terminal</span>
-            </div>
-            <pre class="overflow-x-auto px-5 py-4 text-sm text-green-400"><code>docker run --hostname zoomphant -it -d \<span class="text-gray-400">
-  </span>-v /root/data:/data \<span class="text-gray-400">
-  </span>-p 8080:80 \<span class="text-gray-400">
-  </span>--name zoomphant zoomphant/zoomphant-pack:latest</code></pre>
-          </div>
-          <p class="mt-4 text-center text-sm text-gray-500">
-            Then visit <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-700">http://localhost:8080</code> — default credentials: <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-700">admin@zervice.local / admin</code>
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features -->
-    <section class="py-20 sm:py-24">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-2xl text-center">
-          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">All-in-One Platform</span>
-          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Everything you need to monitor, nothing you don't</h2>
-          <p class="mt-4 text-base leading-7 text-gray-600">
-            Metrics, logs, alerts, dashboards, collectors — all built-in, all working together out of the box.
-          </p>
-        </div>
-        <div class="mx-auto mt-16 grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
-            </div>
-            <h3 class="mt-6 text-base font-semibold text-gray-900">Metrics</h3>
-            <p class="mt-2 text-sm leading-6 text-gray-600">
-              Collect counters, gauges, histograms. Prometheus-compatible storage. Monitor everything from CPU to Kafka consumer lag.
-            </p>
-          </div>
-          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-            </div>
-            <h3 class="mt-6 text-base font-semibold text-gray-900">Logs</h3>
-            <p class="mt-2 text-sm leading-6 text-gray-600">
-              Collect from local files, rsyslog, or Loki push. Parse with Grok. Correlate with metrics for full observability.
-            </p>
-          </div>
-          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-            </div>
-            <h3 class="mt-6 text-base font-semibold text-gray-900">Alerts</h3>
-            <p class="mt-2 text-sm leading-6 text-gray-600">
-              Real-time evaluation engine. Staged delivery chains for email, SMS, voice, Slack, webhooks. Escalate if no response.
-            </p>
-          </div>
-          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
-            </div>
-            <h3 class="mt-6 text-base font-semibold text-gray-900">Dashboards</h3>
-            <p class="mt-2 text-sm leading-6 text-gray-600">
-              Global, service-level, and independent dashboards. Rich widgets: graphs, pies, stats, log viewers, text, monitor tables.
-            </p>
-          </div>
-          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
-            </div>
-            <h3 class="mt-6 text-base font-semibold text-gray-900">Collectors</h3>
-            <p class="mt-2 text-sm leading-6 text-gray-600">
-              Built-in visual collector management. Install agents on Linux, Windows, Kubernetes. Plugins for MySQL, Kafka, Redis, HTTP, SNMP, and more.
-            </p>
-          </div>
-          <div class="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all hover:shadow-md">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
-            </div>
-            <h3 class="mt-6 text-base font-semibold text-gray-900">Data Sovereignty</h3>
-            <p class="mt-2 text-sm leading-6 text-gray-600">
-              Your data stays on your infrastructure. Standard Prometheus/Loki formats. No vendor lock-in. Export anytime, integrate anywhere.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Why ZoomPhant -->
-    <section class="bg-gray-50 border-y border-gray-100 py-20 sm:py-24">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-3xl text-center">
-          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Next-Gen Monitoring</span>
-          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Beyond first and second generation monitoring</h2>
-        </div>
-        <div class="mx-auto mt-16 grid max-w-5xl gap-6 sm:grid-cols-3">
-          <div class="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-            <div class="text-4xl font-bold text-brand-600">1st</div>
-            <h3 class="mt-4 text-base font-semibold text-gray-900">Legacy Systems</h3>
-            <p class="mt-2 text-sm text-gray-500">Nagios, Zabbix, HP OpenView</p>
-            <ul class="mt-4 space-y-2 text-left text-xs text-gray-500">
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Local deployment overhead</li>
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Static configuration</li>
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Limited visualization</li>
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Singular purpose</li>
-            </ul>
-          </div>
-          <div class="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-            <div class="text-4xl font-bold text-yellow-600">2nd</div>
-            <h3 class="mt-4 text-base font-semibold text-gray-900">SaaS Solutions</h3>
-            <p class="mt-2 text-sm text-gray-500">Datadog, New Relic, CloudWatch</p>
-            <ul class="mt-4 space-y-2 text-left text-xs text-gray-500">
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> High data/bandwidth costs</li>
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Vendor lock-in</li>
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Data export fees</li>
-              <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Limited retention</li>
-            </ul>
-          </div>
-          <div class="rounded-2xl border-2 border-brand-200 bg-brand-50 p-8 text-center shadow-sm">
-            <div class="inline-flex items-center gap-1.5 rounded-full bg-brand-200 px-3 py-1 text-xs font-semibold text-brand-700">3rd Gen</div>
-            <h3 class="mt-4 text-base font-semibold text-gray-900">ZoomPhant</h3>
-            <p class="mt-2 text-sm text-brand-700">Next-Gen Self-Hosted</p>
-            <ul class="mt-4 space-y-2 text-left text-xs text-gray-700">
-              <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Data sovereignty</li>
-              <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Cost-effective</li>
-              <li class="flex items-center gap-2"><span class="text-green-500">✓</span> One-click Docker deploy</li>
-              <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Hybrid cloud support</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Use Cases -->
-    <section class="py-20 sm:py-24">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-2xl text-center">
-          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Built for Everything</span>
-          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Infrastructure and application monitoring</h2>
-        </div>
-        <div class="mx-auto mt-16 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
-            <div class="text-3xl">🐧</div>
-            <h3 class="mt-3 text-sm font-semibold text-gray-900">Linux</h3>
-            <p class="mt-1 text-xs text-gray-500">CPU, memory, disk, network</p>
-          </div>
-          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
-            <div class="text-3xl">🪟</div>
-            <h3 class="mt-3 text-sm font-semibold text-gray-900">Windows</h3>
-            <p class="mt-1 text-xs text-gray-500">WMI, performance counters, logs</p>
-          </div>
-          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
-            <div class="text-3xl">⎈</div>
-            <h3 class="mt-3 text-sm font-semibold text-gray-900">Kubernetes</h3>
-            <p class="mt-1 text-xs text-gray-500">Pods, nodes, cluster health</p>
-          </div>
-          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
-            <div class="text-3xl">🗄️</div>
-            <h3 class="mt-3 text-sm font-semibold text-gray-900">Databases</h3>
-            <p class="mt-1 text-xs text-gray-500">MySQL, Redis, Kafka</p>
-          </div>
-          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
-            <div class="text-3xl">🌐</div>
-            <h3 class="mt-3 text-sm font-semibold text-gray-900">HTTP</h3>
-            <p class="mt-1 text-xs text-gray-500">Websites, APIs, endpoints</p>
-          </div>
-          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
-            <div class="text-3xl">📡</div>
-            <h3 class="mt-3 text-sm font-semibold text-gray-900">Network</h3>
-            <p class="mt-1 text-xs text-gray-500">Ping, DNS, ports, SNMP</p>
-          </div>
-          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
-            <div class="text-3xl">📝</div>
-            <h3 class="mt-3 text-sm font-semibold text-gray-900">Logs</h3>
-            <p class="mt-1 text-xs text-gray-500">Grok parsing, Loki push</p>
-          </div>
-          <div class="rounded-xl border border-gray-200 p-6 text-center transition-all hover:border-brand-200 hover:shadow-sm">
-            <div class="text-3xl">🔌</div>
-            <h3 class="mt-3 text-sm font-semibold text-gray-900">Proxmox</h3>
-            <p class="mt-1 text-xs text-gray-500">VMware/Proxmox VE</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TSDB Announcement -->
-    <section class="relative overflow-hidden border-y border-brand-100 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 py-20 sm:py-24">
-      <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-40" />
-      <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-3xl text-center">
-          <div class="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-900/50 px-4 py-1.5">
-            <svg class="h-4 w-4 text-blue-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>
-            <span class="text-xs font-semibold uppercase tracking-widest text-blue-200">For Developers</span>
-          </div>
-          <h2 class="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            ZoomPhant TSDB
-            <span class="mt-2 block text-brand-300">Developer-First Time-Series Database</span>
-          </h2>
-          <p class="mt-6 text-lg leading-8 text-brand-100">
-            A lightweight, <strong>agent-first</strong> and <strong>API-first</strong> (headless) metrics + logs store on Cloudflare Workers. 
-            Built for <strong>development, testing, and small-scale observability</strong>—not enterprise production workloads.
-          </p>
-          <div class="mx-auto mt-6 max-w-2xl rounded-xl border border-yellow-500/30 bg-yellow-900/20 px-4 py-3">
-            <p class="text-sm text-yellow-200">
-              <strong>Note:</strong> TSDB is designed for dev environments and light workloads. For enterprise-grade monitoring with dashboards, collector management, and production-scale performance, use <strong>ZoomPhant</strong> (above).
-            </p>
-          </div>
-        </div>
-
-        <div class="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="rounded-2xl border border-brand-700/50 bg-brand-800/40 p-6">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" /></svg>
-            </div>
-            <h3 class="mt-4 text-base font-semibold text-white">1. Agent-First</h3>
-            <p class="mt-2 text-sm leading-6 text-brand-200">
-              Zero-dependency host agent and browser snippet. Push from code, CI/CD, or anywhere—designed to be consumed programmatically.
-            </p>
-          </div>
-
-          <div class="rounded-2xl border border-brand-700/50 bg-brand-800/40 p-6">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>
-            </div>
-            <h3 class="mt-4 text-base font-semibold text-white">2. API-First (Headless)</h3>
-            <p class="mt-2 text-sm leading-6 text-brand-200">
-              REST API for everything. Minimal embedded UI for queries only. Integrate with Grafana or build your own custom dashboards.
-            </p>
-          </div>
-
-          <div class="rounded-2xl border border-brand-700/50 bg-brand-800/40 p-6">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10 text-green-400">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
-            </div>
-            <h3 class="mt-4 text-base font-semibold text-white">3. Metrics + Logs</h3>
-            <p class="mt-2 text-sm leading-6 text-brand-200">
-              Unified storage and query language (ZQL) for both metrics and logs. Correlate signals without stitching multiple tools.
-            </p>
-          </div>
-
-          <div class="rounded-2xl border border-brand-700/50 bg-brand-800/40 p-6">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/10 text-orange-400">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" /></svg>
-            </div>
-            <h3 class="mt-4 text-base font-semibold text-white">4. Two-Tier Labels</h3>
-            <p class="mt-2 text-sm leading-6 text-brand-200">
-              Stream labels (indexed) + series/line labels (stored). Solves cardinality explosion—traditional TSDBs struggle with high-cardinality tags.
-            </p>
-          </div>
-        </div>
-
-        <div class="mx-auto mt-12 max-w-4xl">
-          <div class="overflow-hidden rounded-2xl border border-brand-700/50 bg-gray-900 shadow-2xl">
-            <div class="border-b border-gray-800 bg-gray-950 px-5 py-3">
-              <div class="flex items-center justify-between">
+        <!-- Hero Interactive Preview Card: "Just Tell Your AI Agent" -->
+        <div class="mx-auto mt-14 max-w-4xl">
+          <div class="rounded-3xl border border-gray-200/90 bg-white p-2 sm:p-3 shadow-2xl shadow-brand-900/5">
+            <div class="rounded-2xl bg-gray-950 text-white overflow-hidden border border-gray-800">
+              <!-- Top Window Bar -->
+              <div class="flex items-center justify-between px-4 sm:px-6 py-3 bg-gray-900/90 border-b border-gray-800">
                 <div class="flex items-center gap-2">
-                  <span class="h-3 w-3 rounded-full bg-red-500" />
-                  <span class="h-3 w-3 rounded-full bg-yellow-500" />
-                  <span class="h-3 w-3 rounded-full bg-green-500" />
-                  <span class="ml-2 text-xs font-medium text-gray-300">ZQL Example: Correlate Metrics & Logs</span>
+                  <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+                  <span class="h-3 w-3 rounded-full bg-amber-500/80"></span>
+                  <span class="h-3 w-3 rounded-full bg-emerald-500/80"></span>
+                  <span class="ml-2 text-xs font-semibold text-gray-300">AI Agent Conversation — Claude / Cursor / Custom Agent</span>
                 </div>
-                <a href="https://tsdb.zoomphant.com" target="_blank" rel="noopener" class="text-xs text-blue-400 hover:text-blue-300 hover:underline">
-                  Try Live Demo →
-                </a>
+                <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">
+                  ● Connected via /llms.txt
+                </span>
+              </div>
+
+              <!-- Conversation Body -->
+              <div class="p-5 sm:p-7 space-y-5 text-left font-sans">
+                <!-- Human Prompt -->
+                <div class="flex items-start gap-3.5">
+                  <div class="h-8 w-8 rounded-xl bg-brand-600 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                    YOU
+                  </div>
+                  <div class="rounded-2xl rounded-tl-xs bg-gray-900 border border-gray-800 px-4 py-3 text-xs sm:text-sm text-gray-200 leading-relaxed">
+                    Here is my ZoomPhant TSDB (<code class="text-brand-300 font-mono">https://my-tsdb.workers.dev/llms.txt</code>) and token <code class="text-amber-300 font-mono">tsdb_live_...</code>.<br/>
+                    Track every checkout order and API latency in our app, tell me why conversion dipped today, and create a daily revenue dashboard.
+                  </div>
+                </div>
+
+                <!-- AI Agent Response -->
+                <div class="flex items-start gap-3.5">
+                  <div class="h-8 w-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center text-sm shrink-0 mt-0.5">
+                    🤖
+                  </div>
+                  <div class="flex-1 rounded-2xl rounded-tl-xs bg-indigo-950/30 border border-indigo-500/30 px-4 py-3.5 text-xs sm:text-sm text-gray-200 space-y-3">
+                    <div class="flex flex-wrap items-center gap-2 text-[11px] text-indigo-300 font-mono">
+                      <span class="rounded bg-indigo-900/60 px-2 py-0.5">✓ Read /llms.txt</span>
+                      <span class="rounded bg-indigo-900/60 px-2 py-0.5">✓ Pushed order & latency events</span>
+                      <span class="rounded bg-indigo-900/60 px-2 py-0.5">✓ Queried ZQL correlation</span>
+                    </div>
+                    <p class="leading-relaxed text-gray-100">
+                      Done! I correlated your <code class="text-cyan-300 font-mono">checkout_latency</code> metric with <code class="text-cyan-300 font-mono">order_completed</code> events. Between 14:00–14:25 UTC, payment gateway timeouts spiked on <code class="text-amber-300 font-mono">region="eu-west"</code>. I’ve also created your <strong>Revenue & Checkout Health</strong> dashboard and set up a Slack alert rule.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-            <pre class="overflow-x-auto bg-gray-950 px-6 py-5 text-sm leading-relaxed"><code><span class="text-gray-500">// Find hosts with high CPU AND errors in logs</span>
-
-<span class="text-purple-400">let</span> <span class="text-blue-300">errs</span> <span class="text-white">=</span> <span class="text-yellow-300">{'{'}</span><span class="text-cyan-300">app</span><span class="text-white">=</span><span class="text-green-400">"api"</span><span class="text-yellow-300">{'}'}</span> <span class="text-white">|</span> <span class="text-yellow-400">logs</span> 
-         <span class="text-white">|</span> <span class="text-purple-400">where</span> <span class="text-cyan-400">level</span> <span class="text-white">=</span> <span class="text-green-400">"error"</span>
-         <span class="text-white">|</span> <span class="text-yellow-400">count</span><span class="text-yellow-300">()</span> <span class="text-purple-400">every</span> <span class="text-orange-400">5m</span> <span class="text-purple-400">by</span> <span class="text-yellow-300">(</span><span class="text-cyan-400">host</span><span class="text-yellow-300">)</span>;
-
-<span class="text-purple-400">let</span> <span class="text-blue-300">cpu</span> <span class="text-white">=</span> <span class="text-yellow-300">{'{'}</span><span class="text-cyan-300">app</span><span class="text-white">=</span><span class="text-green-400">"api"</span><span class="text-yellow-300">{'}'}</span> <span class="text-white">|</span> <span class="text-yellow-400">metric</span> <span class="text-red-400">cpu</span>
-        <span class="text-white">|</span> <span class="text-yellow-400">avg</span><span class="text-yellow-300">(</span><span class="text-cyan-400">value</span><span class="text-yellow-300">)</span> <span class="text-purple-400">every</span> <span class="text-orange-400">5m</span> <span class="text-purple-400">by</span> <span class="text-yellow-300">(</span><span class="text-cyan-400">host</span><span class="text-yellow-300">)</span>;
-
-<span class="text-blue-300">errs</span> <span class="text-white">|</span> <span class="text-purple-400">join</span> <span class="text-blue-300">cpu</span> <span class="text-purple-400">on</span> <span class="text-yellow-300">(</span><span class="text-cyan-400">host</span><span class="text-yellow-300">)</span> 
-     <span class="text-white">|</span> <span class="text-purple-400">where</span> <span class="text-blue-300">cpu</span><span class="text-white">.</span><span class="text-cyan-400">value</span> <span class="text-pink-400">&gt;</span> <span class="text-orange-400">80</span></code></pre>
           </div>
-          <p class="mt-4 text-center text-sm text-brand-200">
-            Find hosts with high CPU <strong>and</strong> errors—one query, both signals
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. HOW IT WORKS (3 SIMPLE STEPS) -->
+    <section id="how-it-works" class="py-20 sm:py-24 bg-white border-t border-gray-100">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Effortless Workflow</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            How Your AI Agent Talks to TSDB
+          </h2>
+          <p class="mt-4 text-base text-gray-600">
+            No complex SDKs to learn, no schemas to pre-define. Your AI agent handles the heavy lifting from day one.
           </p>
         </div>
 
-        <div class="mx-auto mt-12 grid max-w-5xl gap-6 lg:grid-cols-2">
-          <div class="rounded-2xl border border-green-700/50 bg-green-900/20 p-6">
-            <div class="flex items-start gap-3">
-              <svg class="mt-0.5 h-6 w-6 flex-shrink-0 text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              <div>
-                <h3 class="text-base font-semibold text-white">Perfect For</h3>
-                <ul class="mt-3 space-y-2 text-sm text-green-100">
-                  <li>• Development and testing environments</li>
-                  <li>• Side projects and personal apps</li>
-                  <li>• CI/CD pipeline metrics and logs</li>
-                  <li>• Prototyping and experimentation</li>
-                  <li>• Small-scale production (≤ 500 agents)</li>
-                  <li>• Cost-sensitive workloads on Cloudflare</li>
-                </ul>
-              </div>
+        <div class="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-3">
+          <!-- Step 1 -->
+          <div class="relative rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs">
+            <div class="flex items-center justify-between mb-5">
+              <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-600 text-white font-extrabold text-base shadow-sm">
+                1
+              </span>
+              <span class="rounded-full bg-orange-50 border border-orange-200 px-2.5 py-0.5 text-[11px] font-bold text-[#F6821F]">
+                60 Seconds
+              </span>
             </div>
+            <h3 class="text-lg font-bold text-gray-900">Launch in 1 Click</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">
+              Sign in and connect your Cloudflare account. We automatically provision your private TSDB cluster, storage, and access tokens in under a minute.
+            </p>
           </div>
 
-          <div class="rounded-2xl border border-red-700/50 bg-red-900/20 p-6">
-            <div class="flex items-start gap-3">
-              <svg class="mt-0.5 h-6 w-6 flex-shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
-              <div>
-                <h3 class="text-base font-semibold text-white">Not For</h3>
-                <ul class="mt-3 space-y-2 text-sm text-red-100">
-                  <li>• Enterprise production monitoring at scale</li>
-                  <li>• High-volume, high-cardinality workloads</li>
-                  <li>• Mission-critical alerting with SLAs</li>
-                  <li>• Teams needing dashboards, collectors, UI</li>
-                  <li>• Complex multi-team deployments</li>
-                  <li class="pt-2 font-semibold">→ Use <span class="text-white">ZoomPhant</span> platform instead</li>
-                </ul>
-              </div>
+          <!-- Step 2 -->
+          <div class="relative rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs">
+            <div class="flex items-center justify-between mb-5">
+              <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-600 text-white font-extrabold text-base shadow-sm">
+                2
+              </span>
+              <span class="rounded-full bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 text-[11px] font-bold text-indigo-700">
+                Self-Describing
+              </span>
             </div>
+            <h3 class="text-lg font-bold text-gray-900">Share with Your Agent</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">
+              Every TSDB cluster includes a built-in <code class="rounded bg-white px-1.5 py-0.5 text-xs font-mono border border-gray-200">/llms.txt</code> guide. Give the URL and token to any AI agent—it immediately knows how to push and query.
+            </p>
           </div>
-        </div>
 
-        <div class="mx-auto mt-12 max-w-2xl">
-          <div class="rounded-2xl border border-brand-700/50 bg-brand-800/40 p-6">
-            <h3 class="text-base font-semibold text-white">Key Technical Advantages</h3>
-            <ul class="mt-4 space-y-2.5 text-sm text-brand-100">
-              <li class="flex items-start gap-2.5">
-                <span class="text-brand-400">•</span>
-                <span><strong>Runs on Cloudflare FREE tier</strong> (~20 agents) or Paid (~$5-8/month for 100-500 agents)</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <span class="text-brand-400">•</span>
-                <span><strong>Two-tier label system</strong> prevents cardinality explosion (stream labels indexed, series labels stored)</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <span class="text-brand-400">•</span>
-                <span><strong>Deploy with one command:</strong> <code class="rounded bg-brand-900 px-1.5 py-0.5 font-mono text-xs text-brand-200">npx wrangler deploy</code></span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <span class="text-brand-400">•</span>
-                <span><strong>Prometheus & Loki compatible</strong> for Grafana integration</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <span class="text-brand-400">•</span>
-                <span><strong>Open source (MIT)</strong> on your Cloudflare account—full data sovereignty</span>
-              </li>
-            </ul>
+          <!-- Step 3 -->
+          <div class="relative rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs">
+            <div class="flex items-center justify-between mb-5">
+              <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-600 text-white font-extrabold text-base shadow-sm">
+                3
+              </span>
+              <span class="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700">
+                Zero Manual Work
+              </span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Ask, Analyze & Alert</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">
+              Your agent pushes metrics & events, queries trends in plain English, and even creates visual dashboards and alert rules for your team via API.
+            </p>
           </div>
-        </div>
-
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <a href="https://tsdb.zoomphant.com" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 text-sm font-semibold text-brand-900 shadow-lg transition-all hover:bg-brand-50 hover:shadow-xl">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-            Try Live Demo
-          </a>
-          <a href="https://github.com/ZoomPhant/tsdb" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl border border-brand-400 bg-brand-800/50 px-8 py-3.5 text-sm font-semibold text-white transition-all hover:bg-brand-700/50">
-            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" /></svg>
-            View on GitHub
-          </a>
-          <a href="https://tsdb.zoomphant.com/docs" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl border border-brand-600 bg-brand-900/50 px-8 py-3.5 text-sm font-semibold text-brand-100 transition-all hover:bg-brand-900/80">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
-            Documentation
-          </a>
         </div>
       </div>
     </section>
 
-    <!-- Pricing -->
+    <!-- 3. USE CASES: ONE TSDB FOR BI, MONITORING, AND AI -->
+    <section class="py-20 sm:py-24 bg-gray-50 border-y border-gray-100">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Versatile by Design</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Whatever Your Agent Needs to Track or Analyze
+          </h2>
+          <p class="mt-4 text-base text-gray-600">
+            Because ZoomPhant TSDB unifies numbers (metrics) and rich JSON events (logs) in one place, you can use it across your entire business and tech stack.
+          </p>
+        </div>
+
+        <div class="mx-auto mt-16 grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <!-- Use Case 1: Business Intelligence -->
+          <div class="rounded-3xl bg-white p-7 border border-gray-200 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+              <div class="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mb-5">
+                📈
+              </div>
+              <h3 class="text-base font-bold text-gray-900">Business & Revenue BI</h3>
+              <p class="mt-2.5 text-xs sm:text-sm leading-relaxed text-gray-600">
+                Track signups, orders, revenue by country, daily active users, and conversion funnels—without paying steep Mixpanel or Amplitude bills.
+              </p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-gray-100 text-[11px] font-semibold text-emerald-700">
+              ✓ Orders, MRR, DAU & Funnels
+            </div>
+          </div>
+
+          <!-- Use Case 2: AI Agent Telemetry -->
+          <div class="rounded-3xl bg-white p-7 border border-gray-200 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+              <div class="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl mb-5">
+                🤖
+              </div>
+              <h3 class="text-base font-bold text-gray-900">AI Agent & LLM Tracking</h3>
+              <p class="mt-2.5 text-xs sm:text-sm leading-relaxed text-gray-600">
+                Give autonomous agents a memory to record their own runs, token usage, API costs, tool execution latency, and task success rates.
+              </p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-gray-100 text-[11px] font-semibold text-indigo-700">
+              ✓ Token Cost, Latency & Eval Logs
+            </div>
+          </div>
+
+          <!-- Use Case 3: App & API Monitoring -->
+          <div class="rounded-3xl bg-white p-7 border border-gray-200 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+              <div class="h-12 w-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mb-5">
+                ⚡
+              </div>
+              <h3 class="text-base font-bold text-gray-900">App & Server Monitoring</h3>
+              <p class="mt-2.5 text-xs sm:text-sm leading-relaxed text-gray-600">
+                Monitor API response times, error rates, and server CPU/memory. When something breaks, your AI agent correlates spikes with error logs in one query.
+              </p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-gray-100 text-[11px] font-semibold text-brand-700">
+              ✓ Metrics + Logs in One Query
+            </div>
+          </div>
+
+          <!-- Use Case 4: 1-Click Industry Templates -->
+          <div class="rounded-3xl bg-white p-7 border border-gray-200 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+              <div class="h-12 w-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl mb-5">
+                🧩
+              </div>
+              <h3 class="text-base font-bold text-gray-900">Instant BI Templates</h3>
+              <p class="mt-2.5 text-xs sm:text-sm leading-relaxed text-gray-600">
+                Start with ready-made templates for <strong>E-Commerce, SaaS, Payments, Marketing, IoT, and Web Servers</strong>—pre-configured with summaries and dashboards.
+              </p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-gray-100 text-[11px] font-semibold text-amber-700">
+              ✓ 1-Click Dashboard Provisioning
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. WHY TEAMS CHOOSE ZOOMPHANT TSDB (HIGH-LEVEL BENEFITS) -->
+    <section class="py-20 sm:py-24 bg-white">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Why It Matters</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Enterprise Power. Zero Complexity.
+          </h2>
+          <p class="mt-4 text-base text-gray-600">
+            Designed so anyone—from solo founders using AI coding assistants to growing product teams—can own their data without hiring a DevOps team.
+          </p>
+        </div>
+
+        <div class="mx-auto mt-16 grid max-w-5xl gap-8 sm:grid-cols-2">
+          <!-- Benefit 1 -->
+          <div class="rounded-3xl border border-gray-200 p-8 shadow-2xs hover:border-brand-200 transition-colors">
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-600">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900">100% Data Ownership in Your Cloud</h3>
+            </div>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600">
+              Your business revenue, customer actions, and system logs never leave your control. Everything runs inside your own Cloudflare account—giving you complete privacy, compliance, and zero vendor lock-in.
+            </p>
+          </div>
+
+          <!-- Benefit 2 -->
+          <div class="rounded-3xl border border-gray-200 p-8 shadow-2xs hover:border-brand-200 transition-colors">
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900">Pennies to Run, No Surprise Bills</h3>
+            </div>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600">
+              Traditional SaaS observability and analytics tools charge hundreds of dollars as soon as you add users or events. ZoomPhant TSDB runs on Cloudflare’s <strong>Free tier ($0/mo)</strong> or <strong>Paid plan (~$5/mo)</strong>.
+            </p>
+          </div>
+
+          <!-- Benefit 3 -->
+          <div class="rounded-3xl border border-gray-200 p-8 shadow-2xs hover:border-brand-200 transition-colors">
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900">AI-First + Human-Friendly</h3>
+            </div>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600">
+              Let your AI agents query data and manage alerts automatically—while you enjoy a clean, built-in Web Portal (and full Grafana compatibility) whenever you want to inspect charts yourself.
+            </p>
+          </div>
+
+          <!-- Benefit 4 -->
+          <div class="rounded-3xl border border-gray-200 p-8 shadow-2xs hover:border-brand-200 transition-colors">
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-600">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900">Zero Maintenance & Fast Historical Dashboards</h3>
+            </div>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600">
+              No servers to patch, no disks that fill up, and no database tuning. Historical dashboards over months or years load instantaneously thanks to automatic background summaries.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PRICING SECTION -->
     <section id="pricing" class="border-y border-gray-100 bg-gray-50 py-20 sm:py-24">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-2xl text-center">
-          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Pricing</span>
-          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Flexible, transparent licensing</h2>
-          <p class="mt-4 text-base leading-7 text-gray-600">
-            Start monitoring today. Completely free for personal use and qualified startups/small businesses.
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Transparent Pricing</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Your First TSDB is 100% Free
+          </h2>
+          <p class="mt-4 text-base text-gray-600">
+            Launch into your own Cloudflare account in seconds. Scale with additional clusters or managed enterprise support only when you need it.
           </p>
         </div>
-        <div class="mx-auto mt-16 grid max-w-4xl gap-8 lg:grid-cols-2">
-          <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-            <h3 class="text-lg font-semibold text-gray-900">Community</h3>
-            <p class="mt-4 text-4xl font-extrabold text-gray-900">Free</p>
-            <p class="mt-2 text-sm text-gray-500">Free for personal & startup/SMB use (registration required)</p>
-            <ul class="mt-8 space-y-3 text-sm text-gray-600">
-              <li class="flex items-center gap-2">
-                <svg class="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                All core monitoring features
-              </li>
-              <li class="flex items-center gap-2">
-                <svg class="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                Single Docker image deploy
-              </li>
-              <li class="flex items-center gap-2">
-                <svg class="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                Unlimited metrics & logs
-              </li>
-              <li class="flex items-center gap-2">
-                <svg class="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                Community support via GitHub
-              </li>
-            </ul>
-            <div class="mt-8 flex flex-col gap-3">
-              <a href="/docs/start/" class="inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700">
-                Get Started Free
-              </a>
-              <a href="/register/" target="_blank" class="inline-flex w-full items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50">
-                Register Business Use
-              </a>
+
+        <div class="mx-auto mt-16 grid max-w-5xl gap-8 lg:grid-cols-3">
+          <!-- Tier 1: Starter Free -->
+          <div class="rounded-3xl border-2 border-brand-500 bg-white p-8 shadow-lg relative flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-900">Starter BYOC</h3>
+                <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">Most Popular</span>
+              </div>
+              <div class="mt-4 flex items-baseline gap-1">
+                <span class="text-4xl font-extrabold text-gray-900">$0</span>
+                <span class="text-sm text-gray-500 font-medium">/ forever</span>
+              </div>
+              <p class="mt-2 text-xs text-gray-500">Your first TSDB cluster is completely free.</p>
+
+              <ul class="mt-6 space-y-3 text-xs sm:text-sm text-gray-600">
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  <strong>1 Full TSDB Cluster</strong> in your Cloudflare
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Built-in <code class="text-xs bg-gray-100 px-1 py-0.5 rounded">/llms.txt</code> for AI Agents
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Unified Metrics, Logs & Business Events
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Web Portal, Dashboards & Alerts
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  1-Click Version Upgrades
+                </li>
+              </ul>
             </div>
+
+            <a
+              href="/dashboard/"
+              class="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-6 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-700"
+            >
+              Claim Free TSDB →
+            </a>
           </div>
-          <div class="rounded-2xl border-2 border-brand-200 bg-white p-8 shadow-md">
-            <div class="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">For Business</div>
-            <h3 class="mt-4 text-lg font-semibold text-gray-900">Enterprise</h3>
-            <p class="mt-4 text-4xl font-extrabold text-gray-900">Contact Us</p>
-            <p class="mt-2 text-sm text-gray-500">Custom pricing for your scale</p>
-            <ul class="mt-8 space-y-3 text-sm text-gray-600">
-              <li class="flex items-center gap-2">
-                <svg class="h-5 w-5 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                Everything in Community
-              </li>
-              <li class="flex items-center gap-2">
-                <svg class="h-5 w-5 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                Cloud management service
-              </li>
-              <li class="flex items-center gap-2">
-                <svg class="h-5 w-5 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                SMS / Voice notifications
-              </li>
-              <li class="flex items-center gap-2">
-                <svg class="h-5 w-5 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                Priority support & SLA
-              </li>
-            </ul>
-            <a href="mailto:info@zoomphant.com" class="mt-8 inline-flex w-full items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-6 py-3 text-sm font-semibold text-brand-700 transition-all hover:bg-brand-100">
+
+          <!-- Tier 2: Additional Clusters -->
+          <div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-900">Additional Clusters</h3>
+                <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700">Scale Out</span>
+              </div>
+              <div class="mt-4 flex items-baseline gap-1">
+                <span class="text-4xl font-extrabold text-gray-900">$10</span>
+                <span class="text-sm text-gray-500 font-medium">/ mo per extra cluster</span>
+              </div>
+              <p class="mt-2 text-xs text-gray-500">Isolate environments, teams, or clients.</p>
+
+              <ul class="mt-6 space-y-3 text-xs sm:text-sm text-gray-600">
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Everything in Starter BYOC
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Separate clusters for Prod, Staging & BI
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Centralized multi-cluster dashboard
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Scoped read/write tokens per agent
+                </li>
+              </ul>
+            </div>
+
+            <a
+              href="/dashboard/"
+              class="mt-8 inline-flex w-full items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-3.5 text-sm font-bold text-gray-800 transition-all hover:bg-gray-50"
+            >
+              Launch in Dashboard →
+            </a>
+          </div>
+
+          <!-- Tier 3: Pro & Enterprise Services -->
+          <div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-900">Enterprise & Pro</h3>
+                <span class="rounded-full bg-purple-50 px-3 py-1 text-xs font-bold text-purple-700">Managed SLA</span>
+              </div>
+              <div class="mt-4 flex items-baseline gap-1">
+                <span class="text-4xl font-extrabold text-gray-900">Custom</span>
+              </div>
+              <p class="mt-2 text-xs text-gray-500">Dedicated support & heavy enterprise monitoring.</p>
+
+              <ul class="mt-6 space-y-3 text-xs sm:text-sm text-gray-600">
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  24/7 Priority SLA & Engineering Support
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Custom AI agent & BI pipeline onboarding
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Full On-Premise Docker Monitoring Suite
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="h-5 w-5 shrink-0 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  SMS / Voice alert escalation channels
+                </li>
+              </ul>
+            </div>
+
+            <a
+              href="mailto:info@zoomphant.com"
+              class="mt-8 inline-flex w-full items-center justify-center rounded-xl border border-purple-200 bg-purple-50 px-6 py-3.5 text-sm font-bold text-purple-700 transition-all hover:bg-purple-100"
+            >
               Contact Sales
             </a>
           </div>
@@ -500,89 +495,142 @@ import '../styles/global.css';
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="bg-white border-t border-gray-100 py-20 sm:py-24">
+    <!-- 6. HEAVY ENTERPRISE INFRASTRUCTURE SOLUTION CALLOUT -->
+    <section class="py-20 sm:py-24 bg-white">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="rounded-3xl bg-gradient-to-br from-gray-900 via-slate-900 to-brand-950 text-white p-8 sm:p-12 lg:p-16 shadow-xl relative overflow-hidden">
+          <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-5">
+              <div class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-3.5 py-1 text-xs font-semibold text-brand-200">
+                🏢 For Heavy Enterprise Infrastructure
+              </div>
+              <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+                Need Full-Scale On-Premise Infrastructure Monitoring?
+              </h2>
+              <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                While <strong>ZoomPhant TSDB</strong> is the fastest serverless data engine for AI agents, developers, and business analytics, large enterprises running complex data centers often need deep hardware and network observability.
+              </p>
+              <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                <strong>ZoomPhant Enterprise Monitoring</strong> packages full collector management, SNMP network discovery, VMware/Proxmox, Kubernetes, and multi-stage alert escalations into a single self-hosted Docker appliance.
+              </p>
+              <div class="pt-2 flex flex-wrap items-center gap-4">
+                <a
+                  href="/docs/start/"
+                  class="rounded-xl bg-white px-6 py-3 text-xs sm:text-sm font-bold text-gray-900 shadow-sm hover:bg-gray-100 transition-colors"
+                >
+                  Explore Enterprise Appliance →
+                </a>
+                <a
+                  href="/register/"
+                  class="rounded-xl border border-white/25 bg-white/5 px-6 py-3 text-xs sm:text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+                >
+                  Register Commercial Deployment
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="rounded-2xl bg-white/5 border border-white/10 p-6 space-y-4">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">When to Choose the Enterprise Appliance</h3>
+                <ul class="space-y-3 text-xs sm:text-sm text-gray-300">
+                  <li class="flex items-start gap-2.5">
+                    <span class="text-brand-400 font-bold">✓</span>
+                    <span>Monitoring hundreds of on-premise Linux/Windows servers & VMs</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="text-brand-400 font-bold">✓</span>
+                    <span>Deep SNMP switch/router, firewall, and Proxmox/VMware monitoring</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="text-brand-400 font-bold">✓</span>
+                    <span>Air-gapped or strict on-premise data center environments</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="text-brand-400 font-bold">✓</span>
+                    <span>Visual collector plugins for MySQL, Kafka, Redis, and Kubernetes</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. FAQ SECTION -->
+    <section id="faq" class="bg-gray-50 border-t border-gray-100 py-20 sm:py-24">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-3xl text-center">
-          <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">FAQ</span>
-          <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Frequently Asked Questions</h2>
-          <p class="mt-4 text-base leading-7 text-gray-600">
-            Everything you need to know about using ZoomPhant for your projects.
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">FAQ</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Frequently Asked Questions
+          </h2>
+          <p class="mt-4 text-base text-gray-600">
+            Everything you need to know about ZoomPhant TSDB and how AI agents interact with it.
           </p>
         </div>
-        <div class="mx-auto mt-16 max-w-3xl divide-y divide-gray-200">
+
+        <div class="mx-auto mt-14 max-w-3xl divide-y divide-gray-200 bg-white rounded-3xl border border-gray-200 px-6 sm:px-10 py-4 shadow-2xs">
           <div class="py-6">
-            <h3 class="text-lg font-semibold text-gray-900">Who can use the Community Version for free?</h3>
-            <p class="mt-2 text-base text-gray-600">
-              ZoomPhant is completely free for all personal, educational, and non-business use. Additionally, we offer a free business tier for <strong>startups and small businesses</strong>, provided you register your deployment on our website.
+            <h3 class="text-base sm:text-lg font-bold text-gray-900">How does an AI agent know how to push and query data in my TSDB?</h3>
+            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
+              Every ZoomPhant TSDB cluster automatically serves a concise, machine-readable instruction file at <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-mono">/llms.txt</code> (as well as <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-mono">/openapi.yaml</code>). When you give your TSDB URL and access token to an AI agent (such as Claude, Cursor, or your own agent), it reads that file once and immediately knows how to push metrics/events, run queries, and create dashboards.
             </p>
           </div>
+
           <div class="py-6">
-            <h3 class="text-lg font-semibold text-gray-900">How do I register our startup/small business deployment?</h3>
-            <p class="mt-2 text-base text-gray-600">
-              You can register your deployment using our <a href="/register/" target="_blank" class="text-brand-600 font-semibold hover:underline">business registration form</a>. Registration is a licensing requirement for commercial use, and it ensures you receive critical security patches and product updates.
+            <h3 class="text-base sm:text-lg font-bold text-gray-900">Can I use ZoomPhant TSDB for Business Intelligence (BI) as well as monitoring?</h3>
+            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
+              Yes! Unlike traditional monitoring databases that only accept numeric server counters, ZoomPhant TSDB stores both numeric metrics and structured JSON events in the same engine. Your AI agent can record orders, signups, payments, and user actions, then calculate daily revenue, conversion rates, and active users in a single query.
             </p>
           </div>
+
           <div class="py-6">
-            <h3 class="text-lg font-semibold text-gray-900">What is the difference between Community and Enterprise?</h3>
-            <p class="mt-2 text-base text-gray-600">
-              The Community Version includes all core metrics, logs, and alerting capabilities to monitor your infrastructure locally. The Enterprise Version adds hybrid cloud features, automated system upgrades, SMS and voice notification channels, and priority SLAs.
+            <h3 class="text-base sm:text-lg font-bold text-gray-900">Where is my data stored, and how much does Cloudflare charge?</h3>
+            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
+              Your TSDB cluster is deployed directly into <strong>your own Cloudflare account</strong> (Bring Your Own Cloud). We never store your telemetry or business data on our servers. It runs comfortably on Cloudflare's <strong>Free tier ($0/month)</strong> for personal projects and light workloads, or Cloudflare's <strong>$5/month Paid plan</strong> for growing businesses.
             </p>
           </div>
+
           <div class="py-6">
-            <h3 class="text-lg font-semibold text-gray-900">Where does our monitoring data reside?</h3>
-            <p class="mt-2 text-base text-gray-600">
-              Your data stays completely under your control on your own infrastructure. ZoomPhant uses open, standard formats (Prometheus-compatible for metrics and Loki-compatible for logs) so you never experience vendor lock-in.
+            <h3 class="text-base sm:text-lg font-bold text-gray-900">Do I have to use an AI agent, or is there a web UI too?</h3>
+            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
+              Every TSDB cluster comes with a built-in Web Portal where you can browse streams, run queries, view dashboards, and manage alert rules and tokens. It also supports Prometheus and Loki endpoints so you can connect Grafana if you prefer.
             </p>
           </div>
+
           <div class="py-6">
-            <h3 class="text-lg font-semibold text-gray-900">What's the difference between ZoomPhant and ZoomPhant TSDB?</h3>
-            <p class="mt-2 text-base text-gray-600">
-              <strong>ZoomPhant</strong> is our enterprise-grade, production-ready monitoring platform with full dashboards, visual collector management, high performance at scale, and comprehensive UI. It's designed for teams running serious production workloads and needing a complete observability solution.
-            </p>
-            <p class="mt-3 text-base text-gray-600">
-              <strong>ZoomPhant TSDB</strong> is a developer-first, lightweight time-series database for <strong>development, testing, and small-scale use cases</strong>. It's agent-first (push from code/CI/CD), API-first (headless with minimal UI), stores metrics + logs together, and uses a two-tier label system to prevent cardinality issues. TSDB runs on Cloudflare's edge (free tier or ~$5/month) but is <strong>not designed for enterprise production monitoring</strong>—for that, use ZoomPhant platform.
+            <h3 class="text-base sm:text-lg font-bold text-gray-900">When should I choose ZoomPhant TSDB vs. the ZoomPhant Enterprise Monitoring Appliance?</h3>
+            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
+              Start with <strong>ZoomPhant TSDB</strong> if you want a fast, zero-maintenance, AI-friendly database for application monitoring, AI agent telemetry, or business analytics on Cloudflare. Choose the <strong>ZoomPhant Enterprise Appliance (Docker)</strong> when you have heavy on-premise data centers requiring SNMP network discovery, VMware/Proxmox monitoring, and hundreds of infrastructure collector agents.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Community & GitHub -->
-    <section class="bg-brand-900 text-white py-16 sm:py-20 border-t border-brand-800">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-3xl text-center">
-          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Help Us Build the ZoomPhant Community</h2>
-          <p class="mt-4 text-lg text-brand-200">
-            ZoomPhant is driven by the community. Star our repository, report issues, and help shape the next generation of self-hosted monitoring.
-          </p>
-          <div class="mt-8 flex flex-wrap justify-center gap-4">
-            <a href="https://github.com/ZoomPhant/monitoring" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-brand-900 shadow-sm transition-all hover:bg-brand-50">
-              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" /></svg>
-              Star on GitHub
-            </a>
-            <a href="https://github.com/ZoomPhant/monitoring/issues" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl border border-brand-700 bg-brand-800 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-700">
-              Report Issues & Request Features
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="py-20 sm:py-24">
+    <!-- 8. FINAL CTA -->
+    <section class="py-20 sm:py-24 bg-white">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-2xl text-center">
-          <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Ready to take control of your monitoring?</h2>
+          <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Ready to Give Your AI Agent Its Own TSDB?
+          </h2>
           <p class="mt-4 text-base leading-7 text-gray-600">
-            Deploy in under a minute. Your data stays on your infrastructure. No credit card required.
+            Claim your first cluster for free and deploy to your Cloudflare account in under 60 seconds.
           </p>
-          <div class="mt-10 flex items-center justify-center gap-4">
-            <a href="/docs/start/" class="rounded-xl bg-brand-600 px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md">
-              Start Monitoring Now
+          <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="/dashboard/"
+              class="w-full sm:w-auto rounded-2xl bg-brand-600 px-8 py-4 text-sm sm:text-base font-bold text-white shadow-lg shadow-brand-500/20 transition-all hover:bg-brand-700"
+            >
+              Launch Your Free TSDB Now →
             </a>
-            <a href="/docs/" class="rounded-xl border border-gray-300 bg-white px-8 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md">
-              Read the Docs
+            <a
+              href="/login/"
+              class="w-full sm:w-auto rounded-2xl border border-gray-300 bg-white px-8 py-4 text-sm sm:text-base font-semibold text-gray-700 shadow-2xs transition-all hover:bg-gray-50"
+            >
+              Sign In to Portal
             </a>
           </div>
         </div>
