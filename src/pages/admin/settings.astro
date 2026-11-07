@@ -262,6 +262,21 @@ import '../../styles/global.css';
     }
 
     // Sub-tab switching
+    // 1. Guard route: Verify Admin Authentication
+    const token = localStorage.getItem('zp_token');
+    const userStr = localStorage.getItem('zp_user');
+    let user = null;
+
+    try {
+      if (userStr) user = JSON.parse(userStr);
+    } catch {}
+
+    if (!token) {
+      window.location.href = '/login/?redirect=/admin/settings/';
+    } else if (user?.role !== 'admin') {
+      window.location.href = '/dashboard/';
+    }
+
     const tabBtnEmail = document.getElementById('tabBtnEmail');
     const tabBtnDeploy = document.getElementById('tabBtnDeploy');
     const tabBtnSecurity = document.getElementById('tabBtnSecurity');

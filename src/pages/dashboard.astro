@@ -1,0 +1,752 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout title="Manage My TSDB — ZoomPhant">
+  <Header currentPath={Astro.url.pathname} />
+
+  <main class="min-h-screen bg-gray-50/50 py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto space-y-8">
+      
+      <!-- Top Title Bar & Primary Actions -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+              Manage My TSDB
+            </h1>
+            <span class="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-bold text-brand-700 ring-1 ring-inset ring-brand-700/10">
+              BYOC Clusters
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">
+            Monitor, manage, and configure ZoomPhant TSDB clusters hosted directly inside your Cloudflare account.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            id="openLaunchModalBtn"
+            class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-brand-500/20 hover:bg-brand-700 transition-all cursor-pointer"
+          >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Launch New TSDB
+          </button>
+        </div>
+      </div>
+
+      <!-- Pricing & Service Banner -->
+      <div class="rounded-2xl border border-brand-200/80 bg-gradient-to-r from-brand-50/90 via-sky-50/50 to-white p-5 shadow-xs">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="flex items-start gap-3.5">
+            <div class="h-10 w-10 shrink-0 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-xs">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-700">Fair BYOC Pricing</span>
+                <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-800">First Cluster 100% Free</span>
+              </div>
+              <p class="text-xs text-gray-600 mt-1 max-w-2xl leading-relaxed">
+                Your <strong>first TSDB deployment is completely free</strong>. Additional clusters will be just <strong>$10/month each</strong>. We also provide enterprise SLA, dedicated migration assistance, and professional 24/7 managed support.
+              </p>
+            </div>
+          </div>
+          <a
+            href="/docs/about/"
+            class="shrink-0 text-xs font-semibold text-brand-700 hover:text-brand-800 bg-white border border-brand-200 px-3.5 py-2 rounded-xl shadow-xs transition-colors hover:bg-brand-50"
+          >
+            Learn About Pro Services →
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Cluster Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Active Clusters</span>
+          <div id="statActiveClusters" class="text-3xl font-extrabold text-gray-900 mt-2">0</div>
+          <span class="text-xs text-emerald-600 font-medium mt-1 inline-flex items-center gap-1.5">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Provisioned on Cloudflare
+          </span>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Latest TSDB Release</span>
+          <div id="statLatestVersion" class="text-3xl font-extrabold text-brand-600 mt-2">—</div>
+          <span class="text-xs text-gray-500 font-medium mt-1 inline-block">Official Engine Version</span>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Cloudflare Host</span>
+          <div id="statCfAccount" class="text-sm font-bold font-mono text-gray-800 mt-3 truncate">—</div>
+          <span class="text-xs text-gray-500 font-medium mt-1 inline-block">100% Hosted in your account</span>
+        </div>
+      </div>
+
+      <!-- Clusters List Section -->
+      <div class="bg-white rounded-3xl border border-gray-200 shadow-xs overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <h3 class="text-base font-bold text-gray-900">My TSDB Deployments</h3>
+            <span id="clustersBadge" class="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-bold text-brand-700">0</span>
+          </div>
+          <button
+            type="button"
+            id="refreshClustersBtn"
+            class="text-xs font-semibold text-brand-600 hover:text-brand-700 cursor-pointer flex items-center gap-1"
+          >
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        <!-- Clusters Container -->
+        <div id="clustersContainer" class="p-6">
+          <div id="loadingClusters" class="py-12 text-center text-gray-400 text-sm">
+            Loading your TSDB clusters...
+          </div>
+
+          <!-- Empty State (Hidden when clusters exist) -->
+          <div id="emptyClusters" class="hidden py-14 text-center">
+            <div class="h-16 w-16 mx-auto rounded-3xl bg-orange-50 text-[#F6821F] flex items-center justify-center mb-4 shadow-xs">
+              <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <h4 class="text-lg font-bold text-gray-900">No TSDB Clusters Yet</h4>
+            <p class="text-xs text-gray-500 max-w-sm mx-auto mt-1 mb-6">
+              Deploy your first high-performance TSDB cluster into your Cloudflare account in under 60 seconds.
+            </p>
+            <button
+              type="button"
+              id="emptyStateLaunchBtn"
+              class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-xs sm:text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer"
+            >
+              <span>🚀</span> Launch First Cluster (Free)
+            </button>
+          </div>
+
+          <!-- Cards Grid for Clusters -->
+          <div id="clustersGrid" class="hidden space-y-5"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Launch TSDB Cluster Modal Dialog -->
+  <div
+    id="launchModal"
+    class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 flex items-center justify-center p-4 sm:p-6"
+    aria-labelledby="launchModalTitle"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="relative w-full max-w-2xl rounded-3xl bg-white shadow-2xl border border-gray-200 overflow-hidden my-8">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+        <div>
+          <h3 id="launchModalTitle" class="text-lg font-bold text-gray-900">Launch New TSDB Cluster</h3>
+          <p class="text-xs text-gray-500 mt-0.5">
+            Deploy an instance into your Cloudflare account. First cluster is free.
+          </p>
+        </div>
+        <button
+          type="button"
+          id="closeLaunchModalBtn"
+          class="rounded-xl p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div id="launchModalBody" class="p-6 sm:p-8">
+        
+        <!-- Connected Account Card (Visible after OAuth connect) -->
+        <div id="modalConnectedCard" class="hidden mb-6 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-4">
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Cloudflare Connected</span>
+                <p id="modalConnectedLabel" class="text-xs font-bold text-gray-900 font-mono"></p>
+              </div>
+            </div>
+            <button
+              type="button"
+              id="modalChangeAccountBtn"
+              class="text-xs font-semibold text-gray-500 hover:text-gray-800 bg-white px-2.5 py-1 rounded-lg border border-gray-200 shadow-xs cursor-pointer"
+            >
+              Switch
+            </button>
+          </div>
+        </div>
+
+        <!-- 1-Click OAuth Connect Card -->
+        <div id="modalOAuthCard" class="rounded-2xl border-2 border-orange-100 bg-gradient-to-br from-orange-50/60 via-amber-50/30 to-white p-5 mb-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="space-y-1">
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-orange-100 text-[#F6821F] text-[10px] font-bold">
+                1-CLICK OAUTH
+              </span>
+              <h4 class="text-sm font-bold text-gray-900">Connect with Cloudflare</h4>
+              <p class="text-xs text-gray-600 max-w-sm">
+                Auto-configures your Account ID and scoped Workers permissions.
+              </p>
+            </div>
+            <a
+              id="modalCfOAuthBtn"
+              href="#"
+              class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#F6821F] hover:bg-[#e27315] text-white font-semibold text-xs shadow-md shadow-orange-500/20 transition-all cursor-pointer shrink-0"
+            >
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+              </svg>
+              <span>Connect Cloudflare</span>
+            </a>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-orange-100/80 flex justify-end">
+            <button
+              type="button"
+              id="modalToggleManualBtn"
+              class="text-xs text-gray-500 hover:text-brand-600 underline cursor-pointer"
+            >
+              Or enter API token manually →
+            </button>
+          </div>
+        </div>
+
+        <!-- Launch Form -->
+        <form id="modalDeployForm" class="hidden space-y-4">
+          
+          <!-- Manual Credentials Section -->
+          <div id="modalManualInputs" class="space-y-4">
+            <div>
+              <label for="modalAccountId" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                Cloudflare Account ID <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="modalAccountId"
+                required
+                placeholder="32-character hexadecimal string"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs font-mono text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="modalApiToken" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  Cloudflare API Token <span class="text-red-500">*</span>
+                </label>
+                <a
+                  href="https://dash.cloudflare.com/profile/api-tokens?template=edit-cloudflare-workers"
+                  target="_blank"
+                  class="text-[11px] text-brand-600 hover:underline"
+                >
+                  Create Token (Template) →
+                </a>
+              </div>
+              <input
+                type="password"
+                id="modalApiToken"
+                required
+                placeholder="Cloudflare API Bearer Token"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs font-mono text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Fixed Super-Admin Token -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="modalAdminToken" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                TSDB Super-Admin Token
+              </label>
+              <span id="modalTokenBadge" class="text-[11px] font-medium text-brand-600">Fixed token</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <input
+                type="text"
+                id="modalAdminToken"
+                readonly
+                class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2 text-xs font-mono text-gray-800 shadow-xs focus:outline-none select-all"
+              />
+              <button
+                type="button"
+                id="copyModalTokenBtn"
+                class="shrink-0 px-3 py-2 text-xs rounded-xl border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 cursor-pointer font-semibold"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+
+          <!-- Data Retention Policy -->
+          <div>
+            <label for="modalRetentionDays" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Data Retention Policy (R2)
+            </label>
+            <select
+              id="modalRetentionDays"
+              class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none cursor-pointer"
+            >
+              <option value="90">3 Months (90 days) - Minimal Storage</option>
+              <option value="180">6 Months (180 days) - Standard Metrics</option>
+              <option value="365" selected>1 Year (365 days) - Recommended Default</option>
+              <option value="1095">3 Years (1,095 days) - Extended Compliance</option>
+              <option value="3650">10 Years (3,650 days) - Long-term Archive</option>
+            </select>
+          </div>
+
+          <!-- Error Alert -->
+          <div id="modalErrorAlert" class="hidden rounded-xl bg-red-50 p-3 text-xs text-red-700 border border-red-200"></div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button
+              type="submit"
+              id="modalSubmitBtn"
+              class="w-full rounded-xl bg-brand-600 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Deploy TSDB into Cloudflare
+            </button>
+          </div>
+        </form>
+
+        <!-- Deploying Progress State -->
+        <div id="modalProgressState" class="hidden py-8 text-center space-y-4">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-brand-50 text-brand-600 animate-spin">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <h4 class="text-base font-bold text-gray-900">Provisioning TSDB Cluster...</h4>
+          <p class="text-xs text-gray-500 max-w-xs mx-auto">
+            Configuring R2 bucket, KV cache, and deploying Durable Objects Worker script.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+
+  <script>
+    import { apiClient, getOAuthUrl } from '../utils/apiClient';
+
+    // 1. Guard route: Verify User Authentication
+    const token = localStorage.getItem('zp_token');
+    const userStr = localStorage.getItem('zp_user');
+    let user = null;
+
+    try {
+      if (userStr) user = JSON.parse(userStr);
+    } catch {}
+
+    if (!token) {
+      window.location.href = '/login/?redirect=/dashboard/';
+    }
+
+    // Modal elements
+    const launchModal = document.getElementById('launchModal');
+    const openLaunchModalBtn = document.getElementById('openLaunchModalBtn');
+    const emptyStateLaunchBtn = document.getElementById('emptyStateLaunchBtn');
+    const closeLaunchModalBtn = document.getElementById('closeLaunchModalBtn');
+    const modalOAuthCard = document.getElementById('modalOAuthCard');
+    const modalConnectedCard = document.getElementById('modalConnectedCard');
+    const modalConnectedLabel = document.getElementById('modalConnectedLabel');
+    const modalChangeAccountBtn = document.getElementById('modalChangeAccountBtn');
+    const modalDeployForm = document.getElementById('modalDeployForm');
+    const modalManualInputs = document.getElementById('modalManualInputs');
+    const modalToggleManualBtn = document.getElementById('modalToggleManualBtn');
+    const modalAccountId = document.getElementById('modalAccountId') as HTMLInputElement;
+    const modalApiToken = document.getElementById('modalApiToken') as HTMLInputElement;
+    const modalAdminToken = document.getElementById('modalAdminToken') as HTMLInputElement;
+    const modalRetentionDays = document.getElementById('modalRetentionDays') as HTMLSelectElement;
+    const modalTokenBadge = document.getElementById('modalTokenBadge');
+    const modalErrorAlert = document.getElementById('modalErrorAlert');
+    const modalProgressState = document.getElementById('modalProgressState');
+    const modalSubmitBtn = document.getElementById('modalSubmitBtn');
+    const copyModalTokenBtn = document.getElementById('copyModalTokenBtn');
+
+    // OAuth button inside modal
+    const modalCfOAuthBtn = document.getElementById('modalCfOAuthBtn') as HTMLAnchorElement;
+    if (modalCfOAuthBtn) {
+      modalCfOAuthBtn.href = getOAuthUrl('cloudflare', '/dashboard/');
+    }
+
+    // Metrics elements
+    const statActiveClusters = document.getElementById('statActiveClusters');
+    const statLatestVersion = document.getElementById('statLatestVersion');
+    const statCfAccount = document.getElementById('statCfAccount');
+    const clustersBadge = document.getElementById('clustersBadge');
+    const loadingClusters = document.getElementById('loadingClusters');
+    const emptyClusters = document.getElementById('emptyClusters');
+    const clustersGrid = document.getElementById('clustersGrid');
+    const refreshClustersBtn = document.getElementById('refreshClustersBtn');
+
+    let userDeployments: any[] = [];
+    let latestReleaseVersion = '3.0.0';
+
+    // Modal visibility handlers
+    function openModal() {
+      launchModal?.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      launchModal?.classList.add('hidden');
+    }
+
+    openLaunchModalBtn?.addEventListener('click', openModal);
+    emptyStateLaunchBtn?.addEventListener('click', openModal);
+    closeLaunchModalBtn?.addEventListener('click', closeModal);
+    launchModal?.addEventListener('click', (e) => {
+      if (e.target === launchModal) closeModal();
+    });
+
+    // Copy admin token in modal
+    copyModalTokenBtn?.addEventListener('click', async () => {
+      if (!modalAdminToken?.value) return;
+      await navigator.clipboard.writeText(modalAdminToken.value);
+      copyModalTokenBtn.textContent = 'Copied!';
+      setTimeout(() => { copyModalTokenBtn.textContent = 'Copy'; }, 2000);
+    });
+
+    // Toggle manual credentials input
+    modalToggleManualBtn?.addEventListener('click', () => {
+      modalDeployForm?.classList.remove('hidden');
+      modalManualInputs?.classList.remove('hidden');
+      modalAccountId?.focus();
+    });
+
+    // Switch account handler
+    modalChangeAccountBtn?.addEventListener('click', () => {
+      modalConnectedCard?.classList.add('hidden');
+      modalOAuthCard?.classList.remove('hidden');
+      modalDeployForm?.classList.add('hidden');
+      if (modalAccountId) modalAccountId.value = '';
+      if (modalApiToken) modalApiToken.value = '';
+    });
+
+    // Synchronize fixed deployment token from D1
+    async function syncTokenForAccount(accId: string) {
+      if (!accId || !/^[0-9a-f]{32}$/i.test(accId.trim())) return;
+      try {
+        const res = await apiClient(`/api/deploy-trial/token?accountId=${encodeURIComponent(accId.trim())}`);
+        if (res && res.adminPassword && modalAdminToken) {
+          modalAdminToken.value = res.adminPassword;
+          if (modalTokenBadge) {
+            modalTokenBadge.textContent = res.isExisting
+              ? 'Existing deployment token (fixed)'
+              : 'Auto-generated & saved';
+          }
+        }
+      } catch {}
+    }
+
+    modalAccountId?.addEventListener('change', () => syncTokenForAccount(modalAccountId.value));
+    modalAccountId?.addEventListener('blur', () => syncTokenForAccount(modalAccountId.value));
+
+    // Check for incoming OAuth params
+    const urlParams = new URLSearchParams(window.location.search);
+    const cfConnected = urlParams.get('cf_connected');
+    const accountIdParam = urlParams.get('account_id');
+    const accountNameParam = urlParams.get('account_name');
+    const tokenParam = urlParams.get('cf_token');
+    const launchParam = urlParams.get('launch');
+
+    if (cfConnected === '1' && accountIdParam && tokenParam) {
+      openModal();
+      if (modalAccountId) modalAccountId.value = accountIdParam;
+      if (modalApiToken) modalApiToken.value = tokenParam;
+
+      modalOAuthCard?.classList.add('hidden');
+      modalManualInputs?.classList.add('hidden');
+      modalConnectedCard?.classList.remove('hidden');
+      modalDeployForm?.classList.remove('hidden');
+
+      if (modalConnectedLabel) {
+        modalConnectedLabel.textContent = accountNameParam
+          ? `${accountNameParam} (${accountIdParam.slice(0, 8)}…${accountIdParam.slice(-4)})`
+          : accountIdParam;
+      }
+      syncTokenForAccount(accountIdParam);
+    } else if (launchParam === '1') {
+      openModal();
+    }
+
+    // Load user deployments from backend
+    async function loadDeployments() {
+      loadingClusters?.classList.remove('hidden');
+      emptyClusters?.classList.add('hidden');
+      clustersGrid?.classList.add('hidden');
+
+      try {
+        const data = await apiClient('/api/user/deployments', { token });
+        userDeployments = data.deployments || [];
+
+        if (userDeployments.length > 0 && userDeployments[0].latestVersion) {
+          latestReleaseVersion = userDeployments[0].latestVersion;
+        }
+
+        renderOverview();
+      } catch (err: any) {
+        console.error('Failed to load user deployments:', err);
+        loadingClusters?.classList.add('hidden');
+        emptyClusters?.classList.remove('hidden');
+      }
+    }
+
+    function renderOverview() {
+      loadingClusters?.classList.add('hidden');
+
+      const liveClusters = userDeployments.filter((d: any) => d.status === 'success');
+      if (statActiveClusters) statActiveClusters.textContent = liveClusters.length.toString();
+      if (clustersBadge) clustersBadge.textContent = userDeployments.length.toString();
+      if (statLatestVersion) statLatestVersion.textContent = `v${latestReleaseVersion}`;
+
+      if (userDeployments.length > 0 && statCfAccount) {
+        statCfAccount.textContent = userDeployments[0].cfAccountId;
+      } else if (statCfAccount) {
+        statCfAccount.textContent = 'None connected';
+      }
+
+      if (userDeployments.length === 0) {
+        emptyClusters?.classList.remove('hidden');
+        clustersGrid?.classList.add('hidden');
+        return;
+      }
+
+      emptyClusters?.classList.add('hidden');
+      clustersGrid?.classList.remove('hidden');
+
+      if (clustersGrid) {
+        clustersGrid.innerHTML = userDeployments.map((d: any) => {
+          const isLive = d.status === 'success';
+          const tokenVal = d.adminPassword || '—';
+          const isUpgradeAvailable = d.hasUpgrade;
+
+          return `
+            <div class="rounded-2xl border border-gray-200/90 bg-white p-6 shadow-xs hover:border-gray-300 transition-all space-y-5">
+              
+              <!-- Cluster Header -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-3">
+                  <div class="h-10 w-10 rounded-xl ${isLive ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'} flex items-center justify-center font-bold text-sm">
+                    ${isLive ? '✓' : '!'}
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h4 class="text-base font-bold text-gray-900">${d.workerName}</h4>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                        isLive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700'
+                      }">
+                        ${isLive ? 'Live Cluster' : 'Failed'}
+                      </span>
+                      ${isUpgradeAvailable ? `
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                          Upgrade Available (v${d.latestVersion})
+                        </span>
+                      ` : ''}
+                    </div>
+                    <span class="text-xs text-gray-400 font-mono">CF Account: ${d.cfAccountId}</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 self-start sm:self-center">
+                  ${d.workerUrl ? `
+                    <a
+                      href="${d.workerUrl}"
+                      target="_blank"
+                      class="inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-brand-700 transition-colors"
+                    >
+                      <span>Open Portal</span> →
+                    </a>
+                  ` : ''}
+                  <button
+                    data-delete-id="${d.id}"
+                    class="delete-cluster-btn text-xs font-medium text-gray-500 hover:text-red-600 px-2.5 py-2 rounded-xl hover:bg-red-50 transition-colors cursor-pointer"
+                    title="Remove cluster record"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cluster Detail Fields -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                
+                <!-- Live Worker Endpoint -->
+                <div class="bg-gray-50/60 p-3.5 rounded-xl border border-gray-100">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Worker Endpoint</span>
+                  ${d.workerUrl ? `
+                    <a href="${d.workerUrl}" target="_blank" class="font-mono text-brand-600 hover:underline font-semibold break-all">
+                      ${d.workerUrl}
+                    </a>
+                  ` : '<span class="text-gray-400 font-sans italic">—</span>'}
+                </div>
+
+                <!-- Super-Admin Token -->
+                <div class="bg-gray-50/60 p-3.5 rounded-xl border border-gray-100">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Super-Admin Token</span>
+                    <button
+                      type="button"
+                      data-token-val="${tokenVal}"
+                      class="copy-cluster-token-btn text-[11px] font-semibold text-brand-600 hover:text-brand-800 cursor-pointer"
+                    >
+                      Copy Token
+                    </button>
+                  </div>
+                  <input
+                    type="password"
+                    readonly
+                    value="${tokenVal}"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1 font-mono text-gray-800 text-xs select-all focus:outline-none"
+                  />
+                </div>
+
+              </div>
+
+              <!-- Ingestion Quick Test Command -->
+              ${d.workerUrl ? `
+                <div class="pt-1">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500">Push Metrics (Ingest Command)</span>
+                    <button
+                      type="button"
+                      data-curl-cmd="curl -X POST '${d.workerUrl}/api/v1/push' -H 'Authorization: Bearer ${tokenVal}' -H 'Content-Type: application/json' -d '{\\"streams\\":[{\\"labels\\":{\\"host\\":\\"test\\"},\\"metrics\\":[{\\"name\\":\\"demo_cpu\\",\\"points\\":[['$(date +%s)'000,42.5]]}]}]}'"
+                      class="copy-curl-btn text-[11px] font-semibold text-brand-600 hover:text-brand-800 cursor-pointer"
+                    >
+                      Copy cURL
+                    </button>
+                  </div>
+                  <pre class="bg-gray-900 text-gray-200 p-3 rounded-xl font-mono text-[11px] overflow-x-auto select-all">curl -X POST "${d.workerUrl}/api/v1/push" -H "Authorization: Bearer ${tokenVal}" -H "Content-Type: application/json" -d '&#123;"streams":[&#123;"labels":&#123;"host":"test"&#125;,"metrics":[&#123;"name":"demo_cpu","points":[['$(date +%s)'000,42.5]]&#125;]&#125;]&#125;'</pre>
+                </div>
+              ` : ''}
+
+            </div>
+          `;
+        }).join('');
+
+        // Attach listeners for dynamic cluster card buttons
+        document.querySelectorAll('.copy-cluster-token-btn').forEach((btn) => {
+          btn.addEventListener('click', async (e) => {
+            const el = e.currentTarget as HTMLElement;
+            const val = el.getAttribute('data-token-val');
+            if (val) {
+              await navigator.clipboard.writeText(val);
+              el.textContent = 'Copied!';
+              setTimeout(() => { el.textContent = 'Copy Token'; }, 2000);
+            }
+          });
+        });
+
+        document.querySelectorAll('.copy-curl-btn').forEach((btn) => {
+          btn.addEventListener('click', async (e) => {
+            const el = e.currentTarget as HTMLElement;
+            const cmd = el.getAttribute('data-curl-cmd');
+            if (cmd) {
+              await navigator.clipboard.writeText(cmd);
+              el.textContent = 'Copied cURL!';
+              setTimeout(() => { el.textContent = 'Copy cURL'; }, 2000);
+            }
+          });
+        });
+
+        document.querySelectorAll('.delete-cluster-btn').forEach((btn) => {
+          btn.addEventListener('click', async (e) => {
+            const id = (e.currentTarget as HTMLElement).getAttribute('data-delete-id');
+            if (!id) return;
+            if (!confirm('Remove this TSDB deployment record from your dashboard?')) return;
+
+            try {
+              await apiClient(`/api/user/deployments/${id}`, {
+                method: 'DELETE',
+                token,
+              });
+              await loadDeployments();
+            } catch (err: any) {
+              alert(err.message || 'Error deleting deployment record');
+            }
+          });
+        });
+      }
+    }
+
+    refreshClustersBtn?.addEventListener('click', loadDeployments);
+
+    // Modal Form Submit handler
+    modalDeployForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      modalErrorAlert?.classList.add('hidden');
+
+      const accountId = modalAccountId?.value.trim();
+      const apiToken = modalApiToken?.value.trim();
+      const adminPassword = modalAdminToken?.value.trim();
+      const retentionDays = parseInt(modalRetentionDays?.value || '365', 10);
+
+      if (!accountId || !apiToken) {
+        if (modalErrorAlert) {
+          modalErrorAlert.textContent = 'Please provide both Cloudflare Account ID and API Token.';
+          modalErrorAlert.classList.remove('hidden');
+        }
+        return;
+      }
+
+      modalDeployForm?.classList.add('hidden');
+      modalProgressState?.classList.remove('hidden');
+
+      try {
+        await apiClient('/api/deploy-trial', {
+          method: 'POST',
+          token,
+          body: JSON.stringify({ accountId, apiToken, adminPassword, retentionDays }),
+        });
+
+        modalProgressState?.classList.add('hidden');
+        closeModal();
+
+        // Refresh clusters overview
+        await loadDeployments();
+
+      } catch (err: any) {
+        modalProgressState?.classList.add('hidden');
+        modalDeployForm?.classList.remove('hidden');
+        if (modalErrorAlert) {
+          modalErrorAlert.textContent = err.message || 'Deployment error occurred.';
+          modalErrorAlert.classList.remove('hidden');
+        }
+      }
+    });
+
+    // Initial fetch
+    loadDeployments();
+  </script>
+</BaseLayout>
+

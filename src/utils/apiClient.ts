@@ -37,10 +37,13 @@ export function getApiBaseUrl(): string {
 /**
  * Returns OAuth authorization URL for Google, GitHub, or Cloudflare
  */
-export function getOAuthUrl(provider: 'google' | 'github' | 'cloudflare'): string {
+export function getOAuthUrl(provider: 'google' | 'github' | 'cloudflare', returnTo?: string): string {
   const appOrigin = typeof window !== 'undefined' ? window.location.origin : '';
-  const query = appOrigin ? `?redirect_origin=${encodeURIComponent(appOrigin)}` : '';
-  return `${getApiBaseUrl()}/api/auth/oauth/${provider}${query}`;
+  const params = new URLSearchParams();
+  if (appOrigin) params.set('redirect_origin', appOrigin);
+  if (returnTo) params.set('return_to', returnTo);
+  const queryStr = params.toString() ? `?${params.toString()}` : '';
+  return `${getApiBaseUrl()}/api/auth/oauth/${provider}${queryStr}`;
 }
 
 export interface ApiClientOptions extends RequestInit {

@@ -297,8 +297,10 @@ import '../../styles/global.css';
       if (userStr) user = JSON.parse(userStr);
     } catch {}
 
-    if (!token || user?.role !== 'admin') {
+    if (!token) {
       window.location.href = '/login/?redirect=/admin/releases/';
+    } else if (user?.role !== 'admin') {
+      window.location.href = '/dashboard/';
     }
 
     // Modal elements
