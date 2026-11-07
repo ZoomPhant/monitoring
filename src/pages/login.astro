@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 ---
 
-<BaseLayout title="Sign In — ZoomPhant">
+<BaseLayout title="Sign In & Account — ZoomPhant">
   <Header currentPath={Astro.url.pathname} />
 
   <main class="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
@@ -18,7 +18,7 @@ import '../styles/global.css';
           ZoomPhant
         </a>
         <h2 id="pageTitle" class="text-xl font-bold text-gray-900 mt-2">Welcome Back</h2>
-        <p id="pageSubtitle" class="text-xs text-gray-500 mt-1">Sign in to manage your deployments and access the console.</p>
+        <p id="pageSubtitle" class="text-xs text-gray-500 mt-1">Sign in to manage your deployments and access your TSDB clusters.</p>
       </div>
 
       <!-- Error / Alert Banner -->
@@ -27,10 +27,11 @@ import '../styles/global.css';
       <!-- 2-Column Auth Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 relative">
 
-        <!-- Column 1: Email & Password (Sign In / Sign Up) -->
+        <!-- Column 1: Email & Password (Sign In / Sign Up / Verify / Forgot) -->
         <div class="space-y-5">
-          <!-- Tab Buttons: Sign In / Create Account -->
-          <div class="flex rounded-xl bg-gray-100 p-1 text-xs font-semibold">
+          
+          <!-- Mode Tabs (Visible on Sign In / Sign Up) -->
+          <div id="authTabsContainer" class="flex rounded-xl bg-gray-100 p-1 text-xs font-semibold">
             <button
               type="button"
               id="tabSignIn"
@@ -47,7 +48,7 @@ import '../styles/global.css';
             </button>
           </div>
 
-          <!-- Sign In Form -->
+          <!-- Form 1: Sign In -->
           <form id="signInForm" class="space-y-4">
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
@@ -63,6 +64,13 @@ import '../styles/global.css';
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label class="block text-xs font-semibold text-gray-700">Password</label>
+                <button
+                  type="button"
+                  id="forgotPasswordLink"
+                  class="text-xs text-brand-600 hover:text-brand-700 hover:underline cursor-pointer"
+                >
+                  Forgot password?
+                </button>
               </div>
               <input
                 type="password"
@@ -82,7 +90,7 @@ import '../styles/global.css';
             </button>
           </form>
 
-          <!-- Create Account Form (Hidden by default) -->
+          <!-- Form 2: Sign Up (Initial details) -->
           <form id="signUpForm" class="hidden space-y-4">
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
@@ -96,7 +104,7 @@ import '../styles/global.css';
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Business Email</label>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
               <input
                 type="email"
                 id="signUpEmail"
@@ -133,9 +141,121 @@ import '../styles/global.css';
               id="signUpBtn"
               class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer mt-2"
             >
-              Create Free Account
+              Continue & Verify Email →
             </button>
           </form>
+
+          <!-- Form 3: 6-Digit Email Verification -->
+          <form id="verifyForm" class="hidden space-y-4">
+            <div class="rounded-xl bg-brand-50 p-3.5 border border-brand-200 text-xs text-brand-900">
+              <span class="font-bold block mb-1">Verify your email address</span>
+              Enter the 6-digit verification code sent to <strong id="verifyTargetEmail" class="font-mono text-brand-700"></strong>.
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">6-Digit Verification Code</label>
+              <input
+                type="text"
+                id="verifyCode"
+                required
+                maxlength="6"
+                placeholder="123456"
+                class="w-full text-center tracking-widest text-xl font-bold font-mono rounded-xl border border-gray-300 bg-white px-3.5 py-3 text-gray-900 shadow-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              id="verifySubmitBtn"
+              class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer"
+            >
+              Confirm Code & Activate
+            </button>
+
+            <div class="flex items-center justify-between pt-2 text-xs">
+              <button
+                type="button"
+                id="resendCodeBtn"
+                class="text-brand-600 hover:text-brand-700 font-semibold cursor-pointer"
+              >
+                Resend Code
+              </button>
+              <button
+                type="button"
+                id="backToSignInFromVerify"
+                class="text-gray-500 hover:text-gray-700 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+
+          <!-- Form 4: Forgot Password / Password Reset -->
+          <form id="forgotForm" class="hidden space-y-4">
+            <div class="rounded-xl bg-gray-50 p-3.5 border border-gray-200 text-xs text-gray-600">
+              Enter your account email to receive a 6-digit password reset code.
+            </div>
+
+            <div id="forgotStep1">
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Account Email</label>
+              <input
+                type="email"
+                id="forgotEmail"
+                required
+                placeholder="name@company.com"
+                class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+              />
+              <button
+                type="button"
+                id="sendResetCodeBtn"
+                class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer mt-3"
+              >
+                Send Reset Code
+              </button>
+            </div>
+
+            <!-- Forgot Step 2: Code & New Password -->
+            <div id="forgotStep2" class="hidden space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">6-Digit Reset Code</label>
+                <input
+                  type="text"
+                  id="resetCode"
+                  maxlength="6"
+                  placeholder="123456"
+                  class="w-full text-center tracking-widest text-lg font-bold font-mono rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">New Password</label>
+                <input
+                  type="password"
+                  id="resetNewPassword"
+                  minlength="8"
+                  placeholder="At least 8 characters"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+              <button
+                type="submit"
+                id="resetPasswordSubmitBtn"
+                class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-700 transition-all cursor-pointer"
+              >
+                Reset Password & Sign In
+              </button>
+            </div>
+
+            <div class="pt-2 text-center">
+              <button
+                type="button"
+                id="backToSignInFromForgot"
+                class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer"
+              >
+                ← Back to Sign In
+              </button>
+            </div>
+          </form>
+
         </div>
 
         <!-- Column 2: Social Single Sign-On -->
@@ -181,14 +301,11 @@ import '../styles/global.css';
               </svg>
               No Credit Card Required
             </div>
-            <p>Sign up to receive free business trial licenses and deploy TSDB to your own Cloudflare infrastructure.</p>
+            <p>First TSDB cluster is completely free. Single-tenant deployment on your own Cloudflare infrastructure.</p>
           </div>
         </div>
 
       </div>
-
-    </div>
-  </main>
 
     </div>
   </main>
@@ -198,19 +315,40 @@ import '../styles/global.css';
   <script>
     import { apiClient, getOAuthUrl } from '../utils/apiClient';
 
+    const authTabsContainer = document.getElementById('authTabsContainer');
     const tabSignIn = document.getElementById('tabSignIn');
     const tabSignUp = document.getElementById('tabSignUp');
-    const signInForm = document.getElementById('signInForm');
-    const signUpForm = document.getElementById('signUpForm');
+    const signInForm = document.getElementById('signInForm') as HTMLFormElement;
+    const signUpForm = document.getElementById('signUpForm') as HTMLFormElement;
+    const verifyForm = document.getElementById('verifyForm') as HTMLFormElement;
+    const forgotForm = document.getElementById('forgotForm') as HTMLFormElement;
     const pageTitle = document.getElementById('pageTitle');
     const pageSubtitle = document.getElementById('pageSubtitle');
     const authAlert = document.getElementById('authAlert');
     const googleAuthLink = document.getElementById('googleAuthLink') as HTMLAnchorElement;
     const githubAuthLink = document.getElementById('githubAuthLink') as HTMLAnchorElement;
 
-    // Dynamically set OAuth links based on current domain (localhost / .cn / .com)
-    if (googleAuthLink) googleAuthLink.href = getOAuthUrl('google');
-    if (githubAuthLink) githubAuthLink.href = getOAuthUrl('github');
+    // Verify view elements
+    const verifyTargetEmail = document.getElementById('verifyTargetEmail');
+    const verifyCodeInput = document.getElementById('verifyCode') as HTMLInputElement;
+    const resendCodeBtn = document.getElementById('resendCodeBtn');
+    const backToSignInFromVerify = document.getElementById('backToSignInFromVerify');
+
+    // Forgot password elements
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const forgotEmailInput = document.getElementById('forgotEmail') as HTMLInputElement;
+    const sendResetCodeBtn = document.getElementById('sendResetCodeBtn');
+    const forgotStep1 = document.getElementById('forgotStep1');
+    const forgotStep2 = document.getElementById('forgotStep2');
+    const resetCodeInput = document.getElementById('resetCode') as HTMLInputElement;
+    const resetNewPasswordInput = document.getElementById('resetNewPassword') as HTMLInputElement;
+    const backToSignInFromForgot = document.getElementById('backToSignInFromForgot');
+
+    let pendingVerifyEmail = '';
+
+    // Set OAuth Links
+    if (googleAuthLink) googleAuthLink.href = getOAuthUrl('google', '/dashboard/');
+    if (githubAuthLink) githubAuthLink.href = getOAuthUrl('github', '/dashboard/');
 
     function showAlert(msg: string, isError = true) {
       if (!authAlert) return;
@@ -220,63 +358,67 @@ import '../styles/global.css';
       } block`;
     }
 
-    // Check for OAuth Callback query parameters (?token=...&user=...)
-    const urlParams = new URLSearchParams(window.location.search);
-    const oauthToken = urlParams.get('token');
-    const oauthUserStr = urlParams.get('user');
-    const oauthError = urlParams.get('error');
+    function hideAlert() {
+      if (authAlert) authAlert.className = 'hidden';
+    }
 
-    if (oauthError) {
-      showAlert(decodeURIComponent(oauthError));
-    } else if (oauthToken && oauthUserStr) {
-      try {
-        localStorage.setItem('zp_token', oauthToken);
-        localStorage.setItem('zp_user', decodeURIComponent(oauthUserStr));
-        const user = JSON.parse(decodeURIComponent(oauthUserStr));
-        showAlert('Authentication successful! Redirecting...', false);
+    // Switch View Helper
+    function setView(view: 'signin' | 'signup' | 'verify' | 'forgot') {
+      hideAlert();
+      signInForm?.classList.add('hidden');
+      signUpForm?.classList.add('hidden');
+      verifyForm?.classList.add('hidden');
+      forgotForm?.classList.add('hidden');
 
-        setTimeout(() => {
-          if (user.role === 'admin') {
-            window.location.href = '/admin/';
-          } else {
-            window.location.href = '/trial/';
-          }
-        }, 600);
-      } catch (err) {
-        console.error('Error parsing OAuth user:', err);
+      if (view === 'signin') {
+        authTabsContainer?.classList.remove('hidden');
+        tabSignIn?.classList.add('text-gray-900', 'bg-white', 'shadow-sm');
+        tabSignIn?.classList.remove('text-gray-500');
+        tabSignUp?.classList.remove('text-gray-900', 'bg-white', 'shadow-sm');
+        tabSignUp?.classList.add('text-gray-500');
+        signInForm?.classList.remove('hidden');
+        if (pageTitle) pageTitle.textContent = 'Welcome Back';
+        if (pageSubtitle) pageSubtitle.textContent = 'Sign in to manage your deployments and access your TSDB clusters.';
+      } else if (view === 'signup') {
+        authTabsContainer?.classList.remove('hidden');
+        tabSignUp?.classList.add('text-gray-900', 'bg-white', 'shadow-sm');
+        tabSignUp?.classList.remove('text-gray-500');
+        tabSignIn?.classList.remove('text-gray-900', 'bg-white', 'shadow-sm');
+        tabSignIn?.classList.add('text-gray-500');
+        signUpForm?.classList.remove('hidden');
+        if (pageTitle) pageTitle.textContent = 'Create Account';
+        if (pageSubtitle) pageSubtitle.textContent = 'Sign up to deploy TSDB on Cloudflare with fair BYOC pricing.';
+      } else if (view === 'verify') {
+        authTabsContainer?.classList.add('hidden');
+        verifyForm?.classList.remove('hidden');
+        if (verifyTargetEmail) verifyTargetEmail.textContent = pendingVerifyEmail;
+        if (pageTitle) pageTitle.textContent = 'Verify Your Email';
+        if (pageSubtitle) pageSubtitle.textContent = 'Enter the 6-digit confirmation code we sent to your inbox.';
+        verifyCodeInput?.focus();
+      } else if (view === 'forgot') {
+        authTabsContainer?.classList.add('hidden');
+        forgotForm?.classList.remove('hidden');
+        forgotStep1?.classList.remove('hidden');
+        forgotStep2?.classList.add('hidden');
+        if (pageTitle) pageTitle.textContent = 'Reset Password';
+        if (pageSubtitle) pageSubtitle.textContent = 'We will send a 6-digit code to reset your account password.';
+        forgotEmailInput?.focus();
       }
     }
 
-    // Toggle Tabs
-    tabSignIn?.addEventListener('click', () => {
-      tabSignIn.className = 'flex-1 rounded-lg py-2 text-center text-gray-900 bg-white shadow-sm transition-all cursor-pointer';
-      tabSignUp!.className = 'flex-1 rounded-lg py-2 text-center text-gray-500 hover:text-gray-900 transition-all cursor-pointer';
-      signInForm?.classList.remove('hidden');
-      signUpForm?.classList.add('hidden');
-      if (pageTitle) pageTitle.textContent = 'Welcome Back';
-      if (pageSubtitle) pageSubtitle.textContent = 'Sign in to manage your deployments and access the console.';
-      authAlert?.classList.add('hidden');
-    });
+    tabSignIn?.addEventListener('click', () => setView('signin'));
+    tabSignUp?.addEventListener('click', () => setView('signup'));
+    forgotPasswordLink?.addEventListener('click', () => setView('forgot'));
+    backToSignInFromVerify?.addEventListener('click', () => setView('signin'));
+    backToSignInFromForgot?.addEventListener('click', () => setView('signin'));
 
-    tabSignUp?.addEventListener('click', () => {
-      tabSignUp.className = 'flex-1 rounded-lg py-2 text-center text-gray-900 bg-white shadow-sm transition-all cursor-pointer';
-      tabSignIn!.className = 'flex-1 rounded-lg py-2 text-center text-gray-500 hover:text-gray-900 transition-all cursor-pointer';
-      signUpForm?.classList.remove('hidden');
-      signInForm?.classList.add('hidden');
-      if (pageTitle) pageTitle.textContent = 'Create an Account';
-      if (pageSubtitle) pageSubtitle.textContent = 'Start your free trial and deploy TSDB onto your Cloudflare.';
-      authAlert?.classList.add('hidden');
-    });
-
-    // Handle Sign In with apiClient
+    // Handle Sign In Submit
     signInForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      authAlert?.classList.add('hidden');
+      hideAlert();
 
       const email = (document.getElementById('signInEmail') as HTMLInputElement).value.trim();
       const password = (document.getElementById('signInPassword') as HTMLInputElement).value;
-      const btn = document.getElementById('signInBtn');
-      if (btn) btn.textContent = 'Signing in...';
 
       try {
         const data = await apiClient('/api/auth/login', {
@@ -286,38 +428,32 @@ import '../styles/global.css';
 
         localStorage.setItem('zp_token', data.token);
         localStorage.setItem('zp_user', JSON.stringify(data.user));
+        showAlert('Sign in successful! Redirecting...', false);
 
-        showAlert('Sign-in successful! Redirecting...', false);
-
-        const redirect = urlParams.get('redirect');
         setTimeout(() => {
-          if (redirect) {
-            window.location.href = redirect;
-          } else if (data.user?.role === 'admin') {
-            window.location.href = '/admin/';
-          } else {
-            window.location.href = '/trial/';
-          }
-        }, 600);
+          window.location.href = data.user.role === 'admin' ? '/admin/' : '/dashboard/';
+        }, 500);
 
       } catch (err: any) {
-        showAlert(err.message || 'Invalid credentials');
-      } finally {
-        if (btn) btn.textContent = 'Sign In';
+        if (err.requiresVerification) {
+          pendingVerifyEmail = err.email || email;
+          setView('verify');
+          showAlert('Please verify your email address before signing in.', true);
+        } else {
+          showAlert(err.message || 'Invalid email or password');
+        }
       }
     });
 
-    // Handle Sign Up with apiClient
+    // Handle Sign Up Submit
     signUpForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      authAlert?.classList.add('hidden');
+      hideAlert();
 
       const name = (document.getElementById('signUpName') as HTMLInputElement).value.trim();
       const email = (document.getElementById('signUpEmail') as HTMLInputElement).value.trim();
       const company = (document.getElementById('signUpCompany') as HTMLInputElement).value.trim();
       const password = (document.getElementById('signUpPassword') as HTMLInputElement).value;
-      const btn = document.getElementById('signUpBtn');
-      if (btn) btn.textContent = 'Creating account...';
 
       try {
         const data = await apiClient('/api/auth/sign-up', {
@@ -325,19 +461,107 @@ import '../styles/global.css';
           body: JSON.stringify({ name, email, company, password }),
         });
 
+        if (data.requiresVerification) {
+          pendingVerifyEmail = email;
+          setView('verify');
+          showAlert('Verification code sent! Please check your email inbox.', false);
+        }
+
+      } catch (err: any) {
+        showAlert(err.message || 'Failed to create account.');
+      }
+    });
+
+    // Handle Verify Email Submit
+    verifyForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const code = verifyCodeInput.value.trim();
+      try {
+        const data = await apiClient('/api/auth/verify-email', {
+          method: 'POST',
+          body: JSON.stringify({ email: pendingVerifyEmail, code }),
+        });
+
         localStorage.setItem('zp_token', data.token);
         localStorage.setItem('zp_user', JSON.stringify(data.user));
+        showAlert('Email verified successfully! Loading your dashboard...', false);
 
-        showAlert('Account created successfully! Redirecting...', false);
         setTimeout(() => {
-          window.location.href = '/trial/';
+          window.location.href = '/dashboard/';
         }, 600);
 
       } catch (err: any) {
-        showAlert(err.message || 'Error creating account');
-      } finally {
-        if (btn) btn.textContent = 'Create Free Account';
+        showAlert(err.message || 'Verification failed. Please check your code.');
       }
     });
+
+    // Handle Resend Code Click
+    resendCodeBtn?.addEventListener('click', async () => {
+      if (!pendingVerifyEmail) return;
+      try {
+        await apiClient('/api/auth/resend-code', {
+          method: 'POST',
+          body: JSON.stringify({ email: pendingVerifyEmail }),
+        });
+        showAlert('A fresh verification code has been sent!', false);
+      } catch (err: any) {
+        showAlert(err.message || 'Could not resend code.');
+      }
+    });
+
+    // Handle Forgot Password - Send Code
+    sendResetCodeBtn?.addEventListener('click', async () => {
+      const email = forgotEmailInput.value.trim();
+      if (!email) {
+        showAlert('Please enter your account email.');
+        return;
+      }
+
+      try {
+        await apiClient('/api/auth/forgot-password', {
+          method: 'POST',
+          body: JSON.stringify({ email }),
+        });
+
+        forgotStep1?.classList.add('hidden');
+        forgotStep2?.classList.remove('hidden');
+        showAlert('A 6-digit reset code has been sent to your email.', false);
+        resetCodeInput?.focus();
+
+      } catch (err: any) {
+        showAlert(err.message || 'Error requesting reset code.');
+      }
+    });
+
+    // Handle Forgot Password - Reset Submit
+    forgotForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const email = forgotEmailInput.value.trim();
+      const code = resetCodeInput.value.trim();
+      const newPassword = resetNewPasswordInput.value;
+
+      try {
+        const data = await apiClient('/api/auth/reset-password', {
+          method: 'POST',
+          body: JSON.stringify({ email, code, newPassword }),
+        });
+
+        setView('signin');
+        showAlert(data.message || 'Password reset successful! You can now sign in.', false);
+
+      } catch (err: any) {
+        showAlert(err.message || 'Failed to reset password.');
+      }
+    });
+
+    // Check incoming URL parameters (e.g. ?view=signup)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('view') === 'signup') {
+      setView('signup');
+    }
   </script>
 </BaseLayout>
