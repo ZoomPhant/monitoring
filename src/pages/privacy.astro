@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout title="Privacy Policy — ZoomPhant">
+  <Header currentPath={Astro.url.pathname} />
+
+  <main class="min-h-screen bg-white py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto prose prose-gray">
+      <div class="border-b border-gray-100 pb-8 mb-8">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+          Legal
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mt-3">
+          Privacy Policy
+        </h1>
+        <p class="text-xs text-gray-500 mt-2">
+          Effective Date: November 7, 2026 · Last Updated: November 7, 2026
+        </p>
+      </div>
+
+      <div class="space-y-6 text-sm text-gray-700 leading-relaxed">
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">1. Overview</h2>
+          <p>
+            ZoomPhant ("we", "our", or "us"), provided by Zervice, offers self-hosted time-series database and observability software ("TSDB"). We are committed to protecting your privacy. Because ZoomPhant is a <strong>Bring Your Own Cloud (BYOC)</strong> and self-hosted platform, your metrics, timeseries logs, and telemetry data reside strictly within your own Cloudflare infrastructure and never touch our servers.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">2. Information We Collect</h2>
+          <p class="mb-2">We only collect minimal information necessary to authenticate users and coordinate self-hosted deployments:</p>
+          <ul class="list-disc pl-5 space-y-1 text-gray-600">
+            <li><strong>Account Information:</strong> Name, email address, and profile picture provided when you sign in directly or via third-party OAuth providers (Google, GitHub).</li>
+            <li><strong>BYOC Deployment Metadata:</strong> Cloudflare Account ID, deployed Worker name, and version identifiers required to manage your self-hosted instance.</li>
+            <li><strong>Temporary Deployment Credentials:</strong> Cloudflare API tokens or OAuth authorization tokens are used strictly in-memory during the automated provisioning process and are never stored in our persistent database.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">3. How We Use Information</h2>
+          <ul class="list-disc pl-5 space-y-1 text-gray-600">
+            <li>To authenticate and manage your platform user account.</li>
+            <li>To automate the provisioning of TSDB clusters, Durable Objects, and R2 storage inside your own Cloudflare account upon your request.</li>
+            <li>To notify you about software updates, critical security advisories, or release upgrades.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">4. Data Sovereignty & Third-Party Sharing</h2>
+          <p>
+            We do <strong>not</strong> sell, rent, or monetize your personal data. We do not track or inspect your metrics. Third-party integrations (e.g. Google OAuth, GitHub OAuth, Cloudflare API) are utilized strictly in accordance with their respective developer terms and privacy standards.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">5. Data Retention & Deletion</h2>
+          <p>
+            You may request the deletion of your platform account or deployment metadata at any time by contacting us. Any telemetry or metrics stored in your own Cloudflare R2 bucket are governed completely by your account's lifecycle policy and retention settings.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">6. Contact Us</h2>
+          <p>
+            If you have questions about this Privacy Policy or your data, please contact us at:
+            <br />
+            <a href="mailto:admin@zervice.us" class="text-brand-600 hover:underline font-semibold">admin@zervice.us</a> or <a href="mailto:info@zervice.us" class="text-brand-600 hover:underline font-semibold">info@zervice.us</a>.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+

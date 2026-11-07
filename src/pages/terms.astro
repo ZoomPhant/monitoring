@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout title="Terms of Service — ZoomPhant">
+  <Header currentPath={Astro.url.pathname} />
+
+  <main class="min-h-screen bg-white py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto prose prose-gray">
+      <div class="border-b border-gray-100 pb-8 mb-8">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+          Legal
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mt-3">
+          Terms of Service
+        </h1>
+        <p class="text-xs text-gray-500 mt-2">
+          Effective Date: November 7, 2026 · Last Updated: November 7, 2026
+        </p>
+      </div>
+
+      <div class="space-y-6 text-sm text-gray-700 leading-relaxed">
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">1. Acceptance of Terms</h2>
+          <p>
+            By accessing or using ZoomPhant (the "Service") operated by Zervice ("Company", "we", "us"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not access or use the Service.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">2. Description of Service</h2>
+          <p>
+            ZoomPhant provides self-hosted, distributed time-series database engine ("TSDB") software designed to run within your own cloud infrastructure (such as Cloudflare Workers, Durable Objects, and R2). Our platform orchestrates the automated provisioning and lifecycle management of these components directly into your cloud accounts.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">3. User Responsibilities & Infrastructure Costs</h2>
+          <ul class="list-disc pl-5 space-y-1 text-gray-600">
+            <li>You are responsible for maintaining the security of your account credentials and deployment tokens.</li>
+            <li>Because TSDB runs inside your own cloud provider account (e.g. Cloudflare), you are solely responsible for any infrastructure usage fees incurred with that provider (such as Workers Paid plan, KV reads/writes, and R2 storage).</li>
+            <li>You agree not to use the Service for any unlawful or abusive activities.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">4. Intellectual Property</h2>
+          <p>
+            All rights, title, and interest in and to the ZoomPhant engine, trademarks, platform software, and documentation remain the exclusive property of Zervice and its licensors.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">5. Disclaimer of Warranties</h2>
+          <p>
+            The Service and software packages are provided on an "AS IS" and "AS AVAILABLE" basis without warranties of any kind, whether express or implied, including merchantability, fitness for a particular purpose, or non-infringement.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">6. Limitation of Liability</h2>
+          <p>
+            To the maximum extent permitted by applicable law, in no event shall Zervice or ZoomPhant be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or business interruption.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">7. Contact Information</h2>
+          <p>
+            For any questions regarding these Terms of Service, please contact us at:
+            <br />
+            <a href="mailto:admin@zervice.us" class="text-brand-600 hover:underline font-semibold">admin@zervice.us</a>.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
