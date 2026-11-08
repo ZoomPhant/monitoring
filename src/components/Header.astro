@@ -5,6 +5,7 @@ export interface Props {
 
 const { currentPath = '/' } = Astro.props;
 const isDocs = currentPath.startsWith('/docs');
+const isAbout = currentPath.startsWith('/about');
 ---
 
 <header class="sticky top-0 z-50 w-full border-b border-gray-100 bg-white">
@@ -18,23 +19,35 @@ const isDocs = currentPath.startsWith('/docs');
     </a>
     
     <!-- Desktop Navigation Links -->
-    <div class="hidden items-center gap-8 md:flex">
+    <div class="hidden items-center gap-7 md:flex">
       <a
         href="/"
         class="text-sm font-medium transition-colors"
         class:list={[currentPath === '/' ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
       >Home</a>
       <a
-        href="/docs/start/"
+        href="https://tsdb.zoomphant.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors hover:text-brand-600"
+      >
+        <span>TSDB in Action</span>
+        <span class="text-xs text-gray-400">↗</span>
+      </a>
+      <a
+        href="/docs/"
         class="text-sm font-medium transition-colors"
         class:list={[isDocs ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
       >Docs</a>
       <a
-        href="/docs/about/"
-        class="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+        href="/about/"
+        class="text-sm font-medium transition-colors"
+        class:list={[isAbout ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
       >About</a>
       <a
         href="https://github.com/ZoomPhant/monitoring"
+        target="_blank"
+        rel="noopener noreferrer"
         class="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
       >GitHub</a>
     </div>

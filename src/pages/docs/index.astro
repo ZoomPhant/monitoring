@@ -1,0 +1,351 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+---
+
+<BaseLayout
+  title="Documentation Hub — ZoomPhant"
+  description="Explore documentation for ZoomPhant AI-Native TSDB (Cloudflare BYOC) and ZoomPhant Enterprise Monitoring Solution."
+>
+  <Header currentPath="/docs/" />
+
+  <main class="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50/60 pb-24">
+    <!-- Hero Header -->
+    <section class="border-b border-gray-200/80 bg-white pt-12 pb-12 sm:pt-16 sm:pb-14">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="max-w-3xl">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 border border-brand-200 px-3 py-1 text-xs font-bold text-brand-700">
+            Documentation Hub
+          </span>
+          <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
+            ZoomPhant Documentation
+          </h1>
+          <p class="mt-4 text-base sm:text-lg leading-relaxed text-gray-600">
+            Choose the documentation track that matches your deployment—whether you are connecting an AI Agent to a serverless <strong>ZoomPhant TSDB instance</strong> or deploying the full-scale <strong>Enterprise Monitoring Solution</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-6xl px-6 pt-12 space-y-16">
+      <!-- TOP 2 PRIMARY TRACKS: 1. TSDB DOCS & 2. ENTERPRISE QUICK START -->
+      <section class="grid gap-8 lg:grid-cols-2">
+        <!-- Track 1: ZoomPhant TSDB Documentation (External / New Tab) -->
+        <div class="relative rounded-3xl border-2 border-brand-500/80 bg-white p-8 shadow-lg shadow-brand-900/5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 border border-brand-200 px-3 py-1 text-xs font-bold text-brand-700">
+                ⚡ AI-Native TSDB · Cloudflare BYOC
+              </span>
+              <span class="text-xs font-semibold text-gray-400">tsdb.zoomphant.com</span>
+            </div>
+
+            <h2 class="text-2xl font-extrabold text-gray-900">
+              1. ZoomPhant TSDB Documentation
+            </h2>
+            <p class="mt-2.5 text-sm leading-relaxed text-gray-600">
+              For solo builders, startups, and AI Agents pushing and querying metrics, logs, and business events directly in your Cloudflare account.
+            </p>
+
+            <!-- Quick Deep Links into TSDB Docs -->
+            <div class="mt-6 space-y-2.5">
+              <p class="text-xs font-bold uppercase tracking-wider text-gray-400">Key Topics in TSDB Docs</p>
+              <div class="grid gap-2 sm:grid-cols-2 text-xs">
+                <a
+                  href="https://tsdb.zoomphant.com/docs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50/70 px-3.5 py-2.5 font-semibold text-gray-800 hover:border-brand-300 hover:bg-brand-50/50 hover:text-brand-700 transition-colors"
+                >
+                  <span>🚀 5-Minute Quickstart</span>
+                  <span class="text-gray-400">↗</span>
+                </a>
+                <a
+                  href="https://tsdb.zoomphant.com/llms.txt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50/70 px-3.5 py-2.5 font-semibold text-gray-800 hover:border-brand-300 hover:bg-brand-50/50 hover:text-brand-700 transition-colors"
+                >
+                  <span>🤖 AI Agent /llms.txt</span>
+                  <span class="text-gray-400">↗</span>
+                </a>
+                <a
+                  href="https://tsdb.zoomphant.com/docs/zql.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50/70 px-3.5 py-2.5 font-semibold text-gray-800 hover:border-brand-300 hover:bg-brand-50/50 hover:text-brand-700 transition-colors"
+                >
+                  <span>🔍 ZQL Query Language</span>
+                  <span class="text-gray-400">↗</span>
+                </a>
+                <a
+                  href="https://tsdb.zoomphant.com/docs/api.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50/70 px-3.5 py-2.5 font-semibold text-gray-800 hover:border-brand-300 hover:bg-brand-50/50 hover:text-brand-700 transition-colors"
+                >
+                  <span>📡 REST API & OpenAPI</span>
+                  <span class="text-gray-400">↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-5 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-3">
+            <a
+              href="https://tsdb.zoomphant.com/docs"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full sm:flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm hover:bg-brand-700 transition-all whitespace-nowrap"
+            >
+              <span>Open TSDB Documentation</span>
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+            <a
+              href="/dashboard/"
+              class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all whitespace-nowrap"
+            >
+              Launch Free TSDB →
+            </a>
+          </div>
+        </div>
+
+        <!-- Track 2: Self-Hosted Enterprise Monitoring Quick Start -->
+        <div class="relative rounded-3xl border border-purple-200 bg-gradient-to-br from-white via-white to-purple-50/40 p-8 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-purple-100 border border-purple-200 px-3 py-1 text-xs font-bold text-purple-800">
+                🏢 Enterprise Monitoring · Self-Hosted
+              </span>
+              <span class="text-xs font-semibold text-gray-400">All-in-One Appliance</span>
+            </div>
+
+            <h2 class="text-2xl font-extrabold text-gray-900">
+              2. Enterprise Monitoring Quick Start
+            </h2>
+            <p class="mt-2.5 text-sm leading-relaxed text-gray-600">
+              Get the self-hosted ZoomPhant Enterprise Monitoring Solution up and running in one minute on your own Linux server or private cloud.
+            </p>
+
+            <!-- Highlights -->
+            <div class="mt-6 space-y-2.5">
+              <p class="text-xs font-bold uppercase tracking-wider text-gray-400">What You Will Set Up</p>
+              <div class="grid gap-2 sm:grid-cols-2 text-xs">
+                <a
+                  href="/docs/start/#local-deployment"
+                  class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 font-semibold text-gray-800 hover:border-purple-300 hover:bg-purple-50/50 hover:text-purple-700 transition-colors"
+                >
+                  <span>🐳 1-Command Local Setup</span>
+                  <span class="text-gray-400">→</span>
+                </a>
+                <a
+                  href="/docs/start/#cloud-deployment"
+                  class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 font-semibold text-gray-800 hover:border-purple-300 hover:bg-purple-50/50 hover:text-purple-700 transition-colors"
+                >
+                  <span>☁️ Cloud ECS Deployment</span>
+                  <span class="text-gray-400">→</span>
+                </a>
+                <a
+                  href="/docs/start/#getting-started"
+                  class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 font-semibold text-gray-800 hover:border-purple-300 hover:bg-purple-50/50 hover:text-purple-700 transition-colors"
+                >
+                  <span>🧭 Initial Setup Wizard</span>
+                  <span class="text-gray-400">→</span>
+                </a>
+                <a
+                  href="/docs/about/"
+                  class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 font-semibold text-gray-800 hover:border-purple-300 hover:bg-purple-50/50 hover:text-purple-700 transition-colors"
+                >
+                  <span>💡 Why & How It Works</span>
+                  <span class="text-gray-400">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-5 border-t border-purple-100 flex flex-col sm:flex-row items-center gap-3">
+            <a
+              href="/docs/start/"
+              class="w-full sm:flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm hover:from-purple-500 hover:to-indigo-500 transition-all whitespace-nowrap"
+            >
+              <span>Start Enterprise Quick Start →</span>
+            </a>
+            <a
+              href="/register/"
+              class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-purple-200 bg-purple-50/70 px-5 py-3.5 text-sm font-semibold text-purple-700 hover:bg-purple-100 transition-all whitespace-nowrap"
+            >
+              Free Expert Consulting
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: ENTERPRISE MONITORING FULL REFERENCE MANUAL -->
+      <section>
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-gray-200 pb-5">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-purple-600">Self-Hosted Platform Documentation</span>
+            <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
+              3. Enterprise Monitoring Reference Manual
+            </h2>
+            <p class="mt-1.5 text-sm text-gray-600">
+              Complete guides for collectors, alerting escalation chains, log parsing, query syntax, and 15+ infrastructure & application plugins.
+            </p>
+          </div>
+          <a
+            href="/docs/manual/"
+            class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:text-brand-700 whitespace-nowrap"
+          >
+            <span>Browse Full Reference Tree</span>
+            <span>→</span>
+          </a>
+        </div>
+
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Card 1: Core Concepts & Architecture -->
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-2xs hover:border-brand-200 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 text-lg">📘</span>
+                <a href="/docs/concepts/" class="text-base font-bold text-gray-900 hover:text-brand-600 transition-colors">
+                  Concepts & Architecture
+                </a>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                Understand ZoomPhant's architecture, data model, and interactive dashboard engine.
+              </p>
+              <ul class="space-y-1.5 text-xs font-medium text-gray-700">
+                <li><a href="/docs/about/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Why ZoomPhant</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/about/work/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>How ZoomPhant Works</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/concepts/metrics/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Metric Data & Time Series</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/concepts/logs/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Log Data Model</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/concepts/dashboards/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Dashboards & Widgets</span><span class="text-gray-400">→</span></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 2: Monitoring Services & Collectors -->
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-2xs hover:border-brand-200 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">📡</span>
+                <a href="/docs/manual/01_service/" class="text-base font-bold text-gray-900 hover:text-brand-600 transition-colors">
+                  Services & Data Collectors
+                </a>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                Add monitoring services, deploy lightweight collector agents, and manage host infrastructures.
+              </p>
+              <ul class="space-y-1.5 text-xs font-medium text-gray-700">
+                <li><a href="/docs/manual/01_service/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Creating Monitoring Services</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/02_collector/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Installing Data Collectors</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/10_infrastructures/linux/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Linux Host Monitoring</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/10_infrastructures/windows/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Windows Host Monitoring</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/10_infrastructures/kubernetes/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Kubernetes Cluster Monitoring</span><span class="text-gray-400">→</span></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 3: Alerting & Escalation -->
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-2xs hover:border-brand-200 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600 text-lg">🔔</span>
+                <a href="/docs/manual/00_alert/" class="text-base font-bold text-gray-900 hover:text-brand-600 transition-colors">
+                  Alerting & Notifications
+                </a>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                Define real-time anomaly detection rules and configure multi-stage alert escalation chains.
+              </p>
+              <ul class="space-y-1.5 text-xs font-medium text-gray-700">
+                <li><a href="/docs/manual/00_alert/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Alerting & Delivery Overview</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/00_alert/alert/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Configuring Alert Rules</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/00_alert/delivery/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Channels & Escalation Chains</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/about/qa/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Frequently Asked Questions</span><span class="text-gray-400">→</span></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 4: Log Monitoring & Query Syntax -->
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-2xs hover:border-brand-200 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600 text-lg">🔎</span>
+                <a href="/docs/manual/03_log/" class="text-base font-bold text-gray-900 hover:text-brand-600 transition-colors">
+                  Logs & Query Syntax
+                </a>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                Collect and parse logs with Grok, and query metrics and logs with PromQL and LogQL.
+              </p>
+              <ul class="space-y-1.5 text-xs font-medium text-gray-700">
+                <li><a href="/docs/manual/03_log/add/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Adding Log Tasks & Grok</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/03_log/usecase/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Extracting Metrics from Logs</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/05_query_syntax/metrics/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Metrics Query Syntax (PromQL)</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/05_query_syntax/logs/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Logs Query Syntax</span><span class="text-gray-400">→</span></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 5: Network & Custom Templates -->
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-2xs hover:border-brand-200 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 text-lg">🌐</span>
+                <a href="/docs/manual/20_network/" class="text-base font-bold text-gray-900 hover:text-brand-600 transition-colors">
+                  Network & Custom Templates
+                </a>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                Synthetic network probes (HTTP, DNS, Ping, TCP, Route) and custom Prometheus/SNMP templates.
+              </p>
+              <ul class="space-y-1.5 text-xs font-medium text-gray-700">
+                <li><a href="/docs/manual/20_network/http/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>HTTP & Website Checks</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/20_network/dns/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>DNS, Ping, Port & Route Probes</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/04_templates/prom/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Prometheus Exporter Templates</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/04_templates/snmp/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>SNMP Device Templates</span><span class="text-gray-400">→</span></a></li>
+                <li><a href="/docs/manual/04_templates/grafana/" class="hover:text-brand-600 flex items-center justify-between py-0.5"><span>Importing Grafana Dashboards</span><span class="text-gray-400">→</span></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 6: Application & Service Plugins -->
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-2xs hover:border-brand-200 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-50 text-purple-600 text-lg">🔌</span>
+                <a href="/docs/manual/99_plugins/" class="text-base font-bold text-gray-900 hover:text-brand-600 transition-colors">
+                  Application & Service Plugins
+                </a>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                Turnkey monitoring integrations for virtualization, databases, caches, queues, and GPUs.
+              </p>
+              <div class="flex flex-wrap gap-1.5 pt-1">
+                <a href="/docs/manual/99_plugins/proxmox/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">Proxmox VE</a>
+                <a href="/docs/manual/99_plugins/docker/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">Docker</a>
+                <a href="/docs/manual/99_plugins/nginx/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">Nginx</a>
+                <a href="/docs/manual/99_plugins/mysqlexporter/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">MySQL</a>
+                <a href="/docs/manual/99_plugins/postgresqlexporter/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">PostgreSQL</a>
+                <a href="/docs/manual/99_plugins/redis/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">Redis</a>
+                <a href="/docs/manual/99_plugins/kafka/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">Kafka</a>
+                <a href="/docs/manual/99_plugins/nvidiagpu/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">NVIDIA GPU</a>
+                <a href="/docs/manual/99_plugins/sqlqueryexporter/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">SQL Query</a>
+                <a href="/docs/manual/99_plugins/glusterfs/" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors">GlusterFS</a>
+                <a href="/docs/manual/99_plugins/" class="rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 hover:bg-brand-100 transition-colors">View All →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+

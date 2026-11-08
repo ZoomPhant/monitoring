@@ -1,0 +1,325 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout
+  title="About ZoomPhant — Your Monitoring Expert for the AI Agent Era"
+  description="Built by observability veterans with 15+ years of enterprise experience. ZoomPhant leads the shift to Agent-First, Privacy-First TSDB and Enterprise Monitoring."
+>
+  <Header currentPath="/about/" />
+
+  <main class="overflow-hidden">
+    <!-- 1. HERO: OUR MISSION & BACKGROUND -->
+    <section class="relative overflow-hidden pt-14 pb-20 sm:pt-20 sm:pb-24 bg-gradient-to-b from-brand-50/70 via-white to-white border-b border-gray-100">
+      <div class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[850px] h-[380px] bg-gradient-to-tr from-brand-200/40 via-sky-100/30 to-indigo-100/40 blur-3xl rounded-full -z-10"></div>
+
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <div class="inline-flex items-center gap-2 rounded-full bg-brand-50 border border-brand-200 px-4 py-1.5 text-xs font-bold text-brand-700 shadow-2xs">
+            <span>About ZoomPhant · Your Monitoring Expert</span>
+          </div>
+
+          <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:leading-[1.15]">
+            Redefining Monitoring for the
+            <span class="mt-1 block bg-gradient-to-r from-brand-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              AI Agent Era.
+            </span>
+          </h1>
+
+          <p class="mt-6 text-base sm:text-lg leading-8 text-gray-600">
+            ZoomPhant was founded by data-center and application observability veterans with <strong>15+ years of experience</strong> building world-renowned monitoring systems and serving thousands of global enterprises—including many of the <strong>Fortune Global 500</strong>.
+          </p>
+          <p class="mt-4 text-sm sm:text-base leading-7 text-gray-500">
+            In a decade of serving customers, we heard the same frustration again and again: <em>"All monitoring software is either an operational mess or a SaaS billing trap."</em> As AI agents transform how software is built and operated, we created ZoomPhant to lead the next generation of observability—combining <strong>agent-first intelligence</strong>, <strong>100% data privacy</strong>, and <strong>hands-on expert service</strong>.
+          </p>
+        </div>
+
+        <!-- Key Credibility Highlights -->
+        <div class="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
+          <div class="rounded-2xl border border-gray-200/80 bg-white p-5 text-center shadow-2xs">
+            <div class="text-2xl sm:text-3xl font-extrabold text-brand-600">15+ Yrs</div>
+            <div class="mt-1 text-xs font-semibold text-gray-500">Monitoring Expertise</div>
+          </div>
+          <div class="rounded-2xl border border-gray-200/80 bg-white p-5 text-center shadow-2xs">
+            <div class="text-2xl sm:text-3xl font-extrabold text-gray-900">100%</div>
+            <div class="mt-1 text-xs font-semibold text-gray-500">Customer Data Ownership</div>
+          </div>
+          <div class="rounded-2xl border border-gray-200/80 bg-white p-5 text-center shadow-2xs">
+            <div class="text-2xl sm:text-3xl font-extrabold text-indigo-600">AI-First</div>
+            <div class="mt-1 text-xs font-semibold text-gray-500">Self-Describing TSDB</div>
+          </div>
+          <div class="rounded-2xl border border-gray-200/80 bg-white p-5 text-center shadow-2xs">
+            <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600">60 Sec</div>
+            <div class="mt-1 text-xs font-semibold text-gray-500">1-Click Deployment</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. THE 3 GENERATIONS OF MONITORING -->
+    <section class="py-20 sm:py-24 bg-gray-50 border-b border-gray-100">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Industry Evolution</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Why the AI Agent Era Demands a New Architecture
+          </h2>
+          <p class="mt-4 text-base text-gray-600">
+            Monitoring systems have evolved through three distinct generations. Traditional tools were designed for humans staring at static screens—not for autonomous AI agents or data-conscious businesses.
+          </p>
+        </div>
+
+        <div class="mx-auto mt-16 grid max-w-6xl gap-8 lg:grid-cols-3">
+          <!-- Gen 1 -->
+          <div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600 mb-4">
+                1st Generation · Legacy On-Prem
+              </div>
+              <h3 class="text-lg font-bold text-gray-900">Fragmented & High-Maintenance</h3>
+              <p class="mt-2 text-xs font-medium text-gray-400">Nagios · Zabbix · DIY Open-Source Stacks</p>
+              <p class="mt-4 text-sm leading-relaxed text-gray-600">
+                Built for static servers and network devices. While data stayed local, teams spent more time maintaining collectors, stitching together Prometheus/Grafana/Loki, and writing rigid rules than solving business problems.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-gray-100 text-xs font-semibold text-gray-500">
+              ✗ Heavy operational overhead & siloed data
+            </div>
+          </div>
+
+          <!-- Gen 2 -->
+          <div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="inline-flex items-center rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-bold text-amber-800 mb-4">
+                2nd Generation · Centralized Cloud SaaS
+              </div>
+              <h3 class="text-lg font-bold text-gray-900">Expensive & Locked Away</h3>
+              <p class="mt-2 text-xs font-medium text-gray-400">Datadog · Splunk · New Relic · CloudWatch</p>
+              <p class="mt-4 text-sm leading-relaxed text-gray-600">
+                SaaS eliminated local setup but introduced punitive bandwidth, ingestion, and per-seat charges. Worse yet, your sensitive telemetry is locked inside a vendor’s cloud—forcing you to drop historical data right when AI needs it most.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-gray-100 text-xs font-semibold text-amber-700">
+              ✗ Runaway bills & loss of data sovereignty
+            </div>
+          </div>
+
+          <!-- Gen 3: ZoomPhant -->
+          <div class="rounded-3xl border-2 border-brand-500 bg-gradient-to-b from-brand-50/40 via-white to-white p-8 shadow-lg shadow-brand-900/5 flex flex-col justify-between">
+            <div>
+              <div class="inline-flex items-center gap-1.5 rounded-full bg-brand-600 px-3 py-1 text-xs font-bold text-white mb-4">
+                <span>✨ 3rd Generation · The AI Agent Era</span>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900">Agent-Native, Private & Affordable</h3>
+              <p class="mt-2 text-xs font-semibold text-brand-600">ZoomPhant TSDB & Enterprise Monitoring</p>
+              <p class="mt-4 text-sm leading-relaxed text-gray-700">
+                Designed from the ground up so <strong>AI agents and humans</strong> work together on top of data you 100% own. Deploy serverless in your own Cloudflare account for pennies, or run our all-in-one appliance on your own infrastructure.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-brand-100 text-xs font-bold text-brand-700">
+              ✓ 100% data privacy · Agent-ready · Zero billing surprises
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. FOUR CORE PILLARS -->
+    <section class="py-20 sm:py-24 bg-white">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Our Core Philosophy</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            What Makes ZoomPhant the Leader for the Agent Era
+          </h2>
+          <p class="mt-4 text-base text-gray-600">
+            We believe every builder, startup, and enterprise deserves enterprise-grade observability without surrendering their data or budget.
+          </p>
+        </div>
+
+        <div class="mx-auto mt-16 grid max-w-5xl gap-8 sm:grid-cols-2">
+          <!-- Pillar 1: Agent First -->
+          <div class="rounded-3xl border border-gray-200 p-8 shadow-2xs hover:border-brand-200 transition-colors">
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-2xl">
+                🤖
+              </div>
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Pillar 01</span>
+                <h3 class="text-lg font-bold text-gray-900">Agent-First by Design</h3>
+              </div>
+            </div>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600">
+              In the AI era, your primary analyst is an AI agent. Every ZoomPhant TSDB instance is self-describing via <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-mono">/llms.txt</code> and unifies numeric metrics with rich JSON events—so AI agents can push data, investigate anomalies, and build dashboards without human hand-holding.
+            </p>
+          </div>
+
+          <!-- Pillar 2: Data Privacy & Sovereignty -->
+          <div class="rounded-3xl border border-gray-200 p-8 shadow-2xs hover:border-brand-200 transition-colors">
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-2xl">
+                🔒
+              </div>
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Pillar 02</span>
+                <h3 class="text-lg font-bold text-gray-900">Uncompromising Data Privacy</h3>
+              </div>
+            </div>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600">
+              Your business revenue, customer events, and infrastructure logs are your crown jewels. With our <strong>Bring Your Own Cloud (BYOC)</strong> Cloudflare TSDB and <strong>Self-Hosted Enterprise Solution</strong>, 100% of your data stays inside your own accounts and servers—never touching ours.
+            </p>
+          </div>
+
+          <!-- Pillar 3: Expert Consulting & Service -->
+          <div class="rounded-3xl border border-gray-200 p-8 shadow-2xs hover:border-brand-200 transition-colors">
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-purple-50 text-2xl">
+                🤝
+              </div>
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-purple-600">Pillar 03</span>
+                <h3 class="text-lg font-bold text-gray-900">Expert Consulting, Not Just Software</h3>
+              </div>
+            </div>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600">
+              Monitoring a complex enterprise environment requires more than a download link. Our team of seasoned monitoring specialists offers <strong>complimentary pre-implementation consulting</strong> to help you architect, size, and tailor your observability strategy before you deploy.
+            </p>
+          </div>
+
+          <!-- Pillar 4: Right-Sized from Solo to Enterprise -->
+          <div class="rounded-3xl border border-gray-200 p-8 shadow-2xs hover:border-brand-200 transition-colors">
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-2xl">
+                📈
+              </div>
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Pillar 04</span>
+                <h3 class="text-lg font-bold text-gray-900">Scales from Solo Builder to Global Enterprise</h3>
+              </div>
+            </div>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600">
+              Start for $0/month with a serverless TSDB instance in your Cloudflare account for AI agent telemetry and business analytics. When your workload grows to hundreds of servers, Kubernetes clusters, and millions of metrics per minute, step up seamlessly to ZoomPhant Enterprise Monitoring.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. TWO SOLUTIONS, ONE VISION -->
+    <section class="py-20 sm:py-24 bg-gray-900 text-white">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-400">Our Product Suite</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            Two Ways to Experience ZoomPhant
+          </h2>
+          <p class="mt-4 text-base text-gray-300">
+            Whether you need an instant, zero-maintenance TSDB for your AI agents or a comprehensive enterprise monitoring platform, we have you covered.
+          </p>
+        </div>
+
+        <div class="mx-auto mt-14 grid max-w-5xl gap-8 lg:grid-cols-2">
+          <!-- Product 1: Serverless TSDB -->
+          <div class="rounded-3xl border border-brand-500/40 bg-gray-800/70 p-8 flex flex-col justify-between">
+            <div>
+              <span class="inline-flex rounded-full bg-brand-500/20 border border-brand-400/30 px-3 py-1 text-xs font-bold text-brand-300">
+                ZoomPhant TSDB · Serverless BYOC
+              </span>
+              <h3 class="mt-4 text-2xl font-bold text-white">
+                The Time-Series Database for AI Agents & BI
+              </h3>
+              <p class="mt-3 text-sm text-gray-300 leading-relaxed">
+                Deployed in 1 click into your own Cloudflare account. Built for AI agent telemetry, small business BI, and lightweight application monitoring with zero server maintenance.
+              </p>
+            </div>
+            <div class="mt-8 pt-5 border-t border-gray-700/80 flex flex-col sm:flex-row items-center gap-3">
+              <a
+                href="/dashboard/"
+                class="w-full sm:flex-1 inline-flex items-center justify-center rounded-xl bg-brand-600 px-5 py-3.5 text-sm font-bold text-white hover:bg-brand-500 transition-all whitespace-nowrap"
+              >
+                Claim Your Free TSDB →
+              </a>
+              <a
+                href="https://tsdb.zoomphant.com/docs"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-5 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-all whitespace-nowrap"
+              >
+                TSDB Docs ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- Product 2: Enterprise Monitoring -->
+          <div class="rounded-3xl border border-purple-400/30 bg-gradient-to-br from-gray-800/90 via-slate-900 to-purple-950/40 p-8 flex flex-col justify-between">
+            <div>
+              <span class="inline-flex rounded-full bg-purple-500/20 border border-purple-400/30 px-3 py-1 text-xs font-bold text-purple-300">
+                ZoomPhant Enterprise · Self-Hosted & Hybrid
+              </span>
+              <h3 class="mt-4 text-2xl font-bold text-white">
+                All-in-One Enterprise Infrastructure Monitoring
+              </h3>
+              <p class="mt-3 text-sm text-gray-300 leading-relaxed">
+                Single-image deployment for high-volume metrics and logs across Linux, Windows, Kubernetes, databases, Proxmox/VMware, and SNMP networks—backed by our monitoring experts.
+              </p>
+            </div>
+            <div class="mt-8 pt-5 border-t border-gray-700/80 flex flex-col sm:flex-row items-center gap-3">
+              <a
+                href="/register/"
+                class="w-full sm:flex-1 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-3.5 text-sm font-bold text-white hover:from-purple-500 hover:to-indigo-500 transition-all whitespace-nowrap"
+              >
+                Register & Consult Experts →
+              </a>
+              <a
+                href="/docs/"
+                class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-5 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-all whitespace-nowrap"
+              >
+                Explore Docs
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CONTACT & COMMUNITY CTA -->
+    <section class="py-16 sm:py-20 bg-white">
+      <div class="mx-auto max-w-4xl px-6 text-center">
+        <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
+          Have Questions or Planning a Custom Deployment?
+        </h2>
+        <p class="mt-3 text-sm sm:text-base text-gray-600">
+          Whether you are a solo developer building with AI agents or an enterprise architect designing global observability, our team is ready to help.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="mailto:info@zoomphant.com"
+            class="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-bold text-white hover:bg-gray-800 transition-colors"
+          >
+            <span>✉️ Contact info@zoomphant.com</span>
+          </a>
+          <a
+            href="/register/"
+            class="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <span>Request Free Consulting →</span>
+          </a>
+          <a
+            href="https://github.com/ZoomPhant/monitoring"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <span>GitHub Community ↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+

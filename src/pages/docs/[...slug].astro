@@ -28,7 +28,12 @@ function buildSidebar(docs: { slug: string; data: { title: string; parent?: stri
     .filter((p) => !p.parent)
     .sort((a, b) => a.nav_order - b.nav_order);
 
-  return topLevel.map((section) => {
+  // Include virtual 'About' top-level group for pages with parent: 'About'
+  const aboutPages = pages
+    .filter((p) => p.parent === 'About')
+    .sort((a, b) => a.nav_order - b.nav_order);
+
+  const sections = topLevel.map((section) => {
     const children = pages
       .filter((p) => p.parent === section.title && !p.grand_parent)
       .sort((a, b) => a.nav_order - b.nav_order);
@@ -56,6 +61,20 @@ function buildSidebar(docs: { slug: string; data: { title: string; parent?: stri
       children: childrenWithGrandchildren.length > 0 ? childrenWithGrandchildren : undefined,
     };
   });
+
+  if (aboutPages.length > 0) {
+    sections.push({
+      title: 'About',
+      href: `/docs/${aboutPages[0].slug}/`,
+      children: aboutPages.map((p) => ({
+        title: p.title,
+        href: `/docs/${p.slug}/`,
+        children: undefined,
+      })),
+    });
+  }
+
+  return sections;
 }
 
 const sidebar = buildSidebar(allDocs);
