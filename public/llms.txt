@@ -1,0 +1,28 @@
+# ZoomPhant — Your Monitoring Expert
+> AI-Native Time-Series Database (TSDB) & Enterprise All-in-One Monitoring Solution.
+
+ZoomPhant provides two complementary observability and time-series data solutions built for 100% customer data ownership:
+
+1. **ZoomPhant TSDB (Serverless Cloudflare BYOC)**:
+   - An AI-native time-series and event database deployed in 1 click inside the user's own Cloudflare account (Workers, Durable Objects, R2).
+   - Every deployed instance serves its own machine-readable `/llms.txt` and `/openapi.yaml` so AI agents (Claude, Cursor, custom agents) can push metrics/events, run ZQL correlation queries, and provision dashboards/alerts directly.
+   - Ideal for solo builders, startups, small business BI analytics, and AI agent telemetry. First instance is 100% free.
+   - Live TSDB Portal & Documentation: https://tsdb.zoomphant.com/docs
+   - Machine-Readable TSDB Spec: https://tsdb.zoomphant.com/llms.txt
+
+2. **ZoomPhant Enterprise Monitoring Solution (Self-Hosted & Hybrid)**:
+   - A full-scale, single-image enterprise monitoring platform deployed on dedicated servers or private cloud.
+   - Handles millions of metrics and log lines per minute across Linux, Windows, Kubernetes, databases (MySQL, PostgreSQL, Redis, Kafka), virtualization (Proxmox VE, VMware), NVIDIA GPUs, and SNMP networks.
+   - Free for personal use and registered startups/SMBs; custom SLAs and complimentary pre-implementation consulting available for enterprises.
+
+## Key Website Pages
+- Home: https://www.zoomphant.com/
+- Documentation Hub: https://www.zoomphant.com/docs/
+- TSDB Documentation: https://tsdb.zoomphant.com/docs
+- Enterprise Quick Start: https://www.zoomphant.com/docs/start/
+- Enterprise Reference Manual: https://www.zoomphant.com/docs/manual/
+- Compare vs. LogicMonitor, Datadog, Splunk & Prometheus: https://www.zoomphant.com/compare/
+- About ZoomPhant: https://www.zoomphant.com/about/
+- Register & Free Expert Consulting: https://www.zoomphant.com/register/
+- Contact: mailto:info@zoomphant.com
+

@@ -1,0 +1,398 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const compareJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'ZoomPhant vs. LogicMonitor, Datadog, Splunk & Prometheus — Enterprise Monitoring & TSDB Comparison',
+    description:
+      'Side-by-side comparison of ZoomPhant against LogicMonitor, Datadog, Splunk, New Relic, Zabbix, and DIY Prometheus + Grafana stacks across data privacy, AI agent readiness, pricing, and deployment.',
+    url: 'https://www.zoomphant.com/compare/',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Why do enterprises choose ZoomPhant over LogicMonitor?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Unlike LogicMonitor, which stores your monitoring data inside a vendor-controlled SaaS portal and charges steep per-resource annual contracts, ZoomPhant gives you 100% data ownership (on-premises or in your own cloud), unified metrics + logs + business events in one engine, native AI agent integration, and complimentary pre-implementation consulting.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How does ZoomPhant compare to Datadog and Splunk on cost and data privacy?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Datadog and Splunk require sending your telemetry to their cloud and charge separately for hosts, custom metrics, log ingestion, and data retention. ZoomPhant runs 100% in your own Cloudflare account ($0–$5/mo for light workloads) or on your own dedicated servers for heavy enterprise workloads—eliminating surprise ingestion and egress bills.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Why use ZoomPhant instead of building a DIY Prometheus, Grafana, and Loki stack?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'While Prometheus and Grafana are open source, stitching together Prometheus, Loki, Alertmanager, SNMP exporters, and collector agents takes weeks of DevOps time and ongoing maintenance. ZoomPhant delivers an all-in-one, Prometheus/Loki-compatible platform in a single 60-second deployment with visual collector management and built-in multi-stage alerting.',
+        },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="ZoomPhant vs. LogicMonitor, Datadog, Splunk & Prometheus | Monitoring Comparison"
+  description="Compare ZoomPhant AI-Native TSDB & Enterprise Monitoring against LogicMonitor, Datadog, Splunk, New Relic, Zabbix, and DIY Prometheus + Grafana stacks."
+  keywords="LogicMonitor alternative, Datadog alternative, Splunk alternative, New Relic alternative, Prometheus Grafana alternative, Zabbix alternative, self-hosted enterprise monitoring, AI agent TSDB comparison"
+  jsonLd={compareJsonLd}
+>
+  <Header currentPath="/compare/" />
+
+  <main class="overflow-hidden">
+    <!-- 1. HERO -->
+    <section class="relative overflow-hidden pt-14 pb-16 sm:pt-20 sm:pb-20 bg-gradient-to-b from-brand-50/70 via-white to-white border-b border-gray-100">
+      <div class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[850px] h-[360px] bg-gradient-to-tr from-brand-200/40 via-sky-100/30 to-indigo-100/40 blur-3xl rounded-full -z-10"></div>
+
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="inline-flex items-center gap-2 rounded-full bg-brand-50 border border-brand-200 px-4 py-1.5 text-xs font-bold text-brand-700 shadow-2xs">
+            Side-by-Side Industry Comparison
+          </span>
+
+          <h1 class="mt-6 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:leading-[1.15]">
+            ZoomPhant vs. Legacy & SaaS
+            <span class="mt-1 block bg-gradient-to-r from-brand-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              Monitoring Providers
+            </span>
+          </h1>
+
+          <p class="mt-5 text-base sm:text-lg leading-8 text-gray-600">
+            See why builders, growing businesses, and global enterprises choose <strong>ZoomPhant</strong> over <strong>LogicMonitor</strong>, <strong>Datadog</strong>, <strong>Splunk</strong>, and fragmented <strong>DIY Prometheus/Zabbix</strong> stacks when data privacy, AI readiness, and predictable costs matter.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. MASTER COMPARISON MATRIX -->
+    <section class="py-16 sm:py-20 bg-white">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-brand-600">At a Glance</span>
+            <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
+              Feature & Architecture Matrix
+            </h2>
+          </div>
+          <p class="text-xs text-gray-500">
+            Covers both <strong>ZoomPhant TSDB (Cloudflare BYOC)</strong> & <strong>ZoomPhant Enterprise (Self-Hosted)</strong>
+          </p>
+        </div>
+
+        <div class="overflow-x-auto rounded-3xl border border-gray-200 shadow-sm">
+          <table class="w-full min-w-[820px] border-collapse text-left text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 bg-gray-900 text-white">
+                <th class="py-4 px-5 font-bold w-[20%]">Capability</th>
+                <th class="py-4 px-5 font-extrabold bg-brand-600 text-white w-[23%]">
+                  <div class="flex items-center gap-2">
+                    <span>✨ ZoomPhant</span>
+                  </div>
+                  <div class="text-[11px] font-medium text-brand-100 mt-0.5">TSDB (BYOC) & Enterprise</div>
+                </th>
+                <th class="py-4 px-5 font-bold text-gray-200 w-[19%]">
+                  <div>LogicMonitor</div>
+                  <div class="text-[11px] font-normal text-gray-400 mt-0.5">Enterprise Hybrid SaaS</div>
+                </th>
+                <th class="py-4 px-5 font-bold text-gray-200 w-[19%]">
+                  <div>Datadog / Splunk</div>
+                  <div class="text-[11px] font-normal text-gray-400 mt-0.5">Centralized Cloud SaaS</div>
+                </th>
+                <th class="py-4 px-5 font-bold text-gray-200 w-[19%]">
+                  <div>Prometheus / Zabbix</div>
+                  <div class="text-[11px] font-normal text-gray-400 mt-0.5">DIY Open-Source Stack</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <!-- Row 1 -->
+              <tr class="hover:bg-gray-50/60">
+                <td class="py-4 px-5 font-bold text-gray-900">Data Ownership & Sovereignty</td>
+                <td class="py-4 px-5 bg-brand-50/40 font-semibold text-gray-900">
+                  <span class="text-emerald-600 font-bold">✓ 100% Yours</span> — Stored in your Cloudflare account or your own servers. Zero vendor lock-in.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-amber-600 font-bold">~ Vendor Cloud</span> — Local collectors, but metrics & portals live in LogicMonitor's cloud.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-rose-600 font-bold">✗ Vendor Cloud Only</span> — All telemetry shipped to and locked inside 3rd-party SaaS.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-emerald-600 font-bold">✓ Self-Hosted</span> — Full ownership, but you manage storage scaling & backups manually.
+                </td>
+              </tr>
+
+              <!-- Row 2 -->
+              <tr class="hover:bg-gray-50/60">
+                <td class="py-4 px-5 font-bold text-gray-900">AI Agent Readiness</td>
+                <td class="py-4 px-5 bg-brand-50/40 font-semibold text-gray-900">
+                  <span class="text-emerald-600 font-bold">✓ Native Agent-First</span> — Built-in <code class="text-xs bg-white px-1 py-0.5 rounded border border-brand-200">/llms.txt</code>, direct push/query API, and unified ZQL.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-amber-600 font-bold">~ Human-Centric UI</span> — Bolt-on alert correlation; not built as an AI agent data store.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-amber-600 font-bold">~ Proprietary Add-Ons</span> — Expensive AI SKUs; external agent queries restricted by API limits.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-rose-600 font-bold">✗ Manual Glue</span> — Requires custom MCPs/scripts across separate metric and log stores.
+                </td>
+              </tr>
+
+              <!-- Row 3 -->
+              <tr class="hover:bg-gray-50/60">
+                <td class="py-4 px-5 font-bold text-gray-900">Pricing & Cost Predictability</td>
+                <td class="py-4 px-5 bg-brand-50/40 font-semibold text-gray-900">
+                  <span class="text-emerald-600 font-bold">✓ $0 Starter & Predictable</span> — Free BYOC TSDB; Free SMB Enterprise tier; flat Enterprise SLAs.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-rose-600 font-bold">✗ High Per-Resource Contracts</span> — Steep annual commitments per monitored device/instance.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-rose-600 font-bold">✗ Unpredictable Overages</span> — Billed per host + per-GB logs + custom metrics + egress fees.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-amber-600 font-bold">~ Hidden DevOps Cost</span> — Free license, but high engineering payroll to maintain at scale.
+                </td>
+              </tr>
+
+              <!-- Row 4 -->
+              <tr class="hover:bg-gray-50/60">
+                <td class="py-4 px-5 font-bold text-gray-900">Deployment & Maintenance</td>
+                <td class="py-4 px-5 bg-brand-50/40 font-semibold text-gray-900">
+                  <span class="text-emerald-600 font-bold">✓ 60 Seconds</span> — 1-click serverless BYOC or single all-in-one self-hosted appliance.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-amber-600 font-bold">~ Multi-Week Onboarding</span> — Collector sizing, Groovy scripting & portal configuration.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-emerald-600 font-bold">✓ Fast SaaS Setup</span> — Quick start, though agent fleet & cost controls grow complex.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-rose-600 font-bold">✗ Weeks of Stitching</span> — Prometheus + Loki + Grafana + Alertmanager + dozens of exporters.
+                </td>
+              </tr>
+
+              <!-- Row 5 -->
+              <tr class="hover:bg-gray-50/60">
+                <td class="py-4 px-5 font-bold text-gray-900">Unified Data Model</td>
+                <td class="py-4 px-5 bg-brand-50/40 font-semibold text-gray-900">
+                  <span class="text-emerald-600 font-bold">✓ Metrics + Logs + BI Events</span> — Infra, K8s, VMs, DBs, SNMP, logs & business analytics in one place.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-amber-600 font-bold">~ Infra-Heavy</span> — Strong network/SNMP, but logs & business event analytics cost extra or lag behind.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-emerald-600 font-bold">✓ Broad Coverage</span> — Comprehensive, but every capability is metered as a separate product SKU.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-rose-600 font-bold">✗ Siloed Tools</span> — Zabbix lacks modern cloud-native logs; Prometheus lacks native logs & BI.
+                </td>
+              </tr>
+
+              <!-- Row 6 -->
+              <tr class="hover:bg-gray-50/60">
+                <td class="py-4 px-5 font-bold text-gray-900">Open Format Compatibility</td>
+                <td class="py-4 px-5 bg-brand-50/40 font-semibold text-gray-900">
+                  <span class="text-emerald-600 font-bold">✓ Open Standards</span> — Native Prometheus, Loki, Grafana & OpenAPI compatibility.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-amber-600 font-bold">~ Proprietary DataSources</span> — Custom LogicMonitor DataSources & portal lock-in.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-amber-600 font-bold">~ Proprietary Storage</span> — Ingests OTel/Prom, but dashboards & storage are locked in SaaS.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  <span class="text-emerald-600 font-bold">✓ Open Source</span> — Standard PromQL/LogQL, but no unified commercial appliance.
+                </td>
+              </tr>
+
+              <!-- Row 7 -->
+              <tr class="hover:bg-gray-50/60">
+                <td class="py-4 px-5 font-bold text-gray-900">Expert Consulting & Support</td>
+                <td class="py-4 px-5 bg-brand-50/40 font-semibold text-gray-900">
+                  <span class="text-emerald-600 font-bold">✓ Free Pre-Implementation Consulting</span> — Direct access to 15+ yr monitoring veterans.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  Paid professional services & tiered ticket queues.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  Percentage-of-spend enterprise support add-ons.
+                </td>
+                <td class="py-4 px-5 text-gray-600">
+                  Community forums & self-service troubleshooting.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. HEAD-TO-HEAD DEEP DIVES -->
+    <section class="py-20 sm:py-24 bg-gray-50 border-y border-gray-100">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Head-to-Head Breakdown</span>
+          <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Why Teams Switch to ZoomPhant
+          </h2>
+          <p class="mt-4 text-base text-gray-600">
+            Created by engineers who spent 15+ years building leading enterprise monitoring platforms, ZoomPhant solves the structural pain points of legacy and SaaS tools.
+          </p>
+        </div>
+
+        <div class="mx-auto mt-16 grid max-w-6xl gap-8 lg:grid-cols-3">
+          <!-- Card 1: vs LogicMonitor -->
+          <div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xs flex flex-col justify-between">
+            <div>
+              <span class="inline-flex rounded-full bg-purple-50 border border-purple-200 px-3 py-1 text-xs font-bold text-purple-700">
+                ZoomPhant vs. LogicMonitor
+              </span>
+              <h3 class="mt-4 text-xl font-bold text-gray-900">
+                Enterprise Hybrid Power—With 100% Data Sovereignty
+              </h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-600">
+                LogicMonitor pioneered collector-based infrastructure monitoring, but locks your metrics, dashboards, and historical data inside a costly vendor SaaS portal billed per device.
+              </p>
+              <ul class="mt-5 space-y-2.5 text-xs sm:text-sm text-gray-700">
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>Keep Data On-Prem or in Your Cloud:</strong> Meet strict financial, healthcare, and government compliance by storing 100% of telemetry in your own environment.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>Visual Collector Management + Logs:</strong> Get the same effortless collector experience for SNMP, Proxmox/VMware, Linux, Windows, and K8s—plus native Grok log parsing and Prometheus compatibility.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>No Per-Device Renewal Shock:</strong> Free for startups/SMBs and predictable flat-rate licensing for large enterprises.</span>
+                </li>
+              </ul>
+            </div>
+            <div class="mt-7 pt-4 border-t border-gray-100">
+              <a href="/register/" class="text-xs font-bold text-purple-700 hover:text-purple-800 inline-flex items-center gap-1">
+                <span>Consult our experts on migrating from LogicMonitor</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 2: vs Datadog & Splunk -->
+          <div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xs flex flex-col justify-between">
+            <div>
+              <span class="inline-flex rounded-full bg-brand-50 border border-brand-200 px-3 py-1 text-xs font-bold text-brand-700">
+                ZoomPhant vs. Datadog & Splunk
+              </span>
+              <h3 class="mt-4 text-xl font-bold text-gray-900">
+                Eliminate Runaway SaaS Ingestion & Custom Metric Bills
+              </h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-600">
+                Cloud SaaS tools penalize you every time your business grows—charging separately for hosts, custom metrics, log ingestion, and historical retention.
+              </p>
+              <ul class="mt-5 space-y-2.5 text-xs sm:text-sm text-gray-700">
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>Zero Bandwidth or Egress Traps:</strong> Because ZoomPhant runs inside your Cloudflare account or local data center, you never pay SaaS data ingestion markups.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>Keep Full Historical Context for AI:</strong> Don't truncate your logs to 7 days just to save money—keep months or years of history so your AI agents can forecast trends.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>Direct AI Agent Access:</strong> Your AI agents query your TSDB directly via <code class="text-xs bg-gray-100 px-1 py-0.5 rounded">/llms.txt</code> without per-seat or API rate-limit walls.</span>
+                </li>
+              </ul>
+            </div>
+            <div class="mt-7 pt-4 border-t border-gray-100">
+              <a href="/dashboard/" class="text-xs font-bold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">
+                <span>Launch a free BYOC TSDB in 60 seconds</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 3: vs DIY Prometheus + Grafana + Zabbix -->
+          <div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xs flex flex-col justify-between">
+            <div>
+              <span class="inline-flex rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-700">
+                ZoomPhant vs. Prometheus & Zabbix
+              </span>
+              <h3 class="mt-4 text-xl font-bold text-gray-900">
+                Open-Standard Freedom—Without the DIY Maintenance Burden
+              </h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-600">
+                Building a production monitoring stack from scratch means gluing together Prometheus, Loki, Grafana, Alertmanager, and dozens of exporters—and maintaining them forever.
+              </p>
+              <ul class="mt-5 space-y-2.5 text-xs sm:text-sm text-gray-700">
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>All-in-One in 1 Minute:</strong> One command deploys metrics, logs, dashboards, alerting escalation chains, and collector management together.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>UI-Driven Collector & Log Config:</strong> No hand-editing YAML files or SSHing into servers every time you add a monitor or Grok log parser.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span><strong>100% Prometheus & Grafana Compatible:</strong> Keep using standard PromQL and existing Grafana dashboards without lock-in.</span>
+                </li>
+              </ul>
+            </div>
+            <div class="mt-7 pt-4 border-t border-gray-100">
+              <a href="/docs/start/" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1">
+                <span>See the 1-minute Enterprise Quick Start</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FINAL CTA -->
+    <section class="py-20 bg-gray-900 text-white">
+      <div class="mx-auto max-w-4xl px-6 text-center">
+        <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
+          Ready to Upgrade Your Observability Strategy?
+        </h2>
+        <p class="mt-4 text-base text-gray-300 max-w-2xl mx-auto">
+          Start immediately with a free serverless TSDB instance in your Cloudflare account, or schedule complimentary pre-implementation consulting with our enterprise monitoring specialists.
+        </p>
+        <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href="/dashboard/"
+            class="w-full sm:w-auto rounded-2xl bg-brand-600 px-8 py-4 text-sm sm:text-base font-bold text-white shadow-lg shadow-brand-500/20 hover:bg-brand-500 transition-all"
+          >
+            Claim Your Free TSDB Instance →
+          </a>
+          <a
+            href="/register/"
+            class="w-full sm:w-auto rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-4 text-sm sm:text-base font-bold text-white shadow-lg shadow-purple-500/20 hover:from-purple-500 hover:to-indigo-500 transition-all"
+          >
+            Register & Consult Enterprise Experts →
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+

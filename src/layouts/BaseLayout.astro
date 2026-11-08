@@ -2,9 +2,24 @@
 export interface Props {
   title: string;
   description?: string;
+  keywords?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, any> | Record<string, any>[];
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description = 'ZoomPhant — AI-Native Time-Series Database (TSDB) & Enterprise All-in-One Self-Hosted Monitoring Solution.',
+  keywords = 'time series database, AI agent TSDB, Cloudflare TSDB, enterprise monitoring, self-hosted monitoring, LogicMonitor alternative, Datadog alternative, Prometheus alternative, ZoomPhant',
+  canonicalUrl,
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+
+const siteOrigin = 'https://www.zoomphant.com';
+const resolvedCanonical = canonicalUrl || `${siteOrigin}${Astro.url.pathname}`;
+const ogImageUrl = `${siteOrigin}/logo.svg`;
 ---
 
 <!doctype html>
@@ -12,12 +27,36 @@ const { title, description } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description || 'ZoomPhant - Enterprise All-in-One Self-Hosted Monitoring'} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+    <link rel="canonical" href={resolvedCanonical} />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ZoomPhant" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={resolvedCanonical} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Fonts & Icons -->
     <link rel="preload" href="/fonts/Inter-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/JetBrainsMono-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <link rel="apple-touch-icon" href="/logo.svg" />
+    <link rel="alternate" type="text/plain" title="LLM Documentation" href="/llms.txt" />
+
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
   </head>
   <body class="bg-white text-gray-900 antialiased">
     <slot />

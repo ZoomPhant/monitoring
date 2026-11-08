@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /auth/
+
+# AI Agent & LLM Discovery
+# See https://www.zoomphant.com/llms.txt
+

@@ -3,11 +3,70 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+
+const homeJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'ZoomPhant',
+    url: 'https://www.zoomphant.com',
+    logo: 'https://www.zoomphant.com/logo.svg',
+    slogan: 'Your Monitoring Expert',
+    description:
+      'AI-Native Time-Series Database (TSDB) and All-in-One Self-Hosted Enterprise Monitoring Solution built for 100% customer data ownership.',
+    sameAs: ['https://github.com/ZoomPhant/monitoring'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'ZoomPhant TSDB & Enterprise Monitoring',
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Cloudflare Workers, Linux, Windows, Kubernetes, Docker',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+      description: 'First Cloudflare BYOC TSDB instance is 100% free; Enterprise Monitoring is free for personal use and registered startups/SMBs.',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How does an AI agent know how to push and query data in my TSDB instance?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Every ZoomPhant TSDB instance automatically serves a concise, machine-readable instruction file at /llms.txt (as well as /openapi.yaml). When you give your TSDB URL and access token to an AI agent, it reads that file once and immediately knows how to push metrics/events, run queries, and create dashboards.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What are the capacity limits of the Cloudflare-based TSDB?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Because ZoomPhant TSDB runs serverless on Cloudflare Workers, it is designed for solo builders, small businesses, and light-to-medium workloads—typically up to ~20 sources on Cloudflare Free ($0/mo), or a few hundred sources and 10K–100K business events/day on Cloudflare Paid ($5/mo). For heavy enterprise workloads, we provide our full ZoomPhant Enterprise Monitoring Solution.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How does ZoomPhant compare to LogicMonitor, Datadog, Splunk, and Prometheus?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Unlike Datadog, Splunk, and LogicMonitor—which lock your telemetry in vendor SaaS clouds with expensive per-device or per-GB ingestion bills—ZoomPhant gives you 100% data ownership in your own Cloudflare account or on-premises servers, native AI agent integration via /llms.txt, and 60-second all-in-one deployment without DIY Prometheus/Grafana maintenance.',
+        },
+      },
+    ],
+  },
+];
 ---
 
 <BaseLayout
   title="ZoomPhant — Your Monitoring Expert | AI-Native TSDB & Enterprise Monitoring"
-  description="Give your AI Agent a private, high-speed time-series database for monitoring, business metrics, and event analytics. 1-click deploy on your Cloudflare account. First instance 100% free."
+  description="Give your AI Agent a private, high-speed time-series database for monitoring, business metrics, and event analytics. 1-click deploy on your Cloudflare account or scale with our all-in-one Enterprise Monitoring Solution."
+  keywords="AI agent time series database, serverless TSDB, Cloudflare TSDB, enterprise infrastructure monitoring, self-hosted monitoring, LogicMonitor alternative, Datadog alternative, Prometheus Grafana alternative, ZoomPhant"
+  jsonLd={homeJsonLd}
 >
   <Header currentPath={Astro.url.pathname} />
 
@@ -468,6 +527,20 @@ import '../styles/global.css';
             </div>
           </div>
         </div>
+
+        <!-- Subtle Competitive Comparison Callout Banner -->
+        <div class="mx-auto mt-10 max-w-5xl rounded-2xl border border-gray-700/80 bg-gray-800/50 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <p class="text-xs sm:text-sm text-gray-300">
+            Evaluating <strong>LogicMonitor</strong>, <strong>Datadog</strong>, <strong>Splunk</strong>, or a <strong>DIY Prometheus + Grafana</strong> stack? See how ZoomPhant compares on data privacy, AI readiness, and total cost.
+          </p>
+          <a
+            href="/compare/"
+            class="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-white/10 border border-white/15 px-4 py-2 text-xs font-bold text-white hover:bg-white/20 transition-colors whitespace-nowrap"
+          >
+            <span>Compare Alternatives</span>
+            <span>→</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -618,7 +691,7 @@ import '../styles/global.css';
       </div>
     </section>
 
-    <!-- 7. FAQ SECTION -->
+    <!-- 7. FAQ SECTION (2-COLUMN GRID MATCHING PAGE WIDTH) -->
     <section id="faq" class="bg-white py-20 sm:py-24">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-3xl text-center">
@@ -631,67 +704,110 @@ import '../styles/global.css';
           </p>
         </div>
 
-        <div class="mx-auto mt-14 max-w-3xl divide-y divide-gray-200 bg-gray-50/60 rounded-3xl border border-gray-200 px-6 sm:px-10 py-4 shadow-2xs">
-          <div class="py-6">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900">How does an AI agent know how to push and query data in my TSDB instance?</h3>
-            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
-              Every ZoomPhant TSDB instance automatically serves a concise, machine-readable instruction file at <code class="rounded bg-white border border-gray-200 px-1.5 py-0.5 text-xs font-mono">/llms.txt</code> (as well as <code class="rounded bg-white border border-gray-200 px-1.5 py-0.5 text-xs font-mono">/openapi.yaml</code>). When you give your TSDB URL and access token to an AI agent (such as Claude, Cursor, or your own custom agent), it reads that file once and immediately knows how to push metrics/events, run queries, and create dashboards.
-            </p>
+        <div class="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-2">
+          <!-- FAQ 1 -->
+          <div class="rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs flex flex-col justify-between">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                How does an AI agent know how to push and query data in my TSDB instance?
+              </h3>
+              <p class="mt-3 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Every ZoomPhant TSDB instance automatically serves a concise, machine-readable instruction file at <code class="rounded bg-white border border-gray-200 px-1.5 py-0.5 text-xs font-mono">/llms.txt</code> (as well as <code class="rounded bg-white border border-gray-200 px-1.5 py-0.5 text-xs font-mono">/openapi.yaml</code>). Give your TSDB URL and access token to any AI agent (Claude, Cursor, or custom agent) and it immediately knows how to push metrics/events, run queries, and create dashboards.
+              </p>
+            </div>
           </div>
 
-          <div class="py-6">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900">What are the capacity limits of the Cloudflare-based TSDB?</h3>
-            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
-              Because ZoomPhant TSDB runs serverless on Cloudflare Workers, it is designed for <strong>solo builders, small businesses, and light-to-medium workloads</strong>—typically up to ~20 sources on Cloudflare's Free plan ($0/mo), or a few hundred sources and 10K–100K business events/day on Cloudflare's $5/mo Paid plan. If you need high-volume ingestion, hundreds of infrastructure servers, or deep network/hardware monitoring, we recommend our full <strong>ZoomPhant Enterprise Monitoring Solution</strong>.
-            </p>
+          <!-- FAQ 2 -->
+          <div class="rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs flex flex-col justify-between">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                What are the capacity limits of the Cloudflare-based TSDB?
+              </h3>
+              <p class="mt-3 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Because ZoomPhant TSDB runs serverless on Cloudflare Workers, it is designed for <strong>solo builders, small businesses, and light-to-medium workloads</strong>—up to ~20 sources on Cloudflare Free ($0/mo), or a few hundred sources and 10K–100K business events/day on Cloudflare Paid ($5/mo). For heavy enterprise workloads, we recommend our full <strong>ZoomPhant Enterprise Monitoring Solution</strong>.
+              </p>
+            </div>
           </div>
 
-          <div class="py-6">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900">Can I use ZoomPhant TSDB for Business Intelligence (BI) as well as monitoring?</h3>
-            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
-              Yes! Unlike traditional monitoring databases that only accept numeric server counters, ZoomPhant TSDB stores both numeric metrics and structured JSON events in the same engine. Your AI agent can record orders, signups, payments, and user actions, then calculate daily revenue, conversion rates, and active users in a single query.
-            </p>
+          <!-- FAQ 3 -->
+          <div class="rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs flex flex-col justify-between">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                Can I use ZoomPhant TSDB for Business Intelligence (BI) as well as monitoring?
+              </h3>
+              <p class="mt-3 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Yes! Unlike traditional monitoring databases that only accept numeric server counters, ZoomPhant TSDB stores both numeric metrics and structured JSON events in the same engine. Your AI agent can record orders, signups, payments, and user actions, then calculate daily revenue, conversion rates, and active users in a single query.
+              </p>
+            </div>
           </div>
 
-          <div class="py-6">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900">Where is my data stored, and who owns it?</h3>
-            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
-              Whether you deploy a serverless <strong>ZoomPhant TSDB instance</strong> into your Cloudflare account or deploy the <strong>ZoomPhant Enterprise Monitoring Solution</strong> on your own infrastructure, 100% of your data stays in your own environment under your control.
-            </p>
+          <!-- FAQ 4 -->
+          <div class="rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs flex flex-col justify-between">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                Where is my data stored, and who owns it?
+              </h3>
+              <p class="mt-3 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Whether you deploy a serverless <strong>ZoomPhant TSDB instance</strong> into your Cloudflare account or deploy the <strong>ZoomPhant Enterprise Monitoring Solution</strong> on your own dedicated infrastructure, 100% of your telemetry, logs, and business data stays in your own environment under your complete control.
+              </p>
+            </div>
           </div>
 
-          <div class="py-6">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900">Is the Enterprise Monitoring Solution also free to try?</h3>
-            <p class="mt-2 text-sm sm:text-base text-gray-600 leading-relaxed">
-              Yes. Our Enterprise Monitoring Solution is completely free for personal use, and we provide a free license tier for startups and small businesses (just complete our <a href="/register/" class="text-brand-600 font-semibold hover:underline">business registration form</a>). For larger enterprises needing hybrid cloud management, SMS/Voice alerting, and priority SLAs, contact our team at <a href="mailto:info@zoomphant.com" class="text-brand-600 font-semibold hover:underline">info@zoomphant.com</a>.
-            </p>
+          <!-- FAQ 5 -->
+          <div class="rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs flex flex-col justify-between">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                Is the Enterprise Monitoring Solution also free to try?
+              </h3>
+              <p class="mt-3 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Yes. Our Enterprise Monitoring Solution is completely free for personal use, and we provide a free license tier for startups and small businesses (just complete our <a href="/register/" class="text-brand-600 font-semibold hover:underline">business registration form</a>). For larger enterprises needing pre-implementation consulting, hybrid management, and priority SLAs, contact <a href="mailto:info@zoomphant.com" class="text-brand-600 font-semibold hover:underline">info@zoomphant.com</a>.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ 6 -->
+          <div class="rounded-3xl border border-gray-200 bg-gray-50/60 p-7 shadow-2xs flex flex-col justify-between">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                How does ZoomPhant compare to LogicMonitor, Datadog, and Prometheus?
+              </h3>
+              <p class="mt-3 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Unlike Datadog, Splunk, and LogicMonitor—which store your metrics in vendor-controlled SaaS portals and charge steep per-device or per-GB ingestion fees—ZoomPhant gives you <strong>100% data ownership</strong>, native AI agent integration, and a 60-second all-in-one deployment without DIY Prometheus/Grafana maintenance. <a href="/compare/" class="text-brand-600 font-semibold hover:underline">See full comparison →</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 8. FINAL CTA -->
-    <section class="py-20 sm:py-24 bg-gray-50 border-t border-gray-100">
+    <!-- 8. FINAL CTA (TWO-COLUMN: WIDE TITLE/SUBTITLE LEFT + STACKED ACTIONS RIGHT) -->
+    <section class="py-16 sm:py-24 bg-gray-50 border-t border-gray-100">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-2xl text-center">
-          <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            Ready to Give Your AI Agent Its Own TSDB?
-          </h2>
-          <p class="mt-4 text-base leading-7 text-gray-600">
-            Claim your first TSDB instance for free and deploy to your Cloudflare account in under 60 seconds.
-          </p>
-          <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div class="mx-auto max-w-5xl rounded-3xl bg-gradient-to-br from-gray-900 via-slate-900 to-brand-950 p-8 sm:p-12 text-white shadow-xl border border-gray-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
+          <div class="flex-1">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 px-3 py-1 text-xs font-bold text-brand-300">
+              Get Started in 60 Seconds
+            </span>
+            <h2 class="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl lg:text-4xl">
+              Ready to Give Your AI Agent Its Own TSDB?
+            </h2>
+            <p class="mt-3 text-sm sm:text-base leading-relaxed text-gray-300 max-w-2xl">
+              Claim your first TSDB instance for free in your Cloudflare account—or consult our monitoring experts to architect your Enterprise Monitoring deployment.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row lg:flex-col gap-3 lg:w-72 shrink-0">
             <a
               href="/dashboard/"
-              class="w-full sm:w-auto rounded-2xl bg-brand-600 px-8 py-4 text-sm sm:text-base font-bold text-white shadow-lg shadow-brand-500/20 transition-all hover:bg-brand-700"
+              class="w-full inline-flex items-center justify-center rounded-xl bg-brand-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-brand-500/25 transition-all hover:bg-brand-500 whitespace-nowrap"
             >
-              Launch Your Free TSDB Instance →
+              Launch Free TSDB Instance →
             </a>
             <a
-              href="/docs/start/"
-              class="w-full sm:w-auto rounded-2xl border border-gray-300 bg-white px-8 py-4 text-sm sm:text-base font-semibold text-gray-700 shadow-2xs transition-all hover:bg-gray-50"
+              href="/register/"
+              class="w-full inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/15 whitespace-nowrap"
             >
-              Explore Enterprise Monitoring
+              Consult Enterprise Experts →
             </a>
           </div>
         </div>
