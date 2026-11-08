@@ -15,7 +15,7 @@ For more information about PVE, please visit the official website at [Proxmox VE
 Before creating a Proxmox VE monitoring service, collect the following connection details:
 
 1. **Cluster Access Endpoint**: The URL used to access the PVE administration panel (e.g., `https://192.168.1.1:8006`).
-2. **Username**: The account name configured for monitoring (e.g., `monitor` or `zervice`). Include the authentication realm (domain), which defaults to `pam` (e.g., `monitor@pam`).
+2. **Username**: The account name configured for monitoring (e.g., `monitor` or `zoomphant`). Include the authentication realm (domain), which defaults to `pam` (e.g., `monitor@pam`).
 3. **Password or API Token**: If using an API token, format it as `tokenId=tokenValue`. For example, if you created a token with the ID `monitoring` and the value `a267354d-bc9f-426a-828c-5174382b3e00`, you must enter `monitoring=a267354d-bc9f-426a-828c-5174382b3e00` in the token field.
 
 Once you have this information, you can add the service. Follow the steps in [Add Monitor Service](../../01_service/) and select the **Proxmox** plugin:

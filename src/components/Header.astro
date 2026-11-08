@@ -8,10 +8,13 @@ const isDocs = currentPath.startsWith('/docs');
 ---
 
 <header class="sticky top-0 z-50 w-full border-b border-gray-100 bg-white">
-  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-    <a href="/" class="flex items-center gap-2.5 text-xl font-bold text-gray-900">
-      <img src="/logo.svg" alt="ZoomPhant" class="h-8 w-8" />
-      ZoomPhant
+  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
+    <a href="/" class="flex items-center gap-2.5 group">
+      <img src="/logo.svg" alt="ZoomPhant" class="h-9 w-9 transition-transform group-hover:scale-105" />
+      <div class="flex flex-col">
+        <span class="text-xl font-extrabold leading-none tracking-tight text-gray-900">ZoomPhant</span>
+        <span class="mt-1 text-[10px] font-semibold uppercase tracking-widest text-brand-600">Your Monitoring Expert</span>
+      </div>
     </a>
     
     <!-- Desktop Navigation Links -->
@@ -105,7 +108,7 @@ const isDocs = currentPath.startsWith('/docs');
               <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4v16m8-8H4" />
               </svg>
-              <span>Launch New Cluster</span>
+              <span>Launch New Instance</span>
             </a>
             <!-- Admin links (only shown if role === 'admin') -->
             <div id="adminLinksGroup" class="hidden border-t border-gray-100 mt-1 pt-1">

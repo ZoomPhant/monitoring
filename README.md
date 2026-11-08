@@ -5,7 +5,7 @@ Using ZoomPhant, customers can focus on their valuable businesses while owning t
 
 ## About The Creators
 
-ZoomPhant is created by people who have been working in the data-center and application monitoring indrustries for 15+ years. The same people had created a world known monitoring solution and had served thousands of enterprise customers world-wide (among them many of the Fortune Global 500s). It's from that unique background and experience that we know what the next generation of monitoring solution shall be and we are driving to that direction. 
+ZoomPhant is created by people who have been working in the data-center and application monitoring industries for 15+ years. The same people had created a world known monitoring solution and had served thousands of enterprise customers world-wide (among them many of the Fortune Global 500s). It's from that unique background and experience that we know what the next generation of monitoring solution shall be and we are driving to that direction. 
 
 *We want to help all customers be able to (and **should**) use an **affordable** and **enterprise-level** monitoring solution!*
 
@@ -13,7 +13,7 @@ ZoomPhant is created by people who have been working in the data-center and appl
 
 ZoomPhant is completely **FREE for personal and non-business use**.
 
-For business use, the **Community Version is free for startups and small businesses, provided you register your deployment**. You can register on our website or contact us at [info@zervice.us](mailto:info@zervice.us). For larger enterprises, commercial licensing is required.
+For business use, the **Community Version is free for startups and small businesses, provided you register your deployment**. You can register on our website or contact us at [info@zoomphant.com](mailto:info@zoomphant.com). For larger enterprises, commercial licensing is required.
 
 Note: **We are opensource supporters!** This repository hosts the official ZoomPhant landing page and documentation site. We will gradually open source other parts of ZoomPhant like data collecting and UI, etc. Please bookmark us to get updated!
 
@@ -62,7 +62,7 @@ For enterprise customers or users requiring other platforms, we provide:
 
 **Note:** Building and maintaining multiple platform collectors requires significant resources. While we fully support both Linux and Windows platforms across all architectures, community releases (from v2.5.x onwards) primarily include Linux 64-bit installers to optimize our build infrastructure.
 
-**Need a different platform?** Please contact us at [info@zervice.us](mailto:info@zervice.us) and we'll be happy to provide:
+**Need a different platform?** Please contact us at [info@zoomphant.com](mailto:info@zoomphant.com) and we'll be happy to provide:
 - Windows installers for your version
 - 32-bit Linux installers
 - Custom build configurations
@@ -80,7 +80,7 @@ For version history and upgrade information, see our [Releases page](https://git
 Please open an issue for us [here](https://github.com/ZoomPhant/monitoring/issues/new), be as detailed as possible.
 
 ## Contact US
-Please reach us using email at [info@zervice.us](mailto:info@zervice.us) 
+Please reach us using email at [info@zoomphant.com](mailto:info@zoomphant.com) 
 
 ## Documentation
 

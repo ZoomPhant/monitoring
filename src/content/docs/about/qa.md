@@ -11,13 +11,13 @@ nav_order: 3
 
 
 
-### When will your official website be live?
+### Where can I find the latest updates and releases?
 
-We are currently working on our official website, and it will be live soon. In the meantime, please visit our [GitHub repository](https://github.com/ZoomPhant/monitoring) for the latest updates.
+You can find the latest product announcements, documentation, and releases on our official website at [zoomphant.com](https://zoomphant.com) and in our [GitHub repository](https://github.com/ZoomPhant/monitoring).
 
 ### Will you provide cloud services?
 
-We plan to offer cloud services in the near future. These will focus primarily on management services and scenario-based monitoring (such as synthetic monitoring of your entire web services suite). If you would like more information or wish to be an early adopter, please contact us at [info@zervice.us](mailto:info@zervice.us).
+Yes! We provide serverless BYOC (Bring Your Own Cloud) TSDB deployments running directly inside your own Cloudflare account, offering instant, zero-maintenance time-series storage. We also provide hybrid connectivity, consulting, and dedicated support for enterprise monitoring. For more information, please contact us at [info@zoomphant.com](mailto:info@zoomphant.com).
 
 ### Where can I report a problem or request a new feature?
 
@@ -27,4 +27,4 @@ Please go to our [GitHub repository](https://github.com/ZoomPhant/monitoring) an
 
 Yes! ZoomPhant is completely free for personal use. We also offer a **free community business tier** for startups and small businesses, provided you register your deployment. 
 
-You can [register your business deployment here](/register/). Registration is a licensing requirement for business use, and it ensures you are notified of critical product updates, security patches, and new features. For larger enterprises or custom licensing requirements, please contact us at [info@zervice.us](mailto:info@zervice.us).
+You can [register your business deployment here](/register/). Registration is a licensing requirement for business use, and it ensures you are notified of critical product updates, security patches, and new features. For larger enterprises or custom licensing requirements, please contact us at [info@zoomphant.com](mailto:info@zoomphant.com).

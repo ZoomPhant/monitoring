@@ -9,9 +9,6 @@ has_children: false
 # Monitoring Service
 
 ----
-# Monitoring Service
-
-----
 In ZoomPhant, a monitoring task is referred to as a **Monitoring Service**. You create a Monitoring Service from a plugin that you have created or one provided by ZoomPhant or a third party.
 
 ## Adding a Monitoring Service
