@@ -982,9 +982,13 @@ import '../styles/global.css';
       gadgetsGrid.classList.remove('hidden');
       noGadgetsMatch?.classList.add('hidden');
 
-      gadgetsGrid.innerHTML = filtered.map((g) => `
+      gadgetsGrid.innerHTML = filtered.map((g) => {
+        const parts = g.query.split(' # @gadget ');
+        const zqlPart = parts[0] || '';
+        const pragmaPart = parts[1] || '';
+        return `
         <div class="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-xs hover:border-brand-300 hover:shadow-sm transition-all flex flex-col justify-between space-y-4">
-          <div class="space-y-2">
+          <div class="space-y-2.5 flex-1 flex flex-col">
             <div class="flex items-center justify-between gap-2">
               <span class="text-[10px] font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100">
                 ${g.category}
@@ -992,9 +996,14 @@ import '../styles/global.css';
               <span class="text-[11px] text-gray-400 font-medium">${g.domainLabel}</span>
             </div>
             <h4 class="text-sm font-bold text-gray-900 leading-snug">${g.title}</h4>
-            <p class="text-xs text-gray-500 leading-relaxed">${g.desc}</p>
-            <div class="rounded-xl bg-gray-900 p-2.5 font-mono text-[11px] text-sky-300 overflow-x-auto whitespace-pre leading-relaxed shadow-inner">
-              <code>${g.query}</code>
+            <p class="text-xs text-gray-500 leading-relaxed flex-1">${g.desc}</p>
+            <div class="rounded-xl bg-gray-950 border border-gray-800/80 p-3 font-mono text-left shadow-inner">
+              <div class="text-[9px] uppercase tracking-wider text-gray-400 font-sans font-semibold mb-1 flex items-center justify-between">
+                <span>ZQL Query</span>
+              </div>
+              <div class="overflow-x-auto text-left py-0.5">
+                <code class="text-left text-sky-300 whitespace-nowrap text-xs font-mono">${zqlPart}${pragmaPart ? ` <span class="text-gray-400 text-[11px]"># @gadget ${pragmaPart}</span>` : ''}</code>
+              </div>
             </div>
           </div>
 
@@ -1016,7 +1025,8 @@ import '../styles/global.css';
             </button>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
 
       // Wire up buttons
       gadgetsGrid.querySelectorAll('.run-gadget-btn').forEach((btn) => {
