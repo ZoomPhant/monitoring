@@ -142,8 +142,114 @@ import '../styles/global.css';
         </div>
       </div>
 
+      <!-- Gadgets & ZQL Templates Hub Section -->
+      <div id="gadgets" class="bg-white rounded-3xl border border-gray-200 shadow-xs overflow-hidden space-y-0">
+        <div class="px-6 py-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-gray-50/80 via-white to-brand-50/30">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-bold text-brand-700 ring-1 ring-inset ring-brand-700/10">
+                Templates & Recipes Hub
+              </span>
+              <h3 class="text-lg font-bold text-gray-900">Pre-built Gadgets & ZQL Templates</h3>
+            </div>
+            <p class="text-xs text-gray-500 mt-1 max-w-2xl leading-relaxed">
+              Explore interactive visualizations and battle-tested ZQL queries. Click <strong>Run on My TSDB ↗</strong> to execute instantly in your Cloudflare deployment, or copy the query for your dashboards and AI agent prompts.
+            </p>
+          </div>
+
+          <!-- Search input -->
+          <div class="relative w-full md:w-72 shrink-0">
+            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              id="gadgetSearchInput"
+              placeholder="Search gadgets, events, metrics..."
+              class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-gray-200 bg-white placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-2xs"
+            />
+          </div>
+        </div>
+
+        <!-- Domain Filter Pills -->
+        <div class="px-6 py-3 border-b border-gray-100 bg-gray-50/40 flex items-center gap-1.5 overflow-x-auto">
+          <button
+            type="button"
+            data-domain="all"
+            class="domain-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white shadow-xs cursor-pointer transition-colors"
+          >
+            All Domains
+          </button>
+          <button
+            type="button"
+            data-domain="bi"
+            class="domain-filter-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-gray-200 cursor-pointer transition-colors"
+          >
+            📊 Business & Product BI
+          </button>
+          <button
+            type="button"
+            data-domain="monitoring"
+            class="domain-filter-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-gray-200 cursor-pointer transition-colors"
+          >
+            🖥️ Infra & Monitoring
+          </button>
+          <button
+            type="button"
+            data-domain="apm"
+            class="domain-filter-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-gray-200 cursor-pointer transition-colors"
+          >
+            🔍 Application & APM
+          </button>
+          <button
+            type="button"
+            data-domain="ai"
+            class="domain-filter-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-gray-200 cursor-pointer transition-colors"
+          >
+            🤖 AI Telemetry
+          </button>
+        </div>
+
+        <!-- Gadget Cards Grid -->
+        <div class="p-6">
+          <div id="gadgetsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Dynamically populated via script -->
+          </div>
+          <div id="noGadgetsMatch" class="hidden py-12 text-center text-gray-400 text-xs">
+            No gadgets match your search or filter. Try a different term or domain.
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- Instance Selector Modal for Multi-Cluster Users -->
+  <div
+    id="targetClusterModal"
+    class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 flex items-center justify-center p-4 sm:p-6"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="relative w-full max-w-md rounded-3xl bg-white shadow-2xl border border-gray-200 overflow-hidden my-8 p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-gray-900">Select TSDB Instance</h3>
+          <p class="text-xs text-gray-500 mt-0.5">Choose which deployment to launch this query in:</p>
+        </div>
+        <button
+          type="button"
+          id="closeTargetClusterModalBtn"
+          class="rounded-xl p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div id="targetClustersList" class="space-y-2.5 max-h-64 overflow-y-auto"></div>
+    </div>
+  </div>
 
   <!-- Launch TSDB Cluster Modal Dialog -->
   <div
@@ -700,6 +806,260 @@ import '../styles/global.css';
     }
 
     refreshClustersBtn?.addEventListener('click', loadDeployments);
+
+    // ----------------------------------------------------
+    // Gadgets & ZQL Templates Hub Logic
+    // ----------------------------------------------------
+    const GADGET_PRESETS = [
+      {
+        id: 'kpi-stat',
+        title: '30d Revenue & Growth',
+        domains: ['bi', 'monitoring', 'apm', 'ai'],
+        domainLabel: '📊 Business BI',
+        category: 'KPI & Status',
+        desc: 'Headline metric with period-over-period % delta badge and background sparkline.',
+        query: '{} | events order_completed | sum(amount) every 1d # @gadget {"type":"kpi-stat","config":{"format":"currency:USD","showDelta":true,"showSparkline":true}}'
+      },
+      {
+        id: 'threshold-gauge',
+        title: 'Host Disk Saturation Meter',
+        domains: ['monitoring', 'bi'],
+        domainLabel: '🖥️ Infra',
+        category: 'KPI & Status',
+        desc: 'Radial semi-circle saturation and goal meter with green/amber/red threshold status zones.',
+        query: '{app="host_agent"} | metric disk_used_percent | last(value) # @gadget {"type":"threshold-gauge","config":{"warn":80,"crit":90,"max":100,"format":"percent"}}'
+      },
+      {
+        id: 'time-trend',
+        title: 'Daily Orders by Channel',
+        domains: ['bi', 'monitoring', 'apm'],
+        domainLabel: '📊 Business BI',
+        category: 'Time-Series & Trends',
+        desc: 'Versatile stacked-bar or area trend chart with timezone alignment and CSV export.',
+        query: '{} | events order_completed | count() every 1d by (channel) # @gadget {"type":"time-trend","config":{"variant":"area","format":"compact"}}'
+      },
+      {
+        id: 'percentile-band',
+        title: 'API Request Latency (p95)',
+        domains: ['apm', 'monitoring'],
+        domainLabel: '🔍 Application APM',
+        category: 'Time-Series & Trends',
+        desc: 'Multi-quantile latency or size distribution curve powered by columnar JSON projection.',
+        query: '{app="api"} | logs | parse json | quantile(0.95, duration_ms) every 1h # @gadget {"type":"percentile-band","config":{"format":"duration_ms"}}'
+      },
+      {
+        id: 'category-donut',
+        title: 'Revenue Share by Country',
+        domains: ['bi', 'apm'],
+        domainLabel: '📊 Business BI',
+        category: 'Breakdown & Ranking',
+        desc: 'Proportional distribution donut chart with centered total and interactive ranked share table.',
+        query: '{} | events order_completed | sum(amount) every 1d by (country) # @gadget {"type":"category-donut","config":{"format":"currency:USD","maxItems":6}}'
+      },
+      {
+        id: 'top-n-bar',
+        title: 'Top Customers by Spend',
+        domains: ['bi', 'monitoring', 'apm'],
+        domainLabel: '📊 Business BI',
+        category: 'Breakdown & Ranking',
+        desc: 'Ranked horizontal progress bars showing top entities with individual values and % of total.',
+        query: '{} | events order_completed | sum(amount) by (user_id) | top 10 # @gadget {"type":"top-n-bar","config":{"format":"currency:USD","maxItems":10}}'
+      },
+      {
+        id: 'conversion-funnel',
+        title: 'E-commerce Purchase Funnel',
+        domains: ['bi'],
+        domainLabel: '📊 Business BI',
+        category: 'Flow & Correlation',
+        desc: 'Sequential multi-step conversion funnel with step volumes, step-to-step conversion, and drop-off %.',
+        query: '{} | events product_view, add_to_cart, checkout_started, order_completed | count() by (event) # @gadget {"type":"conversion-funnel","config":{"stepsOrder":["product_view","add_to_cart","checkout_started","order_completed"],"format":"compact"}}'
+      },
+      {
+        id: 'metric-log-pivot',
+        title: 'CPU Spikes with Correlated Logs',
+        domains: ['monitoring', 'apm', 'bi'],
+        domainLabel: '🖥️ Infra & APM',
+        category: 'Flow & Correlation',
+        desc: 'Interactive metric chart where clicking on any spike timestamp automatically queries logs ±5m.',
+        query: '{app="host_agent"} | metric cpu_usage_percent | avg(value) every 5m by (host) # @gadget {"type":"metric-log-pivot","config":{"format":"percent"}}'
+      },
+      {
+        id: 'data-table',
+        title: 'Orders Overview Table',
+        domains: ['bi', 'monitoring'],
+        domainLabel: '📊 Business BI',
+        category: 'Tables & Feeds',
+        desc: 'Multi-column tabular display with click-to-sort headers, number formatting, and 1-click CSV export.',
+        query: '{} | events order_completed | select ts, user_id, amount, country | limit 100 # @gadget {"type":"data-table","config":{"format":"currency:USD","maxRows":100}}'
+      },
+      {
+        id: 'event-log-feed',
+        title: 'Live Customer Event Feed',
+        domains: ['bi', 'apm', 'monitoring'],
+        domainLabel: '📊 Business BI',
+        category: 'Tables & Feeds',
+        desc: 'Activity stream showing JSON attribute badges, severity levels, timestamps, and expandable details.',
+        query: '{} | events | where event exists | limit 50 # @gadget {"type":"event-log-feed","config":{}}'
+      }
+    ];
+
+    let currentDomain = 'all';
+    let currentKeyword = '';
+    let pendingQueryToRun = '';
+
+    const gadgetsGrid = document.getElementById('gadgetsGrid');
+    const noGadgetsMatch = document.getElementById('noGadgetsMatch');
+    const gadgetSearchInput = document.getElementById('gadgetSearchInput') as HTMLInputElement | null;
+    const domainFilterBtns = document.querySelectorAll('.domain-filter-btn');
+    const targetClusterModal = document.getElementById('targetClusterModal');
+    const closeTargetClusterModalBtn = document.getElementById('closeTargetClusterModalBtn');
+    const targetClustersList = document.getElementById('targetClustersList');
+
+    function closeTargetModal() {
+      targetClusterModal?.classList.add('hidden');
+    }
+    closeTargetClusterModalBtn?.addEventListener('click', closeTargetModal);
+    targetClusterModal?.addEventListener('click', (e) => {
+      if (e.target === targetClusterModal) closeTargetModal();
+    });
+
+    function runQueryOnInstance(queryStr: string) {
+      const live = userDeployments.filter((d: any) => d.status === 'success' && d.workerUrl);
+      if (live.length === 0) {
+        openModal();
+        return;
+      }
+      if (live.length === 1) {
+        const base = live[0].workerUrl.replace(/\/+$/, '');
+        window.open(`${base}/query?q=${encodeURIComponent(queryStr)}`, '_blank');
+        return;
+      }
+      // Multiple instances: prompt picker
+      pendingQueryToRun = queryStr;
+      if (targetClustersList) {
+        targetClustersList.innerHTML = live.map((d: any) => `
+          <button
+            type="button"
+            data-url="${d.workerUrl}"
+            class="target-cluster-select-btn w-full p-3 rounded-xl border border-gray-200 hover:border-brand-500 hover:bg-brand-50/50 flex items-center justify-between text-left transition-colors cursor-pointer"
+          >
+            <div>
+              <div class="text-xs font-bold text-gray-900">${d.workerName}</div>
+              <div class="text-[11px] font-mono text-gray-400 truncate">${d.workerUrl}</div>
+            </div>
+            <span class="text-xs font-semibold text-brand-600">Launch →</span>
+          </button>
+        `).join('');
+
+        targetClustersList.querySelectorAll('.target-cluster-select-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const url = (btn as HTMLElement).dataset.url?.replace(/\/+$/, '');
+            if (url && pendingQueryToRun) {
+              window.open(`${url}/query?q=${encodeURIComponent(pendingQueryToRun)}`, '_blank');
+              closeTargetModal();
+            }
+          });
+        });
+      }
+      targetClusterModal?.classList.remove('hidden');
+    }
+
+    function renderGadgets() {
+      if (!gadgetsGrid) return;
+      const kw = currentKeyword.toLowerCase().trim();
+      const filtered = GADGET_PRESETS.filter((g) => {
+        const matchDomain = currentDomain === 'all' || g.domains.includes(currentDomain);
+        const matchKw = !kw || g.title.toLowerCase().includes(kw) || g.desc.toLowerCase().includes(kw) || g.query.toLowerCase().includes(kw);
+        return matchDomain && matchKw;
+      });
+
+      if (filtered.length === 0) {
+        gadgetsGrid.classList.add('hidden');
+        noGadgetsMatch?.classList.remove('hidden');
+        return;
+      }
+
+      gadgetsGrid.classList.remove('hidden');
+      noGadgetsMatch?.classList.add('hidden');
+
+      gadgetsGrid.innerHTML = filtered.map((g) => `
+        <div class="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-xs hover:border-brand-300 hover:shadow-sm transition-all flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100">
+                ${g.category}
+              </span>
+              <span class="text-[11px] text-gray-400 font-medium">${g.domainLabel}</span>
+            </div>
+            <h4 class="text-sm font-bold text-gray-900 leading-snug">${g.title}</h4>
+            <p class="text-xs text-gray-500 leading-relaxed">${g.desc}</p>
+            <div class="rounded-xl bg-gray-900 p-2.5 font-mono text-[11px] text-sky-300 overflow-x-auto whitespace-pre leading-relaxed shadow-inner">
+              <code>${g.query}</code>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-2 pt-2 border-t border-gray-100">
+            <button
+              type="button"
+              data-query="${encodeURIComponent(g.query)}"
+              class="run-gadget-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+            >
+              <span>Run on My TSDB</span>
+              <span>↗</span>
+            </button>
+            <button
+              type="button"
+              data-query="${encodeURIComponent(g.query)}"
+              class="copy-gadget-btn inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-600 text-xs font-medium transition-colors cursor-pointer"
+            >
+              Copy ZQL
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      // Wire up buttons
+      gadgetsGrid.querySelectorAll('.run-gadget-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const rawQ = decodeURIComponent((btn as HTMLElement).dataset.query || '');
+          runQueryOnInstance(rawQ);
+        });
+      });
+
+      gadgetsGrid.querySelectorAll('.copy-gadget-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const rawQ = decodeURIComponent((btn as HTMLElement).dataset.query || '');
+          await navigator.clipboard.writeText(rawQ);
+          const orig = btn.textContent;
+          btn.textContent = '✓ Copied!';
+          setTimeout(() => { btn.textContent = orig; }, 1800);
+        });
+      });
+    }
+
+    // Domain filter click handlers
+    domainFilterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        domainFilterBtns.forEach((b) => {
+          b.classList.remove('bg-brand-600', 'text-white');
+          b.classList.add('bg-white', 'text-gray-600');
+        });
+        btn.classList.add('bg-brand-600', 'text-white');
+        btn.classList.remove('bg-white', 'text-gray-600');
+
+        currentDomain = (btn as HTMLElement).dataset.domain || 'all';
+        renderGadgets();
+      });
+    });
+
+    // Search input handler
+    gadgetSearchInput?.addEventListener('input', (e) => {
+      currentKeyword = (e.target as HTMLInputElement).value;
+      renderGadgets();
+    });
+
+    // Initial render of Hub
+    renderGadgets();
 
     // Modal Form Submit handler
     modalDeployForm?.addEventListener('submit', async (e) => {

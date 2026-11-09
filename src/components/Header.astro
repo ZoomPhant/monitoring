@@ -5,6 +5,7 @@ export interface Props {
 
 const { currentPath = '/' } = Astro.props;
 const isDocs = currentPath.startsWith('/docs');
+const isGadgets = currentPath.startsWith('/gadgets');
 const isAbout = currentPath.startsWith('/about');
 ---
 
@@ -39,6 +40,11 @@ const isAbout = currentPath.startsWith('/about');
         class="text-sm font-medium transition-colors"
         class:list={[isDocs ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
       >Docs</a>
+      <a
+        href="/gadgets/"
+        class="text-sm font-medium transition-colors"
+        class:list={[isGadgets ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
+      >Gadgets</a>
       <a
         href="/about/"
         class="text-sm font-medium transition-colors"
