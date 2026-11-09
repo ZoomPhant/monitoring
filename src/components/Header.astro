@@ -41,11 +41,6 @@ const isAbout = currentPath.startsWith('/about');
         class:list={[isDocs ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
       >Docs</a>
       <a
-        href="/gadgets/"
-        class="text-sm font-medium transition-colors"
-        class:list={[isGadgets ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
-      >Gadgets</a>
-      <a
         href="/about/"
         class="text-sm font-medium transition-colors"
         class:list={[isAbout ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
@@ -119,6 +114,15 @@ const isAbout = currentPath.startsWith('/about');
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
               </svg>
               <span>Manage My TSDB</span>
+            </a>
+            <a
+              href="/gadgets/"
+              class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors"
+            >
+              <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+              </svg>
+              <span>Gadgets & Templates Hub</span>
             </a>
             <a
               href="/dashboard/?launch=1"
