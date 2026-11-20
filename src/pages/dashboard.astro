@@ -293,7 +293,7 @@ import '../styles/global.css';
       <div id="launchModalBody" class="p-6 sm:p-8">
         
         <!-- Connected Account Card (Visible after OAuth connect) -->
-        <div id="modalConnectedCard" class="hidden mb-6 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-4">
+        <div id="modalConnectedCard" class="hidden mb-6 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-4 space-y-3">
           <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
               <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white">
@@ -313,6 +313,16 @@ import '../styles/global.css';
             >
               Switch
             </button>
+          </div>
+          <!-- Multi-Account Selector (visible when OAuth token spans >1 Cloudflare account) -->
+          <div id="modalAccountSelectWrap" class="hidden pt-2 border-t border-emerald-200/70">
+            <label for="modalAccountSelect" class="block text-[11px] font-bold uppercase tracking-wider text-emerald-800 mb-1">
+              Target Cloudflare Account
+            </label>
+            <select
+              id="modalAccountSelect"
+              class="w-full rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs font-mono text-gray-900 focus:border-emerald-500 focus:outline-none cursor-pointer"
+            ></select>
           </div>
         </div>
 
@@ -385,6 +395,7 @@ import '../styles/global.css';
                 type="password"
                 id="modalApiToken"
                 required
+                autocomplete="new-password"
                 placeholder="Cloudflare API Bearer Token"
                 class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs font-mono text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
               />
@@ -495,6 +506,8 @@ import '../styles/global.css';
     const modalOAuthCard = document.getElementById('modalOAuthCard');
     const modalConnectedCard = document.getElementById('modalConnectedCard');
     const modalConnectedLabel = document.getElementById('modalConnectedLabel');
+    const modalAccountSelectWrap = document.getElementById('modalAccountSelectWrap');
+    const modalAccountSelect = document.getElementById('modalAccountSelect') as HTMLSelectElement;
     const modalChangeAccountBtn = document.getElementById('modalChangeAccountBtn');
     const modalDeployForm = document.getElementById('modalDeployForm');
     const modalManualInputs = document.getElementById('modalManualInputs');
@@ -532,11 +545,42 @@ import '../styles/global.css';
     let userDeployments: any[] = [];
     let latestReleaseVersion = '3.0.0';
     let activeUpgradeDeployment: any = null;
-    let connectedCfToken = '';
+    let connectedCfConnId = '';
+    let connectedCfAccounts: Array<{ id: string; name: string }> = [];
     let connectedCfAccountId = '';
     let connectedCfAccountName = '';
 
     const PENDING_UPGRADE_KEY = 'zp_pending_upgrade';
+
+    function formatAccountLabel(id: string, name?: string) {
+      if (!id) return '';
+      const shortId = id.length > 14 ? `${id.slice(0, 8)}…${id.slice(-4)}` : id;
+      return name && name !== id ? `${name} (${shortId})` : id;
+    }
+
+    function renderModalAccountSelector(selectedId: string, locked = false) {
+      if (!modalAccountSelectWrap || !modalAccountSelect) return;
+      if (connectedCfAccounts.length > 1) {
+        modalAccountSelect.innerHTML = connectedCfAccounts.map((acc) => {
+          const sel = acc.id.toLowerCase() === selectedId.toLowerCase() ? 'selected' : '';
+          return `<option value="${acc.id}" ${sel}>${acc.name} (${acc.id.slice(0, 8)}…${acc.id.slice(-4)})</option>`;
+        }).join('');
+        modalAccountSelect.disabled = locked;
+        modalAccountSelectWrap.classList.remove('hidden');
+      } else {
+        modalAccountSelectWrap.classList.add('hidden');
+      }
+    }
+
+    modalAccountSelect?.addEventListener('change', () => {
+      const id = modalAccountSelect.value;
+      const acc = connectedCfAccounts.find((a) => a.id === id);
+      connectedCfAccountId = id;
+      connectedCfAccountName = acc?.name || '';
+      if (modalAccountId) modalAccountId.value = id;
+      if (modalConnectedLabel) modalConnectedLabel.textContent = formatAccountLabel(id, connectedCfAccountName);
+      syncTokenForAccount(id);
+    });
 
     // Modal visibility handlers
     function openModal() {
@@ -587,9 +631,21 @@ import '../styles/global.css';
         modalRetentionDays.value = String(d.retentionDays);
       }
 
-      // If we already have a connected OAuth token for this account, show the 1-click ready state
-      if (connectedCfToken && connectedCfAccountId.toLowerCase() === String(d.cfAccountId || '').toLowerCase()) {
-        if (modalApiToken) modalApiToken.value = connectedCfToken;
+      // If we already have a connected OAuth session that includes this account, show the 1-click ready state
+      const hasMatchingConn = Boolean(
+        connectedCfConnId && (
+          connectedCfAccountId.toLowerCase() === String(d.cfAccountId || '').toLowerCase() ||
+          connectedCfAccounts.some((a) => a.id.toLowerCase() === String(d.cfAccountId || '').toLowerCase())
+        )
+      );
+      if (hasMatchingConn) {
+        if (modalApiToken) {
+          modalApiToken.value = '';
+          modalApiToken.required = false;
+        }
+        const matched = connectedCfAccounts.find((a) => a.id.toLowerCase() === String(d.cfAccountId || '').toLowerCase());
+        if (modalConnectedLabel) modalConnectedLabel.textContent = formatAccountLabel(d.cfAccountId, matched?.name || connectedCfAccountName);
+        renderModalAccountSelector(d.cfAccountId, true);
         modalOAuthCard?.classList.add('hidden');
         modalManualInputs?.classList.add('hidden');
         modalConnectedCard?.classList.remove('hidden');
@@ -599,7 +655,10 @@ import '../styles/global.css';
         modalOAuthCard?.classList.remove('hidden');
         modalManualInputs?.classList.remove('hidden');
         modalDeployForm?.classList.remove('hidden');
-        if (modalApiToken) modalApiToken.value = '';
+        if (modalApiToken) {
+          modalApiToken.value = '';
+          modalApiToken.required = true;
+        }
       }
     }
 
@@ -642,11 +701,22 @@ import '../styles/global.css';
 
     // Switch account handler
     modalChangeAccountBtn?.addEventListener('click', () => {
+      if (connectedCfConnId) {
+        apiClient(`/api/auth/cloudflare/connection/${encodeURIComponent(connectedCfConnId)}`, { method: 'DELETE' }).catch(() => {});
+      }
+      connectedCfConnId = '';
+      connectedCfAccounts = [];
+      connectedCfAccountId = '';
+      connectedCfAccountName = '';
       modalConnectedCard?.classList.add('hidden');
+      modalAccountSelectWrap?.classList.add('hidden');
       modalOAuthCard?.classList.remove('hidden');
       modalDeployForm?.classList.add('hidden');
       if (modalAccountId) modalAccountId.value = '';
-      if (modalApiToken) modalApiToken.value = '';
+      if (modalApiToken) {
+        modalApiToken.value = '';
+        modalApiToken.required = true;
+      }
     });
 
     // Synchronize fixed deployment token from D1
@@ -668,45 +738,74 @@ import '../styles/global.css';
     modalAccountId?.addEventListener('change', () => syncTokenForAccount(modalAccountId.value));
     modalAccountId?.addEventListener('blur', () => syncTokenForAccount(modalAccountId.value));
 
-    // Check for incoming OAuth params
+    // Check for incoming OAuth params (opaque cf_conn ID only; raw token stays server-side)
     const urlParams = new URLSearchParams(window.location.search);
     const cfConnected = urlParams.get('cf_connected');
-    const accountIdParam = urlParams.get('account_id');
-    const accountNameParam = urlParams.get('account_name');
-    const tokenParam = urlParams.get('cf_token');
+    const cfConnParam = urlParams.get('cf_conn');
     const launchParam = urlParams.get('launch');
 
-    if (cfConnected === '1' && accountIdParam && tokenParam) {
-      connectedCfToken = tokenParam;
-      connectedCfAccountId = accountIdParam;
-      connectedCfAccountName = accountNameParam || '';
+    if (cfConnected === '1' && cfConnParam) {
+      // Immediately remove connection ID from URL bar
+      window.history.replaceState({}, '', window.location.pathname);
 
-      let pendingUpgrade: any = null;
-      try {
-        const raw = sessionStorage.getItem(PENDING_UPGRADE_KEY);
-        if (raw) pendingUpgrade = JSON.parse(raw);
-      } catch {}
+      (async () => {
+        try {
+          const conn = await apiClient(`/api/auth/cloudflare/connection/${encodeURIComponent(cfConnParam)}`);
+          connectedCfConnId = conn.cfConnId || cfConnParam;
+          connectedCfAccounts = Array.isArray(conn.accounts) ? conn.accounts : [];
+          connectedCfAccountId = conn.cfAccountId || connectedCfAccounts[0]?.id || '';
+          connectedCfAccountName = conn.cfAccountName || connectedCfAccounts[0]?.name || '';
 
-      if (pendingUpgrade && pendingUpgrade.id) {
-        applyUpgradeMode(pendingUpgrade);
-      }
-      openModal();
-      if (modalAccountId) modalAccountId.value = pendingUpgrade?.cfAccountId || accountIdParam;
-      if (modalApiToken) modalApiToken.value = tokenParam;
+          let pendingUpgrade: any = null;
+          try {
+            const raw = sessionStorage.getItem(PENDING_UPGRADE_KEY);
+            if (raw) pendingUpgrade = JSON.parse(raw);
+          } catch {}
 
-      modalOAuthCard?.classList.add('hidden');
-      modalManualInputs?.classList.add('hidden');
-      modalConnectedCard?.classList.remove('hidden');
-      modalDeployForm?.classList.remove('hidden');
+          if (pendingUpgrade && pendingUpgrade.id) {
+            applyUpgradeMode(pendingUpgrade);
+            const hasAccessToTarget = connectedCfAccounts.length === 0 || connectedCfAccounts.some(
+              (a) => a.id.toLowerCase() === String(pendingUpgrade.cfAccountId || '').toLowerCase()
+            );
+            if (!hasAccessToTarget && modalErrorAlert) {
+              modalErrorAlert.textContent = `Connected Cloudflare authorization does not include cluster account ${pendingUpgrade.cfAccountId}. Please click Switch and authorize that account.`;
+              modalErrorAlert.classList.remove('hidden');
+            }
+          } else {
+            applyNewClusterMode();
+          }
 
-      if (modalConnectedLabel) {
-        modalConnectedLabel.textContent = accountNameParam
-          ? `${accountNameParam} (${accountIdParam.slice(0, 8)}…${accountIdParam.slice(-4)})`
-          : accountIdParam;
-      }
-      if (!pendingUpgrade?.adminPassword) {
-        syncTokenForAccount(accountIdParam);
-      }
+          openModal();
+          const activeAccId = pendingUpgrade?.cfAccountId || connectedCfAccountId;
+          const activeAccObj = connectedCfAccounts.find((a) => a.id.toLowerCase() === activeAccId.toLowerCase());
+          if (modalAccountId) modalAccountId.value = activeAccId;
+          if (modalApiToken) {
+            modalApiToken.value = '';
+            modalApiToken.required = false;
+          }
+
+          modalOAuthCard?.classList.add('hidden');
+          modalManualInputs?.classList.add('hidden');
+          modalConnectedCard?.classList.remove('hidden');
+          modalDeployForm?.classList.remove('hidden');
+
+          if (modalConnectedLabel) {
+            modalConnectedLabel.textContent = formatAccountLabel(activeAccId, activeAccObj?.name || connectedCfAccountName);
+          }
+          renderModalAccountSelector(activeAccId, Boolean(pendingUpgrade?.id));
+
+          if (!pendingUpgrade?.adminPassword && activeAccId) {
+            syncTokenForAccount(activeAccId);
+          }
+        } catch (err: any) {
+          console.error('Failed to load Cloudflare connection:', err);
+          openModal();
+          if (modalErrorAlert) {
+            modalErrorAlert.textContent = err.message || 'Cloudflare connection expired. Please reconnect.';
+            modalErrorAlert.classList.remove('hidden');
+          }
+        }
+      })();
     } else if (launchParam === '1') {
       applyNewClusterMode();
       openModal();
@@ -1212,9 +1311,9 @@ import '../styles/global.css';
       const adminPassword = modalAdminToken?.value.trim();
       const retentionDays = parseInt(modalRetentionDays?.value || '365', 10);
 
-      if (!accountId || !apiToken) {
+      if (!accountId || (!apiToken && !connectedCfConnId)) {
         if (modalErrorAlert) {
-          modalErrorAlert.textContent = 'Please provide both Cloudflare Account ID and API Token.';
+          modalErrorAlert.textContent = 'Please connect your Cloudflare account or provide both Account ID and API Token.';
           modalErrorAlert.classList.remove('hidden');
         }
         return;
@@ -1229,7 +1328,7 @@ import '../styles/global.css';
           token,
           body: JSON.stringify({
             accountId,
-            apiToken,
+            ...(apiToken ? { apiToken } : { cfConnId: connectedCfConnId }),
             adminPassword,
             retentionDays,
             ...(activeUpgradeDeployment ? {

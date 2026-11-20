@@ -110,7 +110,7 @@ import '../styles/global.css';
           </div>
 
           <!-- Connected Cloudflare Account Card (Visible only after OAuth connect) -->
-          <div id="connectedAccountCard" class="hidden mb-6 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-5">
+          <div id="connectedAccountCard" class="hidden mb-6 rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-5 space-y-3">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div class="flex items-center gap-3.5">
                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm">
@@ -133,6 +133,16 @@ import '../styles/global.css';
               >
                 Change Account
               </button>
+            </div>
+            <!-- Multi-Account Selector (visible when OAuth token spans >1 Cloudflare account) -->
+            <div id="connectedAccountSelectWrap" class="hidden pt-3 border-t border-emerald-200/70">
+              <label for="connectedAccountSelect" class="block text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1">
+                Target Cloudflare Account
+              </label>
+              <select
+                id="connectedAccountSelect"
+                class="w-full rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs font-mono text-gray-900 focus:border-emerald-500 focus:outline-none cursor-pointer"
+              ></select>
             </div>
           </div>
 
@@ -493,44 +503,96 @@ import '../styles/global.css';
       accountInput?.focus();
     });
 
+    let connectedCfConnId = '';
+    let connectedCfAccounts: Array<{ id: string; name: string }> = [];
+    const connectedAccountSelectWrap = document.getElementById('connectedAccountSelectWrap');
+    const connectedAccountSelect = document.getElementById('connectedAccountSelect') as HTMLSelectElement;
+
+    function formatTrialAccountLabel(id: string, name?: string) {
+      if (!id) return '';
+      const shortId = id.length > 14 ? `${id.slice(0, 8)}…${id.slice(-4)}` : id;
+      return name && name !== id ? `${name} (${shortId})` : id;
+    }
+
+    connectedAccountSelect?.addEventListener('change', () => {
+      const id = connectedAccountSelect.value;
+      const acc = connectedCfAccounts.find((a) => a.id === id);
+      if (accountInput) accountInput.value = id;
+      if (connectedAccountLabel) connectedAccountLabel.textContent = formatTrialAccountLabel(id, acc?.name);
+      syncFixedTokenForAccount(id);
+    });
+
     // Disconnect / Change Account button
     const disconnectCfBtn = document.getElementById('disconnectCfBtn');
     disconnectCfBtn?.addEventListener('click', () => {
+      if (connectedCfConnId) {
+        apiClient(`/api/auth/cloudflare/connection/${encodeURIComponent(connectedCfConnId)}`, { method: 'DELETE' }).catch(() => {});
+      }
+      connectedCfConnId = '';
+      connectedCfAccounts = [];
       window.history.replaceState({}, '', window.location.pathname);
       connectedAccountCard?.classList.add('hidden');
+      connectedAccountSelectWrap?.classList.add('hidden');
       oauthPromoCard?.classList.remove('hidden');
       form?.classList.add('hidden');
       manualCredentialsGroup?.classList.remove('hidden');
       if (accountInput) accountInput.value = '';
-      if (tokenInput) tokenInput.value = '';
+      if (tokenInput) {
+        tokenInput.value = '';
+        tokenInput.required = true;
+      }
     });
 
-    // Check for incoming OAuth parameters or fallback notices
+    // Check for incoming OAuth parameters or fallback notices (opaque cf_conn ID only; raw token stays server-side)
     const urlParams = new URLSearchParams(window.location.search);
     const cfConnected = urlParams.get('cf_connected');
     const cfNotice = urlParams.get('cf_notice');
-    const accountIdParam = urlParams.get('account_id');
-    const accountNameParam = urlParams.get('account_name');
-    const tokenParam = urlParams.get('cf_token');
+    const cfConnParam = urlParams.get('cf_conn');
 
-    if (cfConnected === '1' && accountIdParam && tokenParam) {
-      if (accountInput) accountInput.value = accountIdParam;
-      if (tokenInput) tokenInput.value = tokenParam;
+    if (cfConnected === '1' && cfConnParam) {
+      window.history.replaceState({}, '', window.location.pathname);
+      (async () => {
+        try {
+          const conn = await apiClient(`/api/auth/cloudflare/connection/${encodeURIComponent(cfConnParam)}`);
+          connectedCfConnId = conn.cfConnId || cfConnParam;
+          connectedCfAccounts = Array.isArray(conn.accounts) ? conn.accounts : [];
+          const activeAccId = conn.cfAccountId || connectedCfAccounts[0]?.id || '';
+          const activeAccName = conn.cfAccountName || connectedCfAccounts[0]?.name || '';
 
-      // Hide OAuth promo & manual credential inputs; show Connected Account card + simplified form
-      oauthPromoCard?.classList.add('hidden');
-      manualCredentialsGroup?.classList.add('hidden');
-      connectedAccountCard?.classList.remove('hidden');
-      form?.classList.remove('hidden');
+          if (accountInput) accountInput.value = activeAccId;
+          if (tokenInput) {
+            tokenInput.value = '';
+            tokenInput.required = false;
+          }
 
-      if (connectedAccountLabel) {
-        connectedAccountLabel.textContent = accountNameParam
-          ? `${accountNameParam} (${accountIdParam.slice(0, 8)}…${accountIdParam.slice(-4)})`
-          : accountIdParam;
-      }
+          oauthPromoCard?.classList.add('hidden');
+          manualCredentialsGroup?.classList.add('hidden');
+          connectedAccountCard?.classList.remove('hidden');
+          form?.classList.remove('hidden');
 
-      // Look up existing Super-Admin Token in DB for this Cloudflare account
-      syncFixedTokenForAccount(accountIdParam);
+          if (connectedAccountLabel) {
+            connectedAccountLabel.textContent = formatTrialAccountLabel(activeAccId, activeAccName);
+          }
+
+          if (connectedAccountSelectWrap && connectedAccountSelect && connectedCfAccounts.length > 1) {
+            connectedAccountSelect.innerHTML = connectedCfAccounts.map((acc) => {
+              const sel = acc.id.toLowerCase() === activeAccId.toLowerCase() ? 'selected' : '';
+              return `<option value="${acc.id}" ${sel}>${acc.name} (${acc.id.slice(0, 8)}…${acc.id.slice(-4)})</option>`;
+            }).join('');
+            connectedAccountSelectWrap.classList.remove('hidden');
+          }
+
+          if (activeAccId) {
+            syncFixedTokenForAccount(activeAccId);
+          }
+        } catch (err: any) {
+          console.error('Failed to load Cloudflare connection:', err);
+          if (errorBanner && errorMessage) {
+            errorMessage.textContent = err.message || 'Cloudflare connection expired. Please reconnect.';
+            errorBanner.classList.remove('hidden');
+          }
+        }
+      })();
     } else if (cfNotice === 'oauth_unconfigured') {
       cfFallbackNotice?.classList.remove('hidden');
       form?.classList.remove('hidden');
@@ -583,7 +645,12 @@ import '../styles/global.css';
       try {
         const data = await apiClient('/api/deploy-trial', {
           method: 'POST',
-          body: JSON.stringify({ accountId, apiToken, adminPassword, retentionDays }),
+          body: JSON.stringify({
+            accountId,
+            ...(apiToken ? { apiToken } : { cfConnId: connectedCfConnId }),
+            adminPassword,
+            retentionDays,
+          }),
         });
 
         clearTimeout(timer1);

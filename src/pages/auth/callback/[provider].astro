@@ -133,14 +133,12 @@ const displayProvider = providerNames[provider.toLowerCase()] || 'OAuth Provider
           throw new Error(data.error || 'Failed to exchange authorization code');
         }
 
-        // Case A: Cloudflare BYOC deploy connect
+        // Case A: Cloudflare BYOC deploy connect (opaque connection ID only; raw token stays server-side)
         if (data.type === 'cloudflare') {
           const target = data.returnTo || '/dashboard/';
           const params = new URLSearchParams();
           params.set('cf_connected', '1');
-          if (data.cfAccountId) params.set('account_id', data.cfAccountId);
-          if (data.cfAccountName) params.set('account_name', data.cfAccountName);
-          if (data.cfToken) params.set('cf_token', data.cfToken);
+          if (data.cfConnId) params.set('cf_conn', data.cfConnId);
 
           const sep = target.includes('?') ? '&' : '?';
           window.location.replace(`${target}${sep}${params.toString()}`);
