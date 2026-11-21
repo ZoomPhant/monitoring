@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Self-Hosted NVIDIA GPU Monitoring — Utilization, VRAM, Temperature & Alerts | ZoomPhant',
+    description:
+      'Monitor NVIDIA GPU utilization, VRAM usage, temperature, power draw, fan speed, and ECC memory errors across Linux, Windows, Docker, and Kubernetes with zero SaaS data lock-in.',
+    url: 'https://www.zoomphant.com/solutions/gpu-monitoring/',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What NVIDIA GPU metrics does ZoomPhant monitor?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZoomPhant collects GPU compute utilization (%), memory controller utilization, VRAM used/free/total, GPU core temperature (°C), power draw vs. power limit (W), fan speed, SM/memory clock frequencies, PCIe throughput, running GPU processes, and ECC memory errors.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Does ZoomPhant GPU monitoring work on both Linux and Windows hosts?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. ZoomPhant monitors NVIDIA GPUs via nvidia-smi / NVML on Linux servers, Kubernetes GPU nodes, Docker containers, and Windows workstations without requiring a heavy Prometheus + DCGM Exporter + Grafana DIY stack.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Is ZoomPhant GPU monitoring free?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. ZoomPhant Enterprise Monitoring is free for personal use and offers a free community business tier for registered startups and small businesses, while your first Cloudflare BYOC TSDB instance is 100% free.',
+        },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Self-Hosted NVIDIA GPU Monitoring (Utilization, VRAM, Temp & Alerts) — ZoomPhant"
+  description="Monitor NVIDIA GPU utilization, VRAM usage, temperature, power draw, and ECC errors across AI clusters, Linux, Windows, and Kubernetes—self-hosted and free to start."
+  keywords="NVIDIA GPU monitoring, monitoring GPU usage, NVIDIA GPU activity monitor, self-hosted GPU monitoring, VRAM monitoring, AI cluster GPU observability, DCGM alternative"
+  jsonLd={jsonLd}
+>
+  <Header currentPath="/solutions/gpu-monitoring/" />
+
+  <main class="bg-white">
+    <section class="pt-16 pb-16 bg-gradient-to-b from-emerald-50/50 via-white to-white border-b border-gray-100">
+      <div class="mx-auto max-w-4xl px-6 text-center">
+        <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200 px-3.5 py-1 text-xs font-bold text-emerald-700">
+          NVIDIA NVML / nvidia-smi · Linux, Windows &amp; Kubernetes · Free to Start
+        </span>
+        <h1 class="mt-6 text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
+          Self-Hosted NVIDIA GPU Monitoring Without the DIY Stack
+        </h1>
+        <p class="mt-5 text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          Track <strong>GPU utilization, VRAM consumption, temperature, power draw, thermal throttling, and ECC errors</strong> across your AI training rigs, inference servers, and Kubernetes GPU nodes—with built-in dashboards and alerting in 60 seconds.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="/docs/start/" class="rounded-2xl bg-brand-600 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:bg-brand-700 transition-colors">
+            Deploy Self-Hosted Monitoring →
+          </a>
+          <a href="/docs/manual/" class="rounded-2xl border border-gray-200 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+            Browse GPU &amp; Plugin Docs
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16">
+      <div class="mx-auto max-w-5xl px-6 space-y-12">
+        <!-- Metrics Coverage Table -->
+        <div class="space-y-4">
+          <h2 class="text-2xl font-extrabold text-gray-900">Key NVIDIA GPU Metrics Tracked Out of the Box</h2>
+          <div class="overflow-x-auto rounded-2xl border border-gray-200">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-gray-50 text-gray-700 font-semibold border-b border-gray-200">
+                <tr>
+                  <th class="px-4 py-3">Category</th>
+                  <th class="px-4 py-3">Metrics Collected</th>
+                  <th class="px-4 py-3">Alerting Use Cases</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 text-gray-600">
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-gray-900">Compute &amp; Activity</td>
+                  <td class="px-4 py-3">GPU utilization (%), SM / graphics / memory clocks, active processes</td>
+                  <td class="px-4 py-3">Detect idle expensive GPUs or stalled training jobs</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-gray-900">VRAM &amp; Memory</td>
+                  <td class="px-4 py-3">VRAM used / free / total (MiB), memory controller utilization (%)</td>
+                  <td class="px-4 py-3">Catch OOM risks before LLM inference crashes</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-gray-900">Thermal &amp; Power</td>
+                  <td class="px-4 py-3">GPU temperature (°C), fan speed (%), power draw vs. TDP limit (W)</td>
+                  <td class="px-4 py-3">Alert on thermal throttling (&gt;83°C) or cooling failures</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-gray-900">Hardware Health</td>
+                  <td class="px-4 py-3">Single/double-bit ECC errors, Xid errors, PCIe link throughput</td>
+                  <td class="px-4 py-3">Proactively drain failing GPUs before silent NaN corruption</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Push to TSDB option -->
+        <div class="rounded-3xl bg-gray-950 text-gray-100 p-7 border border-gray-800 space-y-4">
+          <h2 class="text-xl font-bold text-white">Or Stream GPU Telemetry Directly to ZoomPhant TSDB</h2>
+          <p class="text-sm text-gray-300">
+            Running a lightweight AI cluster or edge GPU box? Push <code class="font-mono text-emerald-300">nvidia-smi</code> metrics straight to your free Cloudflare BYOC TSDB and let your AI agent query anomalies in ZQL:
+          </p>
+          <pre class="rounded-xl bg-gray-900 border border-gray-800 p-4 font-mono text-xs text-cyan-200 overflow-x-auto">&#123;host="gpu-node-01"&#125; | metrics nvidia_gpu_temp_c | max() every 5m by (gpu_index)</pre>
+          <div class="pt-1">
+            <a href="/dashboard/" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:underline">
+              Claim Your Free TSDB Instance →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -5,6 +5,9 @@ const SITE = 'https://www.zoomphant.com';
 
 const STATIC_PAGES: Array<{ path: string; priority: string; changefreq: string }> = [
   { path: '/', priority: '1.0', changefreq: 'weekly' },
+  { path: '/solutions/ai-agent-observability/', priority: '0.9', changefreq: 'weekly' },
+  { path: '/solutions/cloudflare-tsdb/', priority: '0.9', changefreq: 'weekly' },
+  { path: '/solutions/gpu-monitoring/', priority: '0.9', changefreq: 'weekly' },
   { path: '/docs/', priority: '0.9', changefreq: 'weekly' },
   { path: '/compare/', priority: '0.9', changefreq: 'monthly' },
   { path: '/gadgets/', priority: '0.8', changefreq: 'weekly' },

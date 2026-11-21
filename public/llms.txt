@@ -1,28 +1,48 @@
-# ZoomPhant — Your Monitoring Expert
-> AI-Native Time-Series Database (TSDB) & Enterprise All-in-One Monitoring Solution.
+# ZoomPhant — AI-Native Time-Series Database (TSDB) & Enterprise Monitoring
+> Self-hosted, 100% customer-owned observability built for AI coding agents (Claude Code, Antigravity, Codex, Cursor) and enterprise infrastructure.
 
-ZoomPhant provides two complementary observability and time-series data solutions built for 100% customer data ownership:
+ZoomPhant delivers two complementary products with zero vendor data lock-in:
 
-1. **ZoomPhant TSDB (Serverless Cloudflare BYOC)**:
-   - An AI-native time-series and event database deployed in 1 click inside the user's own Cloudflare account (Workers, Durable Objects, R2).
-   - Every deployed instance serves its own machine-readable `/llms.txt` and `/openapi.yaml` so AI agents (Claude, Cursor, custom agents) can push metrics/events, run ZQL correlation queries, and provision dashboards/alerts directly.
-   - Ideal for solo builders, startups, small business BI analytics, and AI agent telemetry. First instance is 100% free.
-   - Live TSDB Portal & Documentation: https://tsdb.zoomphant.com/docs
-   - Machine-Readable TSDB Spec: https://tsdb.zoomphant.com/llms.txt
+## 1. ZoomPhant TSDB (Serverless Cloudflare BYOC)
+An AI-native unified metrics, logs, and structured events database deployed in 60 seconds into the user's own Cloudflare account.
 
-2. **ZoomPhant Enterprise Monitoring Solution (Self-Hosted & Hybrid)**:
-   - A full-scale, single-image enterprise monitoring platform deployed on dedicated servers or private cloud.
-   - Handles millions of metrics and log lines per minute across Linux, Windows, Kubernetes, databases (MySQL, PostgreSQL, Redis, Kafka), virtualization (Proxmox VE, VMware), NVIDIA GPUs, and SNMP networks.
-   - Free for personal use and registered startups/SMBs; custom SLAs and complimentary pre-implementation consulting available for enterprises.
+- **Built-in Hosted MCP Server (`POST /mcp`)**: Stateless Streamable HTTP MCP server with 19 scope-filtered tools (`discover`, `get_schema`, `validate_zql`, `run_zql`, `upsert_summary`, `upsert_dashboard`, `upsert_alert_rule`, `apply_bundle`, etc.) and documentation resources. Connect Claude Code, Cursor, Codex, or Antigravity directly with a Bearer token — no local proxy or sidecar required.
+- **Self-Describing Agent Protocol**: Every deployed TSDB instance serves `/llms.txt`, `/llms-full.txt`, `/openapi.yaml`, `/api/v1/tools`, `/api/v1/whoami`, and `/api/v1/discover`.
+- **Declarative GitOps Apply (`POST /api/v1/apply`)**: Idempotent, all-or-nothing pre-validated apply for `{ schemas, summaries, extract, sketches, dashboards, rules }` with `?dryRun=true` (read-only PR checks), `scope` label injection, and `onConflict: "skip"`.
+- **Least-Privilege Agent Scopes**: `read`, `write` (ingest + declare schema), `config` (dashboards, accelerators, alerts, templates, schema — no token/tenant admin access), and `admin`. Tokens support up to 4 scope tags (e.g. `env="prod"`, `dept="core"`).
+- **ZQL v3 Unified Query Language**: Pipe-based query language across `| metrics`, `| events`, and `| logs` with `# @gadget {...}` visual metadata pragmas and `<10ms` zero-scan Event Summary acceleration.
+- **Pricing**: First BYOC TSDB instance is 100% free and runs on Cloudflare Free Tier ($0/mo for light workloads) or Cloudflare Workers Paid ($5/mo for 10K–100K+ events/day).
+- **Live TSDB Docs & Spec**: https://tsdb.zoomphant.com/docs · https://tsdb.zoomphant.com/llms.txt
 
-## Key Website Pages
+### Quick MCP Client Configuration
+```json
+{
+  "mcpServers": {
+    "zoomphant-tsdb": {
+      "url": "https://your-tsdb.workers.dev/mcp",
+      "headers": { "Authorization": "Bearer tsdb_read_config_token..." }
+    }
+  }
+}
+```
+
+## 2. ZoomPhant Enterprise Monitoring (Self-Hosted & Hybrid)
+A single-image, all-in-one infrastructure and application monitoring platform for dedicated servers, Kubernetes, and private clouds.
+
+- **Broad Coverage**: Linux, Windows (WMI), **NVIDIA GPU monitoring** (utilization, VRAM, temperature, power, ECC errors), Kubernetes, Docker, Proxmox VE, VMware, MySQL, PostgreSQL, Redis, Kafka, SNMP network devices, and synthetic HTTP/SSL checks.
+- **Pricing**: Free for personal use and registered startups/SMBs (community business tier); enterprise licensing and complimentary pre-implementation consulting available.
+
+## Key Solution & Documentation Pages
 - Home: https://www.zoomphant.com/
+- AI Agent Observability & Hosted MCP: https://www.zoomphant.com/solutions/ai-agent-observability/
+- Serverless TSDB on Cloudflare Workers (BYOC): https://www.zoomphant.com/solutions/cloudflare-tsdb/
+- Self-Hosted NVIDIA GPU Monitoring: https://www.zoomphant.com/solutions/gpu-monitoring/
+- Compare vs. Datadog, LogicMonitor, Splunk & Prometheus: https://www.zoomphant.com/compare/
+- UI Gadgets & ZQL Recipes Hub: https://www.zoomphant.com/gadgets/
 - Documentation Hub: https://www.zoomphant.com/docs/
-- TSDB Documentation: https://tsdb.zoomphant.com/docs
 - Enterprise Quick Start: https://www.zoomphant.com/docs/start/
 - Enterprise Reference Manual: https://www.zoomphant.com/docs/manual/
-- Compare vs. LogicMonitor, Datadog, Splunk & Prometheus: https://www.zoomphant.com/compare/
 - About ZoomPhant: https://www.zoomphant.com/about/
-- Register & Free Expert Consulting: https://www.zoomphant.com/register/
+- Free Trial / 1-Click Deploy: https://www.zoomphant.com/trial/
+- Sitemap: https://www.zoomphant.com/sitemap.xml
 - Contact: mailto:info@zoomphant.com
-

@@ -19,7 +19,7 @@ const {
 
 const siteOrigin = 'https://www.zoomphant.com';
 const resolvedCanonical = canonicalUrl || `${siteOrigin}${Astro.url.pathname}`;
-const ogImageUrl = `${siteOrigin}/logo.svg`;
+const ogImageUrl = `${siteOrigin}/og-image.jpg`;
 ---
 
 <!doctype html>
@@ -40,9 +40,11 @@ const ogImageUrl = `${siteOrigin}/logo.svg`;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={resolvedCanonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <!-- Twitter / X Cards -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />

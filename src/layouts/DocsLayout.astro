@@ -7,14 +7,15 @@ import '../styles/global.css';
 export interface Props {
   title: string;
   description?: string;
+  jsonLd?: Record<string, any> | Record<string, any>[];
   sidebar?: { title: string; href: string; children?: { title: string; href: string; children?: { title: string; href: string }[] }[] }[];
   currentPath?: string;
 }
 
-const { title, description, sidebar = [], currentPath = '' } = Astro.props;
+const { title, description, jsonLd, sidebar = [], currentPath = '' } = Astro.props;
 ---
 
-<BaseLayout title={`${title} — ZoomPhant Docs`} description={description}>
+<BaseLayout title={`${title} — ZoomPhant Docs`} description={description} jsonLd={jsonLd}>
   <Header currentPath={currentPath} />
   <div class="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl px-6">
     <!-- Sidebar -->

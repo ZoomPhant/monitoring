@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'AI Agent Observability & Hosted MCP Time-Series Database — ZoomPhant TSDB',
+    description:
+      'Give Claude Code, Cursor, Codex, and Antigravity a private time-series database with a built-in hosted MCP server (POST /mcp), least-privilege config tokens, and declarative GitOps apply.',
+    url: 'https://www.zoomphant.com/solutions/ai-agent-observability/',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How do AI coding agents like Claude Code, Cursor, or Antigravity connect to ZoomPhant TSDB?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Every ZoomPhant TSDB instance hosts a built-in stateless Streamable HTTP MCP server at POST /mcp, plus a machine-readable /llms.txt and /openapi.yaml. Point any MCP client at https://your-tsdb.workers.dev/mcp with a Bearer token and the agent immediately gets 19 scope-filtered tools for discovery, ZQL queries, summaries, dashboards, and alerts.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How do I give an AI agent permission to build dashboards without giving it full admin access?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZoomPhant TSDB separates control-plane authoring from tenant security with a dedicated config scope. Give Producer agents ["write"] (ingest + schema declaration) and Builder/BI agents ["read", "config"] so they can create summaries, extraction rules, dashboards, and alert rules without ever accessing token or tenant admin endpoints.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can AI agents manage observability declaratively in Git?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. POST /api/v1/apply accepts a single JSON bundle containing schemas, event summaries, extraction rules, sketches, dashboards, and alert rules. It validates every ZQL query before writing, supports ?dryRun=true on read-only tokens for PR checks, and supports apply-time scope selector injection and onConflict: "skip".',
+        },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="AI Agent Observability & Hosted MCP Time-Series Database — ZoomPhant"
+  description="Give Claude Code, Cursor, Codex, and Antigravity a private time-series database with a built-in hosted MCP server (POST /mcp), least-privilege config tokens, and declarative GitOps apply."
+  keywords="AI agent observability, MCP time series database, hosted MCP server metrics, Claude Code monitoring, Cursor MCP observability, Antigravity TSDB, ZQL query language"
+  jsonLd={jsonLd}
+>
+  <Header currentPath="/solutions/ai-agent-observability/" />
+
+  <main class="bg-white">
+    <section class="pt-16 pb-16 bg-gradient-to-b from-indigo-50/60 via-white to-white border-b border-gray-100">
+      <div class="mx-auto max-w-4xl px-6 text-center">
+        <span class="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-200 px-3.5 py-1 text-xs font-bold text-indigo-700">
+          Hosted MCP Server · /llms.txt · Least-Privilege Agent Scopes
+        </span>
+        <h1 class="mt-6 text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
+          The Time-Series Database Built for AI Coding Agents
+        </h1>
+        <p class="mt-5 text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          Connect <strong>Claude Code</strong>, <strong>Antigravity</strong>, <strong>Codex</strong>, or <strong>Cursor</strong> directly to your private TSDB via its built-in <strong>Hosted MCP Server (<code class="font-mono text-indigo-700">POST /mcp</code>)</strong>. Agents instrument your app, declare schemas, accelerate queries, and build dashboards in minutes—with 100% of data staying in your own cloud.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="/dashboard/" class="rounded-2xl bg-brand-600 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:bg-brand-700 transition-colors">
+            Deploy Free TSDB in 60s →
+          </a>
+          <a href="https://tsdb.zoomphant.com/docs/agent-bi-guide.html" target="_blank" rel="noopener noreferrer" class="rounded-2xl border border-gray-200 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+            Read Agent BI Guide ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16">
+      <div class="mx-auto max-w-5xl px-6 space-y-14">
+        <!-- 1. Copy-paste MCP Config -->
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div class="space-y-4">
+            <h2 class="text-2xl font-extrabold text-gray-900">1. Zero-Proxy Hosted MCP Server</h2>
+            <p class="text-sm text-gray-600 leading-relaxed">
+              Every ZoomPhant TSDB instance exposes a stateless Streamable HTTP MCP server at <code class="font-mono text-gray-800">/mcp</code>. Tools returned by <code class="font-mono text-gray-800">tools/list</code> are automatically filtered by your Bearer token’s scopes—no local bridge, Docker sidecar, or custom glue scripts.
+            </p>
+            <ul class="text-sm text-gray-600 space-y-2">
+              <li>✓ <strong>19 curated tools</strong>: <code class="font-mono text-xs">discover</code>, <code class="font-mono text-xs">get_schema</code>, <code class="font-mono text-xs">validate_zql</code>, <code class="font-mono text-xs">run_zql</code>, <code class="font-mono text-xs">upsert_summary</code>, <code class="font-mono text-xs">upsert_dashboard</code>, <code class="font-mono text-xs">apply_bundle</code></li>
+              <li>✓ <strong>Built-in MCP resources</strong>: <code class="font-mono text-xs">tsdb://docs/llms.txt</code> &amp; <code class="font-mono text-xs">tsdb://docs/zql.md</code></li>
+              <li>✓ <strong>Zero-I/O ZQL validation</strong> with caret snippets &amp; typo hints</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl bg-gray-950 text-gray-100 p-5 border border-gray-800 font-mono text-xs overflow-x-auto">
+            <div class="text-gray-400 mb-2">// Claude Code / Cursor / Antigravity MCP config</div>
+            <pre>&#123;
+  "mcpServers": &#123;
+    "zoomphant-tsdb": &#123;
+      "url": "https://your-tsdb.workers.dev/mcp",
+      "headers": &#123;
+        "Authorization": "Bearer tsdb_read_config_..."
+      &#125;
+    &#125;
+  &#125;
+&#125;</pre>
+          </div>
+        </div>
+
+        <!-- 2. Least-Privilege Agent Token Model -->
+        <div class="space-y-4">
+          <h2 class="text-2xl font-extrabold text-gray-900">2. Least-Privilege Agent Handoff (4 Scopes + Tags)</h2>
+          <p class="text-sm text-gray-600">
+            Separate Producer agents (instrumenting your app) from Builder/BI agents (creating dashboards &amp; alerts) without ever handing an AI agent full <code class="font-mono">admin</code> access to your tokens.
+          </p>
+          <div class="overflow-x-auto rounded-2xl border border-gray-200">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-gray-50 text-gray-700 font-semibold border-b border-gray-200">
+                <tr>
+                  <th class="px-4 py-3">Agent Persona</th>
+                  <th class="px-4 py-3">Recommended Scopes</th>
+                  <th class="px-4 py-3">What It Can Do</th>
+                  <th class="px-4 py-3">Cannot Touch</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 text-gray-600">
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-gray-900">Producer Agent (App Code)</td>
+                  <td class="px-4 py-3 font-mono text-xs">["write"]</td>
+                  <td class="px-4 py-3">Push metrics, logs, events + declare schema (<code class="font-mono text-xs">POST /api/v1/schema</code>)</td>
+                  <td class="px-4 py-3">Queries, dashboards, tokens</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-gray-900">Builder / BI Agent (MCP)</td>
+                  <td class="px-4 py-3 font-mono text-xs">["read", "config"]</td>
+                  <td class="px-4 py-3">Discover, query, summaries, extract rules, dashboards, alerts, <code class="font-mono text-xs">/api/v1/apply</code></td>
+                  <td class="px-4 py-3">Token creation/revocation, tenant admin</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-semibold text-gray-900">Analyst / Customer Portal</td>
+                  <td class="px-4 py-3 font-mono text-xs">["read"] + tags</td>
+                  <td class="px-4 py-3">Query &amp; dry-run restricted strictly to streams matching token tags</td>
+                  <td class="px-4 py-3">Any writes or other customers’ streams</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. Declarative GitOps Apply -->
+        <div class="rounded-3xl bg-gray-50 border border-gray-200 p-7 space-y-4">
+          <h2 class="text-2xl font-extrabold text-gray-900">3. Declarative GitOps Sync (<code class="font-mono text-brand-700 text-xl">POST /api/v1/apply</code>)</h2>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Keep your schemas, Event Summaries, dashboards, and alert rules in Git (<code class="font-mono text-xs">observability/tsdb-manifest.json</code>). Validate every PR with <code class="font-mono text-xs">?dryRun=true</code> on a read-only token, then sync idempotently on deploy with optional <code class="font-mono text-xs">scope: &#123; env: "prod" &#125;</code> and <code class="font-mono text-xs">onConflict: "skip"</code>.
+          </p>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <a href="/solutions/cloudflare-tsdb/" class="text-xs font-semibold text-brand-600 hover:underline">Explore Serverless Cloudflare TSDB →</a>
+            <a href="/compare/" class="text-xs font-semibold text-brand-600 hover:underline">Compare vs. Datadog &amp; Prometheus →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Serverless Time-Series Database on Cloudflare Workers (BYOC) — ZoomPhant TSDB',
+    description:
+      'Deploy a private, zero-maintenance time-series, logs, and events database into your own Cloudflare account in 60 seconds. First instance is free and runs on Cloudflare Free Tier ($0/mo).',
+    url: 'https://www.zoomphant.com/solutions/cloudflare-tsdb/',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How much does it cost to run ZoomPhant TSDB on Cloudflare?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Your first ZoomPhant TSDB BYOC instance is 100% free from ZoomPhant. On Cloudflare Free Tier ($0/mo), it supports light workloads (~20 sources). On Cloudflare Workers Paid ($5/mo base), it scales to hundreds of sources and 10K–100K+ business events per day with automatic R2 lifecycle retention.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Does ZoomPhant store any of my metrics or logs?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'No. ZoomPhant deploys the TSDB Worker, R2 object storage bucket, KV cache, and Durable Objects directly inside your own Cloudflare account. You own 100% of the data and can inspect, back up, or delete it at any time.',
+        },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Serverless Time-Series Database on Cloudflare Workers (BYOC) — ZoomPhant"
+  description="Deploy a private, zero-maintenance time-series, logs, and events database into your own Cloudflare account in 60 seconds. Runs on Cloudflare Free Tier ($0/mo)."
+  keywords="Cloudflare Workers TSDB, serverless time series database, Cloudflare R2 metrics database, BYOC observability, InfluxDB alternative serverless, Prometheus alternative Cloudflare"
+  jsonLd={jsonLd}
+>
+  <Header currentPath="/solutions/cloudflare-tsdb/" />
+
+  <main class="bg-white">
+    <section class="pt-16 pb-16 bg-gradient-to-b from-orange-50/50 via-white to-white border-b border-gray-100">
+      <div class="mx-auto max-w-4xl px-6 text-center">
+        <span class="inline-flex items-center gap-2 rounded-full bg-orange-50 border border-orange-200 px-3.5 py-1 text-xs font-bold text-[#F6821F]">
+          1-Click Cloudflare BYOC · $0 Free Tier · 100% Data Ownership
+        </span>
+        <h1 class="mt-6 text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
+          Serverless Time-Series Database Inside Your Own Cloudflare Account
+        </h1>
+        <p class="mt-5 text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          No VPS to patch, no InfluxDB or Prometheus cluster to babysit, and no per-GB SaaS tax. ZoomPhant TSDB deploys in 60 seconds into your own Cloudflare account—unifying <strong>metrics, logs, and structured events</strong> with a built-in BI portal, ZQL v3, and Hosted MCP server.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="/dashboard/" class="rounded-2xl bg-brand-600 px-7 py-3.5 text-sm font-bold text-white shadow-md hover:bg-brand-700 transition-colors">
+            Claim Your Free TSDB Instance →
+          </a>
+          <a href="https://tsdb.zoomphant.com" target="_blank" rel="noopener noreferrer" class="rounded-2xl border border-gray-200 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+            Explore Live Demo Portal ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16">
+      <div class="mx-auto max-w-5xl px-6 space-y-12">
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-gray-200 p-6 space-y-2">
+            <h2 class="text-base font-bold text-gray-900">Unified 3-Signal Engine</h2>
+            <p class="text-sm text-gray-600">Push metrics, logs, and JSON business events via native REST, OpenTelemetry (OTLP/HTTP), or Loki push—and query all three with ZQL v3, PromQL, or LogQL.</p>
+          </div>
+          <div class="rounded-2xl border border-gray-200 p-6 space-y-2">
+            <h2 class="text-base font-bold text-gray-900">&lt;10ms Event Summaries</h2>
+            <p class="text-sm text-gray-600">Pre-aggregated hourly/daily rollups with automatic historical backfill let 90-day BI dashboards return in milliseconds with zero cold-storage scans.</p>
+          </div>
+          <div class="rounded-2xl border border-gray-200 p-6 space-y-2">
+            <h2 class="text-base font-bold text-gray-900">1-Click In-Place Upgrades</h2>
+            <p class="text-sm text-gray-600">Upgrade your deployed Worker and Portal UI directly from the ZoomPhant dashboard whenever a new release ships—preserving all data, buckets, and tokens.</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-gray-200">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-gray-50 text-gray-700 font-semibold border-b border-gray-200">
+              <tr>
+                <th class="px-4 py-3">Workload Tier</th>
+                <th class="px-4 py-3">Cloudflare Plan</th>
+                <th class="px-4 py-3">Typical Capacity</th>
+                <th class="px-4 py-3">ZoomPhant Cost</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 text-gray-600">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-gray-900">Solo / Side Project</td>
+                <td class="px-4 py-3">Cloudflare Free ($0/mo)</td>
+                <td class="px-4 py-3">Up to ~20 sources &amp; personal/dev telemetry</td>
+                <td class="px-4 py-3 font-semibold text-emerald-700">$0 (First instance free)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-gray-900">Startup / SaaS BI</td>
+                <td class="px-4 py-3">Cloudflare Workers Paid ($5/mo)</td>
+                <td class="px-4 py-3">100s of sources · 10K–100K+ events/day · 1–10yr R2 retention</td>
+                <td class="px-4 py-3 font-semibold text-emerald-700">$0 (First instance free)</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-gray-900">Heavy Enterprise</td>
+                <td class="px-4 py-3">Dedicated Server / Private Cloud</td>
+                <td class="px-4 py-3">Millions of metrics &amp; log lines/min</td>
+                <td class="px-4 py-3"><a href="/docs/start/" class="text-brand-600 hover:underline font-medium">Enterprise Edition →</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
