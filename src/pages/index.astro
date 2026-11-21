@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import AgentShowcaseCarousel from '../components/AgentShowcaseCarousel.astro';
 import '../styles/global.css';
 
 const homeJsonLd = [
@@ -134,56 +135,8 @@ const homeJsonLd = [
           </div>
         </div>
 
-        <!-- Hero Interactive Preview Card: "Just Tell Your AI Agent" -->
-        <div class="mx-auto mt-14 max-w-4xl">
-          <div class="rounded-3xl border border-gray-200/90 bg-white p-2 sm:p-3 shadow-2xl shadow-brand-900/5">
-            <div class="rounded-2xl bg-gray-950 text-white overflow-hidden border border-gray-800">
-              <!-- Top Window Bar -->
-              <div class="flex items-center justify-between px-4 sm:px-6 py-3 bg-gray-900/90 border-b border-gray-800">
-                <div class="flex items-center gap-2">
-                  <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
-                  <span class="h-3 w-3 rounded-full bg-amber-500/80"></span>
-                  <span class="h-3 w-3 rounded-full bg-emerald-500/80"></span>
-                  <span class="ml-2 text-xs font-semibold text-gray-300">AI Agent Conversation — Claude / Cursor / Custom Agent</span>
-                </div>
-                <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">
-                  ● Connected via /llms.txt
-                </span>
-              </div>
-
-              <!-- Conversation Body -->
-              <div class="p-5 sm:p-7 space-y-5 text-left font-sans">
-                <!-- Human Prompt -->
-                <div class="flex items-start gap-3.5">
-                  <div class="h-8 w-8 rounded-xl bg-brand-600 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                    YOU
-                  </div>
-                  <div class="rounded-2xl rounded-tl-xs bg-gray-900 border border-gray-800 px-4 py-3 text-xs sm:text-sm text-gray-200 leading-relaxed">
-                    Here is my ZoomPhant TSDB (<code class="text-brand-300 font-mono">https://my-tsdb.workers.dev/llms.txt</code>) and token <code class="text-amber-300 font-mono">tsdb_live_...</code>.<br/>
-                    Track every checkout order and API latency in our app, tell me why conversion dipped today, and create a daily revenue dashboard.
-                  </div>
-                </div>
-
-                <!-- AI Agent Response -->
-                <div class="flex items-start gap-3.5">
-                  <div class="h-8 w-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center text-sm shrink-0 mt-0.5">
-                    🤖
-                  </div>
-                  <div class="flex-1 rounded-2xl rounded-tl-xs bg-indigo-950/30 border border-indigo-500/30 px-4 py-3.5 text-xs sm:text-sm text-gray-200 space-y-3">
-                    <div class="flex flex-wrap items-center gap-2 text-[11px] text-indigo-300 font-mono">
-                      <span class="rounded bg-indigo-900/60 px-2 py-0.5">✓ Read /llms.txt</span>
-                      <span class="rounded bg-indigo-900/60 px-2 py-0.5">✓ Pushed order & latency events</span>
-                      <span class="rounded bg-indigo-900/60 px-2 py-0.5">✓ Queried ZQL correlation</span>
-                    </div>
-                    <p class="leading-relaxed text-gray-100">
-                      Done! I correlated your <code class="text-cyan-300 font-mono">checkout_latency</code> metric with <code class="text-cyan-300 font-mono">order_completed</code> events. Between 14:00–14:25 UTC, payment gateway timeouts spiked on <code class="text-amber-300 font-mono">region="eu-west"</code>. I’ve also created your <strong>Revenue & Checkout Health</strong> dashboard and set up a Slack alert rule.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- Hero Interactive Multi-Agent Showcase Carousel -->
+        <AgentShowcaseCarousel />
 
       </div>
     </section>

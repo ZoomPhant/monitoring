@@ -1,0 +1,401 @@
+---
+// Interactive multi-agent showcase carousel for the landing page Hero.
+// Displays authentic Claude Code, Antigravity, Codex, and Cursor/RCA UIs working with ZoomPhant TSDB.
+---
+
+<div id="agentShowcase" class="mx-auto mt-14 max-w-4xl">
+  <!-- Agent Switcher Pills -->
+  <div class="flex flex-wrap items-center justify-center gap-2 mb-4" role="tablist" aria-label="AI Coding Agent Examples">
+    <button
+      type="button"
+      role="tab"
+      data-slide="0"
+      aria-selected="true"
+      class="agent-tab inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer border bg-gray-900 text-white border-gray-900 shadow-sm"
+    >
+      <span class="h-2 w-2 rounded-full bg-orange-400"></span>
+      <span>Claude Code</span>
+      <span class="hidden sm:inline text-[10px] font-normal opacity-75">· Instrument &amp; Push</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      data-slide="1"
+      aria-selected="false"
+      class="agent-tab inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer border bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:text-gray-900"
+    >
+      <span class="h-2 w-2 rounded-full bg-indigo-500"></span>
+      <span>Antigravity</span>
+      <span class="hidden sm:inline text-[10px] font-normal opacity-75">· MCP BI &amp; Dashboards</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      data-slide="2"
+      aria-selected="false"
+      class="agent-tab inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer border bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:text-gray-900"
+    >
+      <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+      <span>Codex</span>
+      <span class="hidden sm:inline text-[10px] font-normal opacity-75">· GitOps &amp; Drift</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      data-slide="3"
+      aria-selected="false"
+      class="agent-tab inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer border bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:text-gray-900"
+    >
+      <span class="h-2 w-2 rounded-full bg-sky-500"></span>
+      <span>Cursor</span>
+      <span class="hidden sm:inline text-[10px] font-normal opacity-75">· Root-Cause Analysis</span>
+    </button>
+  </div>
+
+  <!-- Carousel Frame -->
+  <div class="relative rounded-3xl border border-gray-200/90 bg-white p-2 sm:p-3 shadow-2xl shadow-brand-900/5">
+    <div class="overflow-hidden rounded-2xl">
+      <!-- ============================================================ -->
+      <!-- SLIDE 0: CLAUDE CODE (Terminal CLI — Instrumentation & Schema) -->
+      <!-- ============================================================ -->
+      <div class="agent-slide" data-slide-panel="0">
+        <div class="rounded-2xl bg-[#141210] text-gray-100 overflow-hidden border border-stone-800">
+          <!-- Window Bar -->
+          <div class="flex items-center justify-between px-4 sm:px-6 py-3 bg-[#1d1a17] border-b border-stone-800">
+            <div class="flex items-center gap-2">
+              <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-amber-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-emerald-500/80"></span>
+              <span class="ml-2 text-xs font-mono font-semibold text-orange-300">claude</span>
+              <span class="text-xs font-mono text-stone-400">~/acme-shop · main</span>
+            </div>
+            <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 px-2.5 py-0.5 text-[11px] font-mono text-orange-300">
+              ● scope: write · env="prod"
+            </span>
+          </div>
+
+          <!-- Terminal Body -->
+          <div class="p-5 sm:p-7 space-y-4 text-left font-mono text-xs sm:text-[13px] leading-relaxed">
+            <div class="flex items-start gap-2.5">
+              <span class="text-orange-400 font-bold select-none">❯</span>
+              <p class="text-stone-100 font-sans text-xs sm:text-sm">
+                Instrument our checkout service to push order events &amp; API latency to <code class="text-orange-300 font-mono">https://my-tsdb.workers.dev/llms.txt</code> using <code class="text-amber-300 font-mono">$TSDB_WRITE_TOKEN</code>, and declare the schema for our BI agent.
+              </p>
+            </div>
+
+            <div class="pl-5 space-y-2 border-l border-stone-800 text-[11px] sm:text-xs">
+              <div class="flex items-center gap-2 text-stone-300">
+                <span class="text-orange-400">⏺</span>
+                <span>Fetch(<span class="text-stone-400">https://my-tsdb.workers.dev/llms.txt</span>)</span>
+                <span class="text-emerald-400 ml-auto">✓ 200</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-300">
+                <span class="text-orange-400">⏺</span>
+                <span>Update(<span class="text-stone-400">src/checkout/telemetry.ts</span>)</span>
+                <span class="text-emerald-400 ml-auto">+38 -2</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-300">
+                <span class="text-orange-400">⏺</span>
+                <span>POST <span class="text-amber-300">/api/v1/schema</span> <span class="text-stone-500">(order_completed, checkout_latency_ms)</span></span>
+                <span class="text-emerald-400 ml-auto">✓ declared</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-300">
+                <span class="text-orange-400">⏺</span>
+                <span>POST <span class="text-amber-300">/api/v1/events</span> <span class="text-stone-500">(smoke test · token tag env="prod")</span></span>
+                <span class="text-emerald-400 ml-auto">✓ accepted: 1</span>
+              </div>
+            </div>
+
+            <div class="rounded-xl bg-stone-900/90 border border-stone-800 px-4 py-3 font-sans text-xs sm:text-sm text-stone-200">
+              <span class="text-orange-400 font-mono font-bold mr-1.5">⏺</span>
+              Done! Checkout now emits <code class="text-orange-300 font-mono">order_completed</code> events and <code class="text-orange-300 font-mono">checkout_latency_ms</code> gauges. Your write token automatically stamps <code class="text-amber-300 font-mono">env="prod"</code> on every stream, and the schema is registered for your BI agent.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SLIDE 1: ANTIGRAVITY (Agent IDE — Hosted MCP BI & Dashboards) -->
+      <!-- ============================================================ -->
+      <div class="agent-slide hidden" data-slide-panel="1">
+        <div class="rounded-2xl bg-[#0e111a] text-gray-100 overflow-hidden border border-indigo-900/50">
+          <!-- Window Bar -->
+          <div class="flex items-center justify-between px-4 sm:px-6 py-3 bg-[#141826] border-b border-indigo-900/50">
+            <div class="flex items-center gap-2">
+              <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-amber-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-emerald-500/80"></span>
+              <span class="ml-2 inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-200">
+                <span class="inline-block h-2 w-2 rounded-full bg-gradient-to-tr from-indigo-400 to-cyan-300"></span>
+                Antigravity Agent
+              </span>
+              <span class="text-xs text-slate-500">· zoomphant-tsdb (MCP)</span>
+            </div>
+            <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 border border-indigo-400/30 px-2.5 py-0.5 text-[11px] font-mono text-indigo-300">
+              ● POST /mcp · scope: read, config
+            </span>
+          </div>
+
+          <!-- Agent Workspace Body -->
+          <div class="p-5 sm:p-7 space-y-4 text-left font-sans">
+            <!-- Prompt -->
+            <div class="flex items-start gap-3">
+              <div class="h-7 w-7 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">
+                YOU
+              </div>
+              <div class="rounded-2xl rounded-tl-xs bg-slate-900/90 border border-slate-800 px-4 py-2.5 text-xs sm:text-sm text-slate-200 leading-relaxed">
+                Discover our production checkout schema via MCP, accelerate 30-day revenue queries, and build a <strong>Revenue &amp; Checkout Health</strong> dashboard.
+              </div>
+            </div>
+
+            <!-- Structured MCP Tool Trace -->
+            <div class="flex items-start gap-3">
+              <div class="h-7 w-7 rounded-lg bg-gradient-to-tr from-indigo-500 via-violet-500 to-cyan-400 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                ✦
+              </div>
+              <div class="flex-1 space-y-3">
+                <div class="flex flex-wrap gap-1.5 text-[11px] font-mono">
+                  <span class="inline-flex items-center gap-1 rounded-lg bg-indigo-950/90 border border-indigo-500/30 px-2.5 py-1 text-indigo-200">
+                    <span class="text-emerald-400">✓</span> mcp:discover()
+                  </span>
+                  <span class="inline-flex items-center gap-1 rounded-lg bg-indigo-950/90 border border-indigo-500/30 px-2.5 py-1 text-indigo-200">
+                    <span class="text-emerald-400">✓</span> mcp:upsert_summary("orders_daily")
+                  </span>
+                  <span class="inline-flex items-center gap-1 rounded-lg bg-indigo-950/90 border border-indigo-500/30 px-2.5 py-1 text-indigo-200">
+                    <span class="text-emerald-400">✓</span> mcp:upsert_dashboard("Revenue &amp; Checkout")
+                  </span>
+                </div>
+
+                <!-- Mini Dashboard Artifact Card -->
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3.5 space-y-2.5">
+                  <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <span class="font-semibold text-white">📊 Revenue &amp; Checkout Health</span>
+                    <div class="flex items-center gap-1.5 font-mono text-[10px]">
+                      <span class="rounded bg-indigo-500/20 border border-indigo-400/30 px-2 py-0.5 text-indigo-200">🏷 env=prod</span>
+                      <span class="rounded bg-emerald-500/15 border border-emerald-400/30 px-2 py-0.5 text-emerald-300">Summary accelerated · 8ms</span>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="rounded-lg bg-slate-950/80 border border-slate-800/80 py-2 px-2">
+                      <div class="text-[10px] text-slate-400">30d Revenue</div>
+                      <div class="text-sm font-bold text-emerald-400">$148.2k</div>
+                    </div>
+                    <div class="rounded-lg bg-slate-950/80 border border-slate-800/80 py-2 px-2">
+                      <div class="text-[10px] text-slate-400">Orders / day</div>
+                      <div class="text-sm font-bold text-cyan-300">1,284</div>
+                    </div>
+                    <div class="rounded-lg bg-slate-950/80 border border-slate-800/80 py-2 px-2">
+                      <div class="text-[10px] text-slate-400">Checkout p95</div>
+                      <div class="text-sm font-bold text-indigo-300">182 ms</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SLIDE 2: CODEX (OpenAI Codex CLI — GitOps Apply & Drift Check) -->
+      <!-- ============================================================ -->
+      <div class="agent-slide hidden" data-slide-panel="2">
+        <div class="rounded-2xl bg-[#0d1117] text-gray-100 overflow-hidden border border-emerald-900/50">
+          <!-- Window Bar -->
+          <div class="flex items-center justify-between px-4 sm:px-6 py-3 bg-[#161b22] border-b border-slate-800">
+            <div class="flex items-center gap-2">
+              <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-amber-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-emerald-500/80"></span>
+              <span class="ml-2 text-xs font-mono font-semibold text-emerald-400">codex</span>
+              <span class="text-xs font-mono text-slate-400">observability/tsdb-manifest.json</span>
+            </div>
+            <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-mono text-emerald-300">
+              ● GitOps · POST /api/v1/apply
+            </span>
+          </div>
+
+          <!-- Codex Body -->
+          <div class="p-5 sm:p-7 space-y-4 text-left font-mono text-xs sm:text-[13px] leading-relaxed">
+            <div class="flex items-start gap-2.5">
+              <span class="text-emerald-400 font-bold select-none">›</span>
+              <p class="text-slate-100 font-sans text-xs sm:text-sm">
+                Check TSDB for undeclared schema drift in prod, update <code class="text-emerald-300 font-mono">observability/tsdb-manifest.json</code>, and dry-run apply with <code class="text-cyan-300 font-mono">scope: &#123; env: "prod" &#125;</code>.
+              </p>
+            </div>
+
+            <div class="rounded-xl bg-[#090d13] border border-slate-800 p-3.5 space-y-1.5 text-[11px] sm:text-xs">
+              <div class="text-slate-400">$ curl $TSDB_URL/api/v1/schema?days=7&amp;includeSamples=false</div>
+              <div class="text-amber-300">→ drift.undeclared.events: ["refund_issued"] (fields: amount:number, reason:string)</div>
+              <div class="text-slate-400 pt-1">$ curl -X POST "$TSDB_URL/api/v1/apply?dryRun=true" -d @tsdb-manifest.json</div>
+              <div class="text-emerald-400">→ &#123; "dryRun": true, "summary": &#123; "created": 1, "updated": 1, "unchanged": 5 &#125; &#125;</div>
+            </div>
+
+            <div class="rounded-xl bg-emerald-950/30 border border-emerald-500/30 px-4 py-3 font-sans text-xs sm:text-sm text-slate-200">
+              All 7 ZQL queries and <code class="text-emerald-300 font-mono"># @gadget</code> pragmas passed zero-I/O validation. Added <code class="text-cyan-300 font-mono">refund_issued</code> schema + prod-scoped alert rule — ready to merge and sync on deploy.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SLIDE 3: CURSOR (IDE Chat — Incident Root-Cause Analysis)     -->
+      <!-- ============================================================ -->
+      <div class="agent-slide hidden" data-slide-panel="3">
+        <div class="rounded-2xl bg-[#111318] text-gray-100 overflow-hidden border border-sky-900/50">
+          <!-- Window Bar -->
+          <div class="flex items-center justify-between px-4 sm:px-6 py-3 bg-[#181b22] border-b border-slate-800">
+            <div class="flex items-center gap-2">
+              <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-amber-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-emerald-500/80"></span>
+              <span class="ml-2 text-xs font-semibold text-sky-300">Cursor Agent</span>
+              <span class="text-xs text-slate-500">· Incident Triage</span>
+            </div>
+            <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-sky-500/10 border border-sky-500/30 px-2.5 py-0.5 text-[11px] font-mono text-sky-300">
+              ● ZQL v3 · Metrics + Logs + Events
+            </span>
+          </div>
+
+          <!-- Cursor Chat Body -->
+          <div class="p-5 sm:p-7 space-y-4 text-left font-sans">
+            <div class="flex items-start gap-3">
+              <div class="h-7 w-7 rounded-lg bg-brand-600 text-white flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">
+                YOU
+              </div>
+              <div class="rounded-2xl rounded-tl-xs bg-slate-900 border border-slate-800 px-4 py-2.5 text-xs sm:text-sm text-slate-200 leading-relaxed">
+                Why did checkout conversion dip 18% between 14:00 and 14:30 UTC today?
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="h-7 w-7 rounded-lg bg-sky-500/20 border border-sky-400/40 text-sky-300 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                ⌘
+              </div>
+              <div class="flex-1 rounded-2xl rounded-tl-xs bg-sky-950/25 border border-sky-500/30 px-4 py-3.5 text-xs sm:text-sm text-slate-200 space-y-3">
+                <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-mono text-sky-300">
+                  <span class="rounded bg-sky-900/50 px-2 py-0.5">✓ Correlated metrics + logs + events</span>
+                  <span class="rounded bg-sky-900/50 px-2 py-0.5">✓ Found 412 gateway timeouts</span>
+                </div>
+                <p class="leading-relaxed text-slate-100">
+                  Between <strong>14:04–14:26 UTC</strong>, <code class="text-cyan-300 font-mono">checkout_latency_ms</code> p95 jumped from <strong>180ms → 4.8s</strong> exclusively in <code class="text-amber-300 font-mono">region="eu-west"</code>, matching 412 <code class="text-rose-300 font-mono">stripe_timeout</code> error logs and an 18.4% drop in <code class="text-cyan-300 font-mono">order_completed</code>.
+                </p>
+                <div class="rounded-lg bg-slate-950/90 border border-slate-800 px-3 py-2 font-mono text-[11px] text-sky-200 overflow-x-auto">
+                  &#123;env="prod"&#125; | events order_completed | count() every 5m by (region)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Carousel Controls -->
+    <div class="flex items-center justify-between px-3 pt-2.5 pb-1">
+      <button
+        type="button"
+        id="agentPrevBtn"
+        class="inline-flex items-center gap-1 rounded-xl px-2.5 py-1 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+        aria-label="Previous example"
+      >
+        ← Prev
+      </button>
+
+      <div class="flex items-center gap-1.5" aria-label="Slide indicators">
+        <button type="button" data-dot="0" class="agent-dot h-2 w-6 rounded-full bg-brand-600 transition-all cursor-pointer" aria-label="Claude Code example"></button>
+        <button type="button" data-dot="1" class="agent-dot h-2 w-2 rounded-full bg-gray-300 hover:bg-gray-400 transition-all cursor-pointer" aria-label="Antigravity example"></button>
+        <button type="button" data-dot="2" class="agent-dot h-2 w-2 rounded-full bg-gray-300 hover:bg-gray-400 transition-all cursor-pointer" aria-label="Codex example"></button>
+        <button type="button" data-dot="3" class="agent-dot h-2 w-2 rounded-full bg-gray-300 hover:bg-gray-400 transition-all cursor-pointer" aria-label="Cursor example"></button>
+      </div>
+
+      <button
+        type="button"
+        id="agentNextBtn"
+        class="inline-flex items-center gap-1 rounded-xl px-2.5 py-1 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+        aria-label="Next example"
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const root = document.getElementById('agentShowcase');
+    if (!root) return;
+
+    const slides = Array.from(root.querySelectorAll('.agent-slide'));
+    const tabs = Array.from(root.querySelectorAll('.agent-tab'));
+    const dots = Array.from(root.querySelectorAll('.agent-dot'));
+    const prevBtn = document.getElementById('agentPrevBtn');
+    const nextBtn = document.getElementById('agentNextBtn');
+
+    let current = 0;
+    let paused = false;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    function show(index: number) {
+      current = ((index % slides.length) + slides.length) % slides.length;
+      slides.forEach((el, i) => {
+        el.classList.toggle('hidden', i !== current);
+      });
+      tabs.forEach((btn, i) => {
+        const active = i === current;
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        btn.classList.toggle('bg-gray-900', active);
+        btn.classList.toggle('text-white', active);
+        btn.classList.toggle('border-gray-900', active);
+        btn.classList.toggle('shadow-sm', active);
+        btn.classList.toggle('bg-white', !active);
+        btn.classList.toggle('text-gray-600', !active);
+        btn.classList.toggle('border-gray-200', !active);
+      });
+      dots.forEach((dot, i) => {
+        const active = i === current;
+        dot.classList.toggle('w-6', active);
+        dot.classList.toggle('bg-brand-600', active);
+        dot.classList.toggle('w-2', !active);
+        dot.classList.toggle('bg-gray-300', !active);
+      });
+    }
+
+    function startAuto() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => {
+        if (!paused) show(current + 1);
+      }, 7000);
+    }
+
+    tabs.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.getAttribute('data-slide') || 0);
+        paused = true;
+        show(idx);
+      });
+    });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const idx = Number(dot.getAttribute('data-dot') || 0);
+        paused = true;
+        show(idx);
+      });
+    });
+
+    prevBtn?.addEventListener('click', () => {
+      paused = true;
+      show(current - 1);
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      paused = true;
+      show(current + 1);
+    });
+
+    root.addEventListener('mouseenter', () => { paused = true; });
+    root.addEventListener('mouseleave', () => { paused = false; });
+
+    startAuto();
+  })();
+</script>
