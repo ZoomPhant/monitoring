@@ -132,13 +132,15 @@ import '../../styles/global.css';
                   <th class="px-6 py-3.5">Name</th>
                   <th class="px-6 py-3.5">Email</th>
                   <th class="px-6 py-3.5">Role</th>
-                  <th class="px-6 py-3.5">Organization / Metadata</th>
+                  <th class="px-6 py-3.5">Status</th>
+                  <th class="px-6 py-3.5">Organization</th>
                   <th class="px-6 py-3.5">Created Date</th>
+                  <th class="px-6 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody id="usersTableBody" class="divide-y divide-gray-100 text-xs">
                 <tr>
-                  <td colspan="6" class="px-6 py-8 text-center text-gray-400 font-sans">
+                  <td colspan="8" class="px-6 py-8 text-center text-gray-400 font-sans">
                     Loading registered users...
                   </td>
                 </tr>
@@ -368,7 +370,7 @@ import '../../styles/global.css';
       if (allUsers.length === 0) {
         usersTableBody.innerHTML = `
           <tr>
-            <td colspan="6" class="px-6 py-8 text-center text-gray-400">
+            <td colspan="8" class="px-6 py-8 text-center text-gray-400">
               No registered platform users found.
             </td>
           </tr>
@@ -378,15 +380,61 @@ import '../../styles/global.css';
 
       usersTableBody.innerHTML = allUsers.map((u: any) => {
         let metaCompany = '—';
+        let parsedMeta: any = {};
         try {
           if (u.metadata) {
-            const parsed = typeof u.metadata === 'string' ? JSON.parse(u.metadata) : u.metadata;
-            if (parsed.company) metaCompany = parsed.company;
+            parsedMeta = typeof u.metadata === 'string' ? JSON.parse(u.metadata) : u.metadata;
+            if (parsedMeta.company) metaCompany = parsedMeta.company;
           }
         } catch {}
 
+        const isDisabled = Boolean(u.disabled ?? parsedMeta.disabled);
+        const isProtected = Boolean(u.protected || u.role === 'admin' || u.id === 'usr_admin_zoomphant' || parsedMeta.is_super_admin);
+
+        const statusBadge = isDisabled
+          ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">Disabled</span>`
+          : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>`;
+
+        const actionsHtml = isProtected
+          ? `<span class="inline-flex items-center gap-1 text-[11px] font-medium text-gray-400" title="Super users and administrators cannot be disabled or purged">Protected</span>`
+          : isDisabled
+          ? `
+            <div class="inline-flex items-center justify-end gap-2">
+              <button
+                type="button"
+                data-toggle-user-id="${u.id}"
+                data-toggle-user-email="${u.email}"
+                data-next-disabled="false"
+                class="toggle-user-status-btn px-2.5 py-1 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[11px] font-semibold cursor-pointer transition-colors"
+              >
+                Enable
+              </button>
+              <button
+                type="button"
+                data-purge-user-id="${u.id}"
+                data-purge-user-email="${u.email}"
+                class="purge-user-btn px-2.5 py-1 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 text-[11px] font-semibold cursor-pointer transition-colors"
+                title="Permanently delete user and all associated data"
+              >
+                Purge Data
+              </button>
+            </div>
+          `
+          : `
+            <button
+              type="button"
+              data-toggle-user-id="${u.id}"
+              data-toggle-user-email="${u.email}"
+              data-next-disabled="true"
+              class="toggle-user-status-btn px-2.5 py-1 rounded-lg border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 text-[11px] font-semibold cursor-pointer transition-colors"
+              title="Disable account and revoke active sessions"
+            >
+              Disable
+            </button>
+          `;
+
         return `
-          <tr class="hover:bg-gray-50/50 transition-colors">
+          <tr class="hover:bg-gray-50/50 transition-colors ${isDisabled ? 'bg-gray-50/60 opacity-85' : ''}">
             <td class="px-6 py-4 font-mono text-gray-500">${u.id}</td>
             <td class="px-6 py-4 font-semibold text-gray-900">${u.name}</td>
             <td class="px-6 py-4 text-gray-600">${u.email}</td>
@@ -397,11 +445,67 @@ import '../../styles/global.css';
                 ${u.role}
               </span>
             </td>
+            <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
             <td class="px-6 py-4 text-gray-500">${metaCompany}</td>
             <td class="px-6 py-4 text-gray-400 whitespace-nowrap">${new Date(u.createdAt).toLocaleDateString()}</td>
+            <td class="px-6 py-4 text-right whitespace-nowrap">${actionsHtml}</td>
           </tr>
         `;
       }).join('');
+
+      document.querySelectorAll('.toggle-user-status-btn').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+          const el = e.currentTarget as HTMLElement;
+          const id = el.getAttribute('data-toggle-user-id');
+          const email = el.getAttribute('data-toggle-user-email') || id;
+          const nextDisabled = el.getAttribute('data-next-disabled') === 'true';
+          if (!id) return;
+
+          const msg = nextDisabled
+            ? `Disable user "${email}"? Their active sessions will be revoked immediately and they will not be able to sign in.`
+            : `Re-enable user "${email}" so they can sign in again?`;
+          if (!confirm(msg)) return;
+
+          try {
+            await apiClient(`/api/admin/users/${encodeURIComponent(id)}/status`, {
+              method: 'PATCH',
+              token,
+              body: JSON.stringify({ disabled: nextDisabled }),
+            });
+            await loadData();
+          } catch (err: any) {
+            alert(err.message || 'Failed to update user status');
+          }
+        });
+      });
+
+      document.querySelectorAll('.purge-user-btn').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+          const el = e.currentTarget as HTMLElement;
+          const id = el.getAttribute('data-purge-user-id');
+          const email = el.getAttribute('data-purge-user-email') || '';
+          if (!id) return;
+
+          const typed = prompt(
+            `PERMANENT PURGE: This will permanently delete user "${email}" and all of their sessions, credentials, deployments, and email records.\n\nType "${email}" to confirm:`
+          );
+          if (typed === null) return;
+          if (typed.trim().toLowerCase() !== email.toLowerCase()) {
+            alert('Email did not match. Purge cancelled.');
+            return;
+          }
+
+          try {
+            await apiClient(`/api/admin/users/${encodeURIComponent(id)}`, {
+              method: 'DELETE',
+              token,
+            });
+            await loadData();
+          } catch (err: any) {
+            alert(err.message || 'Failed to purge user');
+          }
+        });
+      });
     }
 
     function renderRegistrations() {
