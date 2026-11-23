@@ -177,6 +177,64 @@ import '../../styles/global.css';
       </div>
 
     </div>
+
+    <!-- In-page Toast Notification -->
+    <div id="adminToast" class="fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-2xl border px-4 py-3 text-xs font-semibold shadow-xl transition-all"></div>
+
+    <!-- In-page User Action Confirmation Modal (Disable / Enable / Purge) -->
+    <div
+      id="userActionModal"
+      class="fixed inset-0 z-50 hidden bg-gray-900/60 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="userActionModalTitle"
+    >
+      <div class="w-full max-w-md rounded-2xl bg-white border border-gray-200 shadow-2xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/70">
+          <h3 id="userActionModalTitle" class="text-base font-bold text-gray-900">Confirm Action</h3>
+          <button type="button" id="closeUserActionModalBtn" class="rounded-lg p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <div class="p-6 space-y-4">
+          <p id="userActionModalDesc" class="text-xs sm:text-sm text-gray-600 leading-relaxed"></p>
+
+          <!-- Typed email confirmation (shown only for permanent purge) -->
+          <div id="purgeConfirmWrap" class="hidden space-y-2">
+            <label for="purgeConfirmInput" class="block text-xs font-semibold text-gray-700">
+              Type <span id="purgeConfirmTargetEmail" class="font-mono text-red-700"></span> to confirm permanent purge:
+            </label>
+            <input
+              type="text"
+              id="purgeConfirmInput"
+              autocomplete="off"
+              placeholder="Enter user email"
+              class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs font-mono text-gray-900 focus:border-red-500 focus:outline-none"
+            />
+          </div>
+
+          <div id="userActionModalError" class="hidden rounded-xl bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700"></div>
+
+          <div class="flex items-center justify-end gap-2 pt-2">
+            <button
+              type="button"
+              id="cancelUserActionBtn"
+              class="px-4 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              id="confirmUserActionBtn"
+              class="px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-xs transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <Footer />
@@ -454,59 +512,164 @@ import '../../styles/global.css';
       }).join('');
 
       document.querySelectorAll('.toggle-user-status-btn').forEach((btn) => {
-        btn.addEventListener('click', async (e) => {
+        btn.addEventListener('click', (e) => {
           const el = e.currentTarget as HTMLElement;
           const id = el.getAttribute('data-toggle-user-id');
-          const email = el.getAttribute('data-toggle-user-email') || id;
+          const email = el.getAttribute('data-toggle-user-email') || id || '';
           const nextDisabled = el.getAttribute('data-next-disabled') === 'true';
           if (!id) return;
-
-          const msg = nextDisabled
-            ? `Disable user "${email}"? Their active sessions will be revoked immediately and they will not be able to sign in.`
-            : `Re-enable user "${email}" so they can sign in again?`;
-          if (!confirm(msg)) return;
-
-          try {
-            await apiClient(`/api/admin/users/${encodeURIComponent(id)}/status`, {
-              method: 'PATCH',
-              token,
-              body: JSON.stringify({ disabled: nextDisabled }),
-            });
-            await loadData();
-          } catch (err: any) {
-            alert(err.message || 'Failed to update user status');
-          }
+          openUserActionModal({
+            mode: nextDisabled ? 'disable' : 'enable',
+            userId: id,
+            email,
+          });
         });
       });
 
       document.querySelectorAll('.purge-user-btn').forEach((btn) => {
-        btn.addEventListener('click', async (e) => {
+        btn.addEventListener('click', (e) => {
           const el = e.currentTarget as HTMLElement;
           const id = el.getAttribute('data-purge-user-id');
           const email = el.getAttribute('data-purge-user-email') || '';
           if (!id) return;
-
-          const typed = prompt(
-            `PERMANENT PURGE: This will permanently delete user "${email}" and all of their sessions, credentials, deployments, and email records.\n\nType "${email}" to confirm:`
-          );
-          if (typed === null) return;
-          if (typed.trim().toLowerCase() !== email.toLowerCase()) {
-            alert('Email did not match. Purge cancelled.');
-            return;
-          }
-
-          try {
-            await apiClient(`/api/admin/users/${encodeURIComponent(id)}`, {
-              method: 'DELETE',
-              token,
-            });
-            await loadData();
-          } catch (err: any) {
-            alert(err.message || 'Failed to purge user');
-          }
+          openUserActionModal({
+            mode: 'purge',
+            userId: id,
+            email,
+          });
         });
       });
     }
+
+    // In-page Toast + Modal State
+    const adminToast = document.getElementById('adminToast');
+    const userActionModal = document.getElementById('userActionModal');
+    const userActionModalTitle = document.getElementById('userActionModalTitle');
+    const userActionModalDesc = document.getElementById('userActionModalDesc');
+    const purgeConfirmWrap = document.getElementById('purgeConfirmWrap');
+    const purgeConfirmTargetEmail = document.getElementById('purgeConfirmTargetEmail');
+    const purgeConfirmInput = document.getElementById('purgeConfirmInput') as HTMLInputElement;
+    const userActionModalError = document.getElementById('userActionModalError');
+    const closeUserActionModalBtn = document.getElementById('closeUserActionModalBtn');
+    const cancelUserActionBtn = document.getElementById('cancelUserActionBtn');
+    const confirmUserActionBtn = document.getElementById('confirmUserActionBtn') as HTMLButtonElement;
+
+    let pendingUserAction: { mode: 'disable' | 'enable' | 'purge'; userId: string; email: string } | null = null;
+    let toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function showToast(message: string, kind: 'success' | 'error' = 'success') {
+      if (!adminToast) return;
+      adminToast.textContent = message;
+      adminToast.className = `fixed bottom-5 right-5 z-50 max-w-sm rounded-2xl border px-4 py-3 text-xs font-semibold shadow-xl transition-all ${
+        kind === 'error'
+          ? 'bg-red-50 border-red-200 text-red-800'
+          : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+      }`;
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        adminToast.classList.add('hidden');
+      }, 4500);
+    }
+
+    function closeUserActionModal() {
+      pendingUserAction = null;
+      userActionModal?.classList.add('hidden');
+      userActionModalError?.classList.add('hidden');
+    }
+
+    function openUserActionModal(action: { mode: 'disable' | 'enable' | 'purge'; userId: string; email: string }) {
+      pendingUserAction = action;
+      userActionModalError?.classList.add('hidden');
+      if (purgeConfirmInput) purgeConfirmInput.value = '';
+
+      if (action.mode === 'disable') {
+        if (userActionModalTitle) userActionModalTitle.textContent = 'Disable User Account';
+        if (userActionModalDesc) {
+          userActionModalDesc.textContent = `Disable "${action.email}"? All active sessions will be revoked immediately and the user will be blocked from signing in until re-enabled.`;
+        }
+        purgeConfirmWrap?.classList.add('hidden');
+        if (confirmUserActionBtn) {
+          confirmUserActionBtn.textContent = 'Disable User';
+          confirmUserActionBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-xs transition-colors cursor-pointer bg-amber-600 hover:bg-amber-700 disabled:opacity-40 disabled:cursor-not-allowed';
+          confirmUserActionBtn.disabled = false;
+        }
+      } else if (action.mode === 'enable') {
+        if (userActionModalTitle) userActionModalTitle.textContent = 'Re-enable User Account';
+        if (userActionModalDesc) {
+          userActionModalDesc.textContent = `Re-enable "${action.email}" so they can sign in and access their dashboard again?`;
+        }
+        purgeConfirmWrap?.classList.add('hidden');
+        if (confirmUserActionBtn) {
+          confirmUserActionBtn.textContent = 'Re-enable User';
+          confirmUserActionBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-xs transition-colors cursor-pointer bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed';
+          confirmUserActionBtn.disabled = false;
+        }
+      } else {
+        if (userActionModalTitle) userActionModalTitle.textContent = 'Permanently Purge User & Data';
+        if (userActionModalDesc) {
+          userActionModalDesc.textContent = `This will permanently delete "${action.email}" and purge all of their sessions, OAuth/password credentials, deployment records, and email logs. This cannot be undone.`;
+        }
+        if (purgeConfirmTargetEmail) purgeConfirmTargetEmail.textContent = action.email;
+        purgeConfirmWrap?.classList.remove('hidden');
+        if (confirmUserActionBtn) {
+          confirmUserActionBtn.textContent = 'Permanently Purge';
+          confirmUserActionBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-xs transition-colors cursor-pointer bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed';
+          confirmUserActionBtn.disabled = true;
+        }
+      }
+
+      userActionModal?.classList.remove('hidden');
+      if (action.mode === 'purge') purgeConfirmInput?.focus();
+    }
+
+    purgeConfirmInput?.addEventListener('input', () => {
+      if (!pendingUserAction || pendingUserAction.mode !== 'purge' || !confirmUserActionBtn) return;
+      confirmUserActionBtn.disabled =
+        purgeConfirmInput.value.trim().toLowerCase() !== pendingUserAction.email.toLowerCase();
+    });
+
+    closeUserActionModalBtn?.addEventListener('click', closeUserActionModal);
+    cancelUserActionBtn?.addEventListener('click', closeUserActionModal);
+    userActionModal?.addEventListener('click', (e) => {
+      if (e.target === userActionModal) closeUserActionModal();
+    });
+
+    confirmUserActionBtn?.addEventListener('click', async () => {
+      if (!pendingUserAction || !confirmUserActionBtn) return;
+      const { mode, userId, email } = pendingUserAction;
+      userActionModalError?.classList.add('hidden');
+      confirmUserActionBtn.disabled = true;
+      const prevLabel = confirmUserActionBtn.textContent;
+      confirmUserActionBtn.textContent = mode === 'purge' ? 'Purging…' : 'Updating…';
+
+      try {
+        if (mode === 'purge') {
+          await apiClient(`/api/admin/users/${encodeURIComponent(userId)}`, {
+            method: 'DELETE',
+            token,
+          });
+          closeUserActionModal();
+          showToast(`Permanently purged ${email} and all associated data.`);
+        } else {
+          const disabled = mode === 'disable';
+          await apiClient(`/api/admin/users/${encodeURIComponent(userId)}/status`, {
+            method: 'PATCH',
+            token,
+            body: JSON.stringify({ disabled }),
+          });
+          closeUserActionModal();
+          showToast(disabled ? `Disabled ${email} and revoked active sessions.` : `Re-enabled ${email}.`);
+        }
+        await loadData();
+      } catch (err: any) {
+        confirmUserActionBtn.disabled = false;
+        confirmUserActionBtn.textContent = prevLabel;
+        if (userActionModalError) {
+          userActionModalError.textContent = err.message || 'Operation failed.';
+          userActionModalError.classList.remove('hidden');
+        }
+      }
+    });
 
     function renderRegistrations() {
       if (!regTableBody) return;
