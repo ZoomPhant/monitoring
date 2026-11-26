@@ -7,7 +7,8 @@
     "dev": "astro dev --port 1080",
     "build": "astro build",
     "preview": "astro preview --port 1080",
-    "astro": "astro"
+    "astro": "astro",
+    "publish:blogs": "node scripts/publish-blogs.mjs"
   },
   "dependencies": {
     "astro": "^5.0.0"

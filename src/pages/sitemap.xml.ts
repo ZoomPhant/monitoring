@@ -9,6 +9,7 @@ const STATIC_PAGES: Array<{ path: string; priority: string; changefreq: string }
   { path: '/solutions/cloudflare-tsdb/', priority: '0.9', changefreq: 'weekly' },
   { path: '/solutions/gpu-monitoring/', priority: '0.9', changefreq: 'weekly' },
   { path: '/docs/', priority: '0.9', changefreq: 'weekly' },
+  { path: '/blog/', priority: '0.9', changefreq: 'weekly' },
   { path: '/compare/', priority: '0.9', changefreq: 'monthly' },
   { path: '/gadgets/', priority: '0.8', changefreq: 'weekly' },
   { path: '/trial/', priority: '0.8', changefreq: 'monthly' },
@@ -29,6 +30,12 @@ function escapeXml(str: string): string {
 
 export const GET: APIRoute = async () => {
   const docs = await getCollection('docs');
+  let blogs: Awaited<ReturnType<typeof getCollection<'blog'>>> = [];
+  try {
+    blogs = await getCollection('blog');
+  } catch {
+    blogs = [];
+  }
   const lastmod = new Date().toISOString().split('T')[0];
 
   const docEntries = docs
@@ -39,7 +46,15 @@ export const GET: APIRoute = async () => {
     }))
     .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 
-  const allUrls = [...STATIC_PAGES, ...docEntries];
+  const blogEntries = blogs
+    .map((post) => ({
+      path: `/blog/${post.slug}/`,
+      priority: '0.8',
+      changefreq: 'monthly',
+    }))
+    .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+
+  const allUrls = [...STATIC_PAGES, ...blogEntries, ...docEntries];
 
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',

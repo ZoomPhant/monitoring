@@ -1,9 +1,20 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import AgentShowcaseCarousel from '../components/AgentShowcaseCarousel.astro';
 import '../styles/global.css';
+import { categoryBadgeClass, formatBlogDate } from '../utils/blog';
+
+let latestPosts: Awaited<ReturnType<typeof getCollection<'blog'>>> = [];
+try {
+  latestPosts = (await getCollection('blog'))
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .slice(0, 3);
+} catch {
+  latestPosts = [];
+}
 
 const homeJsonLd = [
   {
@@ -732,6 +743,68 @@ const homeJsonLd = [
         </div>
       </div>
     </section>
+
+    {latestPosts.length > 0 && (
+      <!-- 7b. FROM THE BLOG -->
+      <section class="py-16 sm:py-24 bg-white border-t border-gray-100">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+          <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div class="max-w-2xl">
+              <span class="inline-flex items-center rounded-full bg-brand-50 border border-brand-200 px-3.5 py-1 text-xs font-bold text-brand-700">
+                From the Blog
+              </span>
+              <h2 class="mt-4 text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
+                Engineering Deep Dives &amp; Product Stories
+              </h2>
+              <p class="mt-2 text-sm sm:text-base text-gray-600">
+                Real lessons from building and operating an agent-first time-series database.
+              </p>
+            </div>
+            <a
+              href="/blog/"
+              class="inline-flex items-center gap-1.5 text-sm font-bold text-brand-600 hover:text-brand-700 transition-colors whitespace-nowrap"
+            >
+              View all posts →
+            </a>
+          </div>
+
+          <div class:list={['mt-10 grid gap-6', latestPosts.length === 1 ? 'max-w-3xl' : latestPosts.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3']}>
+            {latestPosts.map((post) => (
+              <article class="group relative flex flex-col justify-between rounded-3xl border border-gray-200 bg-gray-50/50 p-7 shadow-2xs transition-all hover:bg-white hover:border-brand-300 hover:shadow-md">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2 text-xs">
+                    <span class:list={['inline-flex items-center rounded-full border px-2.5 py-0.5 font-bold', categoryBadgeClass(post.data.category)]}>
+                      {post.data.category}
+                    </span>
+                    <time datetime={post.data.date.toISOString()} class="text-gray-500 font-medium">
+                      {formatBlogDate(post.data.date)}
+                    </time>
+                    {post.data.readingTime && (
+                      <>
+                        <span class="text-gray-300">·</span>
+                        <span class="text-gray-500">{post.data.readingTime}</span>
+                      </>
+                    )}
+                  </div>
+                  <h3 class="mt-4 text-lg sm:text-xl font-extrabold tracking-tight text-gray-900 group-hover:text-brand-700 transition-colors">
+                    <a href={`/blog/${post.slug}/`} class="after:absolute after:inset-0">
+                      {post.data.title}
+                    </a>
+                  </h3>
+                  <p class="mt-2.5 text-sm leading-relaxed text-gray-600 line-clamp-3">
+                    {post.data.description}
+                  </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-brand-600">
+                  <span>Read article</span>
+                  <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
 
     <!-- 8. FINAL CTA (TWO-COLUMN: WIDE TITLE/SUBTITLE LEFT + STACKED ACTIONS RIGHT) -->
     <section class="py-16 sm:py-24 bg-gray-50 border-t border-gray-100">

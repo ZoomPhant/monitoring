@@ -1,0 +1,240 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+import { BLOG_CATEGORIES, categoryBadgeClass, categorySlug, formatBlogDate } from '../../utils/blog';
+
+let posts: Awaited<ReturnType<typeof getCollection<'blog'>>> = [];
+try {
+  posts = (await getCollection('blog')).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+  );
+} catch {
+  posts = [];
+}
+
+const categoryCounts = new Map<string, number>();
+for (const p of posts) {
+  categoryCounts.set(p.data.category, (categoryCounts.get(p.data.category) || 0) + 1);
+}
+
+const orderedCategories = [
+  ...BLOG_CATEGORIES,
+  ...[...categoryCounts.keys()].filter((c) => !(BLOG_CATEGORIES as readonly string[]).includes(c)),
+];
+
+const blogJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'ZoomPhant Blog',
+  url: 'https://www.zoomphant.com/blog/',
+  description:
+    'Engineering deep dives, product updates, practical guides, and real-world stories from building an agent-first TSDB and monitoring platform.',
+  publisher: {
+    '@type': 'Organization',
+    name: 'ZoomPhant',
+    url: 'https://www.zoomphant.com',
+  },
+};
+---
+
+<BaseLayout
+  title="Blog — ZoomPhant | Engineering, Product & Agent-First Observability"
+  description="Engineering deep dives, product updates, guides, and stories on building an agent-first time-series database and modern observability stack."
+  keywords="ZoomPhant blog, agent-first TSDB, engineering blog, AI agent observability, time-series database, serverless monitoring"
+  jsonLd={blogJsonLd}
+>
+  <Header currentPath={Astro.url.pathname} />
+
+  <main class="min-h-[70vh]">
+    <!-- Hero -->
+    <section class="relative overflow-hidden pt-14 pb-12 sm:pt-20 sm:pb-14 bg-gradient-to-b from-brand-50/60 via-white to-white border-b border-gray-100">
+      <div class="mx-auto max-w-6xl px-6 lg:px-8">
+        <div class="max-w-3xl">
+          <span class="inline-flex items-center gap-2 rounded-full bg-brand-50 border border-brand-200 px-3.5 py-1 text-xs font-bold text-brand-700">
+            ZoomPhant Blog
+          </span>
+          <h1 class="mt-5 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
+            Engineering &amp; Product Stories
+          </h1>
+          <p class="mt-4 text-base sm:text-lg leading-relaxed text-gray-600">
+            Deep dives into building an agent-first time-series database, practical observability guides, product releases, and lessons from real production workloads.
+          </p>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="mt-8 flex flex-wrap items-center gap-2" role="tablist" aria-label="Filter blog posts by category">
+          <button
+            type="button"
+            data-category-filter="all"
+            aria-pressed="true"
+            class="blog-filter-btn inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold transition-all bg-gray-900 text-white border-gray-900 shadow-xs"
+          >
+            <span>All Posts</span>
+            <span class="rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] font-bold">{posts.length}</span>
+          </button>
+
+          {orderedCategories.map((cat) => {
+            const count = categoryCounts.get(cat) || 0;
+            const slug = categorySlug(cat);
+            return (
+              <button
+                type="button"
+                data-category-filter={slug}
+                aria-pressed="false"
+                class:list={[
+                  'blog-filter-btn inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold transition-all',
+                  count > 0
+                    ? 'bg-white text-gray-700 border-gray-200 hover:border-brand-300 hover:text-brand-700'
+                    : 'bg-gray-50 text-gray-400 border-gray-200/70 hover:border-gray-300 hover:text-gray-600',
+                ]}
+              >
+                <span>{cat}</span>
+                <span class="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- Posts Grid -->
+    <section class="py-12 sm:py-16 bg-white">
+      <div class="mx-auto max-w-6xl px-6 lg:px-8">
+        {posts.length === 0 ? (
+          <div class="rounded-3xl border border-dashed border-gray-200 bg-gray-50/60 p-12 text-center">
+            <p class="text-base font-semibold text-gray-800">No blog posts published yet.</p>
+            <p class="mt-2 text-sm text-gray-500">
+              Add posts in <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">website/blogs/</code> and run{' '}
+              <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">npm run publish:blogs</code>.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div id="blogPostsGrid" class="grid gap-6 md:grid-cols-2">
+              {posts.map((post, idx) => {
+                const catSlug = categorySlug(post.data.category);
+                const isLead = idx === 0 && post.data.featured;
+                return (
+                  <article
+                    data-post-card
+                    data-category={catSlug}
+                    class:list={[
+                      'group relative flex flex-col justify-between rounded-3xl border border-gray-200 bg-white p-7 sm:p-8 shadow-2xs transition-all hover:border-brand-300 hover:shadow-md',
+                      isLead && 'md:col-span-2 bg-gradient-to-br from-white via-white to-brand-50/40',
+                    ]}
+                  >
+                    <div>
+                      <div class="flex flex-wrap items-center gap-2.5 text-xs">
+                        <span class:list={['inline-flex items-center rounded-full border px-2.5 py-0.5 font-bold', categoryBadgeClass(post.data.category)]}>
+                          {post.data.category}
+                        </span>
+                        <time datetime={post.data.date.toISOString()} class="text-gray-500 font-medium">
+                          {formatBlogDate(post.data.date)}
+                        </time>
+                        {post.data.readingTime && (
+                          <>
+                            <span class="text-gray-300">·</span>
+                            <span class="text-gray-500">{post.data.readingTime}</span>
+                          </>
+                        )}
+                      </div>
+
+                      <h2 class:list={['mt-4 font-extrabold tracking-tight text-gray-900 group-hover:text-brand-700 transition-colors', isLead ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl']}>
+                        <a href={`/blog/${post.slug}/`} class="after:absolute after:inset-0">
+                          {post.data.title}
+                        </a>
+                      </h2>
+
+                      <p class="mt-3 text-sm sm:text-base leading-relaxed text-gray-600">
+                        {post.data.description}
+                      </p>
+                    </div>
+
+                    <div class="mt-6 pt-5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
+                      <div class="flex flex-wrap items-center gap-1.5">
+                        {post.data.tags.slice(0, 4).map((tag) => (
+                          <span class="rounded-lg bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                      <span class="inline-flex items-center gap-1 text-xs font-bold text-brand-600 group-hover:translate-x-0.5 transition-transform">
+                        Read article →
+                      </span>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
+            <!-- Empty state when a category filter has 0 posts -->
+            <div id="blogEmptyCategory" class="hidden rounded-3xl border border-dashed border-gray-200 bg-gray-50/60 p-12 text-center">
+              <p class="text-base font-semibold text-gray-800">No posts in this category yet.</p>
+              <p class="mt-2 text-sm text-gray-500">
+                Try another category or view all published articles.
+              </p>
+              <button
+                type="button"
+                id="blogResetFilter"
+                class="mt-4 inline-flex items-center rounded-xl bg-brand-600 px-4 py-2 text-xs font-bold text-white hover:bg-brand-700 transition-colors"
+              >
+                Show All Posts
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-category-filter]'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-post-card]'));
+  const emptyEl = document.getElementById('blogEmptyCategory');
+  const resetBtn = document.getElementById('blogResetFilter');
+
+  function applyCategory(cat: string, pushUrl = true) {
+    let visible = 0;
+    for (const card of cards) {
+      const match = cat === 'all' || card.dataset.category === cat;
+      card.classList.toggle('hidden', !match);
+      if (match) visible++;
+    }
+    if (emptyEl) emptyEl.classList.toggle('hidden', visible > 0 || cards.length === 0);
+
+    for (const btn of buttons) {
+      const active = btn.dataset.categoryFilter === cat;
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      if (active) {
+        btn.classList.add('bg-gray-900', 'text-white', 'border-gray-900', 'shadow-xs');
+        btn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200', 'bg-gray-50', 'text-gray-400');
+      } else {
+        btn.classList.remove('bg-gray-900', 'text-white', 'border-gray-900', 'shadow-xs');
+        btn.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
+      }
+    }
+
+    if (pushUrl) {
+      const url = new URL(window.location.href);
+      if (cat === 'all') url.searchParams.delete('category');
+      else url.searchParams.set('category', cat);
+      window.history.replaceState({}, '', url);
+    }
+  }
+
+  for (const btn of buttons) {
+    btn.addEventListener('click', () => applyCategory(btn.dataset.categoryFilter || 'all'));
+  }
+  resetBtn?.addEventListener('click', () => applyCategory('all'));
+
+  const initial = new URLSearchParams(window.location.search).get('category');
+  if (initial && buttons.some((b) => b.dataset.categoryFilter === initial)) {
+    applyCategory(initial, false);
+  }
+</script>

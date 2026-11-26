@@ -4,6 +4,7 @@ export interface Props {
 }
 
 const { currentPath = '/' } = Astro.props;
+const isBlog = currentPath.startsWith('/blog');
 const isDocs = currentPath.startsWith('/docs');
 const isGadgets = currentPath.startsWith('/gadgets');
 const isAbout = currentPath.startsWith('/about');
@@ -35,6 +36,11 @@ const isAbout = currentPath.startsWith('/about');
         <span>TSDB in Action</span>
         <span class="text-xs text-gray-400">↗</span>
       </a>
+      <a
+        href="/blog/"
+        class="text-sm font-medium transition-colors"
+        class:list={[isBlog ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900']}
+      >Blog</a>
       <a
         href="/docs/"
         class="text-sm font-medium transition-colors"
