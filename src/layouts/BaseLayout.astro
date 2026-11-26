@@ -4,6 +4,7 @@ export interface Props {
   description?: string;
   keywords?: string;
   canonicalUrl?: string;
+  ogImage?: string;
   noindex?: boolean;
   jsonLd?: Record<string, any> | Record<string, any>[];
 }
@@ -13,13 +14,16 @@ const {
   description = 'ZoomPhant — AI-Native Time-Series Database (TSDB) & Enterprise All-in-One Self-Hosted Monitoring Solution.',
   keywords = 'time series database, AI agent TSDB, Cloudflare TSDB, enterprise monitoring, self-hosted monitoring, LogicMonitor alternative, Datadog alternative, Prometheus alternative, ZoomPhant',
   canonicalUrl,
+  ogImage,
   noindex = false,
   jsonLd,
 } = Astro.props;
 
 const siteOrigin = 'https://www.zoomphant.com';
 const resolvedCanonical = canonicalUrl || `${siteOrigin}${Astro.url.pathname}`;
-const ogImageUrl = `${siteOrigin}/og-image.jpg`;
+const ogImageUrl = ogImage
+  ? (ogImage.startsWith('http') ? ogImage : `${siteOrigin}${ogImage.startsWith('/') ? '' : '/'}${ogImage}`)
+  : `${siteOrigin}/og-image.jpg`;
 ---
 
 <!doctype html>

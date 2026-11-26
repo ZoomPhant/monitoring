@@ -58,6 +58,7 @@ const articleJsonLd = {
   title={`${post.data.title} — ZoomPhant Blog`}
   description={post.data.description}
   keywords={post.data.tags.join(', ')}
+  ogImage={post.data.coverImage}
   jsonLd={articleJsonLd}
 >
   <Header currentPath={Astro.url.pathname} />
@@ -127,7 +128,7 @@ const articleJsonLd = {
 
     <!-- Article Body -->
     <article class="mx-auto max-w-3xl px-6 py-12 sm:py-16">
-      <div class="prose prose-slate prose-lg max-w-none prose-headings:font-extrabold prose-headings:tracking-tight prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-code:before:content-none prose-code:after:content-none prose-code:rounded prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[0.85em] prose-code:font-medium prose-pre:rounded-2xl prose-pre:border prose-pre:border-slate-800 prose-pre:bg-slate-950 prose-table:text-sm">
+      <div class="prose prose-slate prose-lg max-w-none prose-headings:font-extrabold prose-headings:tracking-tight prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:border prose-img:border-gray-200 prose-img:shadow-sm prose-code:before:content-none prose-code:after:content-none prose-code:rounded prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[0.85em] prose-code:font-medium prose-pre:rounded-2xl prose-pre:border prose-pre:border-slate-800 prose-pre:bg-slate-950 prose-table:text-sm">
         <Content />
       </div>
 

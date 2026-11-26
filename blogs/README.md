@@ -10,15 +10,18 @@ Organize posts by category subfolder (recommended) or place `.md` / `.mdx` files
 blogs/
 ├── _template.md                  # Copy-paste starter (ignored by publish script)
 ├── engineering/                  # Default category: Engineering
-│   └── 2026-11-26-all-you-need-is-an-agent-first-tsdb.md
+│   └── 2026-11-26-all-you-need-is-an-agent-first-tsdb/
+│       ├── index.md
+│       └── assets/
+│           └── quota-warning-do-rows-read.png
 ├── product/                      # Default category: Product
 ├── guides/                       # Default category: Guides
 ├── case-studies/                 # Default category: Case Study
 └── announcements/                # Default category: Announcements
 ```
 
-- **Prefixing filenames with `YYYY-MM-DD-`** keeps posts sorted chronologically in your editor; the publish script automatically strips the date prefix to produce clean URLs like `/blog/all-you-need-is-an-agent-first-tsdb/`.
-- **Co-located images:** For posts with diagrams or screenshots, use a folder (`blogs/engineering/my-post/index.md` + `diagram.png`). Assets sync automatically to `/blog-assets/<slug>/`.
+- **Prefixing folder/file names with `YYYY-MM-DD-`** keeps posts sorted chronologically in your editor; the publish script automatically strips the date prefix to produce clean URLs like `/blog/all-you-need-is-an-agent-first-tsdb/`.
+- **Per-blog `assets/` folder:** Put images, diagrams, videos, or downloadable files inside `<post-folder>/assets/` and reference them with standard relative paths (`![Alt text](./assets/diagram.png)`). They preview natively in Markdown editors and `publish:blogs` automatically syncs them to `/blog-assets/<slug>/` and rewrites URLs at publish time.
 - **Ignored files:** `README.md` and any file or folder starting with `_` or `.` are never published.
 
 ## Frontmatter Fields

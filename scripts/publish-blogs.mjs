@@ -6,7 +6,10 @@
  * - True sync: any previously published post removed from `blogs/` (or marked `draft: true`)
  *   is automatically removed from `src/content/blog/` so it disappears from the website.
  * - Supports both flat files (`blogs/engineering/2026-11-26-my-post.md`) and folder-based posts
- *   (`blogs/engineering/my-post/index.md` + co-located images synced to `public/blog-assets/<slug>/`).
+ *   (`blogs/engineering/2026-11-26-my-post/index.md` with `assets/` subfolder or co-located files).
+ * - Folder assets are synced to `public/blog-assets/<slug>/` and relative markdown/HTML paths
+ *   like `./assets/foo.png`, `assets/foo.png`, or `./foo.png` are rewritten automatically to
+ *   `/blog-assets/<slug>/foo.png`.
  *
  * Usage:
  *   npm run publish:blogs
@@ -44,7 +47,91 @@ const CATEGORY_MAP = {
   announcements: 'Announcements',
 };
 
-const ASSET_EXTS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.avif']);
+const ASSET_EXTS = new Set([
+  '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.avif',
+  '.mp4', '.webm', '.pdf', '.csv', '.json', '.txt',
+]);
+
+/**
+ * Collect assets for a folder-based post.
+ * Supports both `<postDir>/assets/<file>` (preferred) and `<postDir>/<file>` (co-located).
+ * Returns array of `{ srcPath, destName }`.
+ */
+function collectPostAssets(postDir) {
+  const results = [];
+  const seenNames = new Set();
+
+  const addFromDir = (dir, prefix = '') => {
+    if (!existsSync(dir)) return;
+    for (const entry of readdirSync(dir)) {
+      if (entry.startsWith('.') || entry.startsWith('_')) continue;
+      const full = join(dir, entry);
+      const st = statSync(full);
+      if (st.isDirectory()) {
+        // Recurse inside assets/ subdirectories, or into assets/ itself
+        if (prefix === '' && entry === 'assets') {
+          addFromDir(full, '');
+        } else if (prefix !== '' || dir.endsWith(`${join('', 'assets')}`)) {
+          addFromDir(full, prefix ? `${prefix}/${entry}` : entry);
+        }
+        continue;
+      }
+      if (ASSET_EXTS.has(extname(entry).toLowerCase())) {
+        const destName = prefix ? `${prefix}/${entry}` : entry;
+        if (!seenNames.has(destName)) {
+          seenNames.add(destName);
+          results.push({ srcPath: full, destName });
+        }
+      }
+    }
+  };
+
+  // Prefer `assets/` first so it takes precedence if same filename exists
+  addFromDir(join(postDir, 'assets'), '');
+  for (const entry of readdirSync(postDir)) {
+    if (entry.startsWith('.') || entry.startsWith('_') || entry === 'assets') continue;
+    const full = join(postDir, entry);
+    if (statSync(full).isFile() && ASSET_EXTS.has(extname(entry).toLowerCase())) {
+      if (!seenNames.has(entry)) {
+        seenNames.add(entry);
+        results.push({ srcPath: full, destName: entry });
+      }
+    }
+  }
+  return results;
+}
+
+/**
+ * Rewrite relative asset references (`./assets/foo.png`, `assets/foo.png`, `./foo.png`, `foo.png`)
+ * to `/blog-assets/<slug>/foo.png` when those files exist in the post's collected assets.
+ */
+function rewriteAssetUrls(text, slug, assetNames) {
+  if (!text || !assetNames.size) return text;
+
+  const resolveRel = (rawUrl) => {
+    const trimmed = rawUrl.trim();
+    if (/^(https?:|data:|mailto:|#|\/)/i.test(trimmed)) return null;
+    const cleaned = trimmed.replace(/^\.\//, '').replace(/^assets\//, '');
+    if (assetNames.has(cleaned)) {
+      return `/blog-assets/${slug}/${cleaned}`;
+    }
+    return null;
+  };
+
+  // Markdown links & images: ![alt](url "title") or [text](url)
+  let out = text.replace(/(!?\[[^\]]*\]\()([^)\s]+)((?:\s+"[^"]*")?\))/g, (full, pre, url, post) => {
+    const mapped = resolveRel(url);
+    return mapped ? `${pre}${mapped}${post}` : full;
+  });
+
+  // HTML src="..." / href="..."
+  out = out.replace(/(\b(?:src|href)=["'])([^"']+)(["'])/gi, (full, pre, url, post) => {
+    const mapped = resolveRel(url);
+    return mapped ? `${pre}${mapped}${post}` : full;
+  });
+
+  return out;
+}
 
 function parseScalar(raw) {
   const s = raw.trim();
@@ -220,22 +307,34 @@ function main() {
     seenSlugs.set(slug, rel);
 
     const ext = extname(filePath);
+    const isFolderPost = basename(filePath, ext).toLowerCase() === 'index';
+    const assetDir = isFolderPost ? dirname(filePath) : null;
+    const assets = assetDir ? collectPostAssets(assetDir) : [];
+    const assetNames = new Set(assets.map((a) => a.destName));
+
+    let rewrittenCover = data.coverImage;
+    if (rewrittenCover && assetNames.size) {
+      const cleaned = String(rewrittenCover).trim().replace(/^\.\//, '').replace(/^assets\//, '');
+      if (assetNames.has(cleaned)) rewrittenCover = `/blog-assets/${slug}/${cleaned}`;
+    }
+
+    const rewrittenBody = rewriteAssetUrls(body, slug, assetNames);
+
     const normalized = {
       ...data,
+      ...(rewrittenCover ? { coverImage: rewrittenCover } : {}),
       category: normalizeCategory(data.category, rel),
       tags: Array.isArray(data.tags) ? data.tags : [],
       author: data.author || 'ZoomPhant Engineering',
-      readingTime: data.readingTime || estimateReadingTime(body),
+      readingTime: data.readingTime || estimateReadingTime(rewrittenBody),
       featured: Boolean(data.featured),
     };
 
-    const isFolderPost = basename(filePath, ext).toLowerCase() === 'index';
-    const assetDir = isFolderPost ? dirname(filePath) : null;
     publishable.set(`${slug}${ext}`, {
       slug,
       rel,
-      content: serializePost(normalized, body),
-      assetDir,
+      content: serializePost(normalized, rewrittenBody),
+      assets,
     });
   }
 
@@ -279,19 +378,18 @@ function main() {
     }
   }
 
-  // 3. Sync co-located folder assets into public/blog-assets/<slug>/
+  // 3. Sync folder assets (`assets/` and co-located files) into public/blog-assets/<slug>/
   const activeAssetSlugs = new Set();
   for (const post of publishable.values()) {
-    if (!post.assetDir) continue;
-    const assets = readdirSync(post.assetDir).filter((f) => ASSET_EXTS.has(extname(f).toLowerCase()));
-    if (!assets.length) continue;
+    if (!post.assets.length) continue;
     activeAssetSlugs.add(post.slug);
     if (!DRY_RUN) {
       const destDir = join(ASSETS_DIR, post.slug);
-      mkdirSync(destDir, { recursive: true });
-      for (const a of assets) copyFileSync(join(post.assetDir, a), join(destDir, a));
-      for (const old of readdirSync(destDir)) {
-        if (!assets.includes(old)) rmSync(join(destDir, old), { force: true });
+      rmSync(destDir, { recursive: true, force: true });
+      for (const a of post.assets) {
+        const destPath = join(destDir, a.destName);
+        mkdirSync(dirname(destPath), { recursive: true });
+        copyFileSync(a.srcPath, destPath);
       }
     }
   }

@@ -9,6 +9,7 @@ category: "Engineering"
 tags: ["AI Agents", "TSDB", "Agentic Engineering", "Observability", "Performance"]
 readingTime: "6 min read"
 featured: true
+coverImage: "/blog-assets/all-you-need-is-an-agent-first-tsdb/quota-warning-do-rows-read.png"
 ---
 Modern coding agents are remarkably capable inside a repository. They can read tens of thousands of lines of code, trace execution paths, write unit tests, and run linters in seconds.
 
@@ -46,6 +47,8 @@ An **agent-first TSDB** flips that assumption:
 ## A Real Session: From Quota Alert to 10× Fix With One Token
 
 Here is what actually happened when a small-scale monitoring workload—just a handful of synthetic probes reporting ~22 metrics every 30 seconds—unexpectedly hit **100% of its daily read quota** on a serverless free tier.
+
+![Production quota warning showing doRowsRead at 100.7% (5,035,821 rows read) despite 8.2% requests, 19.7% writes, and 2.93 MB object storage](/blog-assets/all-you-need-is-an-agent-first-tsdb/quota-warning-do-rows-read.png)
 
 From the outside, the numbers looked paradoxical:
 
