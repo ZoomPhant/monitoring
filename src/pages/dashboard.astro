@@ -445,7 +445,19 @@ import '../styles/global.css';
           </div>
 
           <!-- Error Alert -->
-          <div id="modalErrorAlert" class="hidden rounded-xl bg-red-50 p-3 text-xs text-red-700 border border-red-200"></div>
+          <div id="modalErrorAlert" class="hidden rounded-xl bg-red-50 p-3 text-xs text-red-700 border border-red-200">
+            <span id="modalErrorText"></span>
+            <button
+              type="button"
+              id="modalReconnectBtn"
+              class="hidden mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Reconnect Cloudflare Account
+            </button>
+          </div>
 
           <!-- Submit Button -->
           <div class="pt-2">
@@ -518,6 +530,8 @@ import '../styles/global.css';
     const modalRetentionDays = document.getElementById('modalRetentionDays') as HTMLSelectElement;
     const modalTokenBadge = document.getElementById('modalTokenBadge');
     const modalErrorAlert = document.getElementById('modalErrorAlert');
+    const modalErrorText = document.getElementById('modalErrorText');
+    const modalReconnectBtn = document.getElementById('modalReconnectBtn');
     const modalProgressState = document.getElementById('modalProgressState');
     const modalSubmitBtn = document.getElementById('modalSubmitBtn');
     const launchModalTitle = document.getElementById('launchModalTitle');
@@ -582,9 +596,67 @@ import '../styles/global.css';
       syncTokenForAccount(id);
     });
 
+    // Show an error in the modal; if isOAuthExpiry is true, also show the Reconnect button
+    function showModalError(message: string, isOAuthExpiry = false) {
+      if (modalErrorText) modalErrorText.textContent = message;
+      if (modalReconnectBtn) {
+        if (isOAuthExpiry) {
+          modalReconnectBtn.classList.remove('hidden');
+        } else {
+          modalReconnectBtn.classList.add('hidden');
+        }
+      }
+      modalErrorAlert?.classList.remove('hidden');
+    }
+
+    function hideModalError() {
+      modalErrorAlert?.classList.add('hidden');
+      modalReconnectBtn?.classList.add('hidden');
+    }
+
+    // Clear local OAuth connection state and show the OAuth connect card
+    function resetCfConnection() {
+      if (connectedCfConnId) {
+        apiClient(`/api/auth/cloudflare/connection/${encodeURIComponent(connectedCfConnId)}`, { method: 'DELETE' }).catch(() => {});
+      }
+      connectedCfConnId = '';
+      connectedCfAccounts = [];
+      connectedCfAccountId = '';
+      connectedCfAccountName = '';
+      modalConnectedCard?.classList.add('hidden');
+      modalAccountSelectWrap?.classList.add('hidden');
+      modalOAuthCard?.classList.remove('hidden');
+      modalDeployForm?.classList.add('hidden');
+      if (modalAccountId) modalAccountId.value = '';
+      if (modalApiToken) {
+        modalApiToken.value = '';
+        modalApiToken.required = true;
+      }
+    }
+
+    // Re-validate a CF connection with the server; returns true if still valid
+    async function validateCfConnection(): Promise<boolean> {
+      if (!connectedCfConnId) return false;
+      try {
+        const conn = await apiClient(`/api/auth/cloudflare/connection/${encodeURIComponent(connectedCfConnId)}`);
+        // Update local state with fresh data
+        connectedCfAccounts = Array.isArray(conn.accounts) ? conn.accounts : [];
+        connectedCfAccountId = conn.cfAccountId || connectedCfAccounts[0]?.id || '';
+        connectedCfAccountName = conn.cfAccountName || connectedCfAccounts[0]?.name || '';
+        return true;
+      } catch {
+        // Connection expired or invalid — clear state
+        connectedCfConnId = '';
+        connectedCfAccounts = [];
+        connectedCfAccountId = '';
+        connectedCfAccountName = '';
+        return false;
+      }
+    }
+
     // Modal visibility handlers
     function openModal() {
-      modalErrorAlert?.classList.add('hidden');
+      hideModalError();
       launchModal?.classList.remove('hidden');
     }
 
@@ -663,8 +735,23 @@ import '../styles/global.css';
     }
 
     function openUpgradeModal(d: any) {
-      applyUpgradeMode(d);
-      openModal();
+      // Re-validate the OAuth connection before showing "CLOUDFLARE CONNECTED"
+      if (connectedCfConnId) {
+        validateCfConnection().then((valid) => {
+          if (!valid) {
+            // Connection expired — clear the green badge state so applyUpgradeMode won't match
+            modalConnectedCard?.classList.add('hidden');
+          }
+          applyUpgradeMode(d);
+          openModal();
+          if (!valid && connectedCfConnId === '') {
+            showModalError('Cloudflare OAuth connection expired. Please reconnect your Cloudflare account.', true);
+          }
+        });
+      } else {
+        applyUpgradeMode(d);
+        openModal();
+      }
     }
 
     function closeModal() {
@@ -701,21 +788,16 @@ import '../styles/global.css';
 
     // Switch account handler
     modalChangeAccountBtn?.addEventListener('click', () => {
-      if (connectedCfConnId) {
-        apiClient(`/api/auth/cloudflare/connection/${encodeURIComponent(connectedCfConnId)}`, { method: 'DELETE' }).catch(() => {});
-      }
-      connectedCfConnId = '';
-      connectedCfAccounts = [];
-      connectedCfAccountId = '';
-      connectedCfAccountName = '';
-      modalConnectedCard?.classList.add('hidden');
-      modalAccountSelectWrap?.classList.add('hidden');
-      modalOAuthCard?.classList.remove('hidden');
-      modalDeployForm?.classList.add('hidden');
-      if (modalAccountId) modalAccountId.value = '';
-      if (modalApiToken) {
-        modalApiToken.value = '';
-        modalApiToken.required = true;
+      resetCfConnection();
+    });
+
+    // Reconnect button handler — triggers OAuth flow
+    modalReconnectBtn?.addEventListener('click', () => {
+      resetCfConnection();
+      hideModalError();
+      // If the OAuth button link is available, navigate to it directly
+      if (modalCfOAuthBtn?.href) {
+        window.location.href = modalCfOAuthBtn.href;
       }
     });
 
@@ -767,9 +849,8 @@ import '../styles/global.css';
             const hasAccessToTarget = connectedCfAccounts.length === 0 || connectedCfAccounts.some(
               (a) => a.id.toLowerCase() === String(pendingUpgrade.cfAccountId || '').toLowerCase()
             );
-            if (!hasAccessToTarget && modalErrorAlert) {
-              modalErrorAlert.textContent = `Connected Cloudflare authorization does not include cluster account ${pendingUpgrade.cfAccountId}. Please click Switch and authorize that account.`;
-              modalErrorAlert.classList.remove('hidden');
+            if (!hasAccessToTarget) {
+              showModalError(`Connected Cloudflare authorization does not include cluster account ${pendingUpgrade.cfAccountId}. Please click Switch and authorize that account.`);
             }
           } else {
             applyNewClusterMode();
@@ -800,10 +881,7 @@ import '../styles/global.css';
         } catch (err: any) {
           console.error('Failed to load Cloudflare connection:', err);
           openModal();
-          if (modalErrorAlert) {
-            modalErrorAlert.textContent = err.message || 'Cloudflare connection expired. Please reconnect.';
-            modalErrorAlert.classList.remove('hidden');
-          }
+          showModalError(err.message || 'Cloudflare connection expired. Please reconnect.', true);
         }
       })();
     } else if (launchParam === '1') {
@@ -1305,6 +1383,7 @@ import '../styles/global.css';
     modalDeployForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
       modalErrorAlert?.classList.add('hidden');
+      modalReconnectBtn?.classList.add('hidden');
 
       const accountId = modalAccountId?.value.trim();
       const apiToken = modalApiToken?.value.trim();
@@ -1312,10 +1391,7 @@ import '../styles/global.css';
       const retentionDays = parseInt(modalRetentionDays?.value || '365', 10);
 
       if (!accountId || (!apiToken && !connectedCfConnId)) {
-        if (modalErrorAlert) {
-          modalErrorAlert.textContent = 'Please connect your Cloudflare account or provide both Account ID and API Token.';
-          modalErrorAlert.classList.remove('hidden');
-        }
+        showModalError('Please connect your Cloudflare account or provide both Account ID and API Token.');
         return;
       }
 
@@ -1349,9 +1425,12 @@ import '../styles/global.css';
       } catch (err: any) {
         modalProgressState?.classList.add('hidden');
         modalDeployForm?.classList.remove('hidden');
-        if (modalErrorAlert) {
-          modalErrorAlert.textContent = err.message || 'Deployment error occurred.';
-          modalErrorAlert.classList.remove('hidden');
+        const msg = err.message || 'Deployment error occurred.';
+        const isOAuthExpiry = /oauth.*expir|expir.*oauth|reconnect.*cloudflare|cloudflare.*reconnect/i.test(msg);
+        showModalError(msg, isOAuthExpiry);
+        if (isOAuthExpiry) {
+          // Also flip the UI from "CLOUDFLARE CONNECTED" to the OAuth card
+          resetCfConnection();
         }
       }
     });
