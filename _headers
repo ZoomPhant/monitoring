@@ -2,6 +2,8 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  Link: <https://www.zoomphant.com/llms.txt>; rel="describedby"; type="text/plain", <https://tsdb.zoomphant.com/llms.txt>; rel="alternate"; type="text/plain"; title="ZoomPhant TSDB Agent Docs"
 
 /docs/*
   X-Robots-Tag: index, follow
+  Link: <https://www.zoomphant.com/llms.txt>; rel="describedby"; type="text/plain", <https://tsdb.zoomphant.com/llms.txt>; rel="alternate"; type="text/plain"; title="ZoomPhant TSDB Agent Docs"

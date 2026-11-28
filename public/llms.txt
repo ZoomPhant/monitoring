@@ -1,7 +1,21 @@
 # ZoomPhant — AI-Native Time-Series Database (TSDB) & Enterprise Monitoring
 > Self-hosted, 100% customer-owned observability built for AI coding agents (Claude Code, Antigravity, Codex, Cursor) and enterprise infrastructure.
 
-ZoomPhant delivers two complementary products with zero vendor data lock-in:
+## ZoomPhant TSDB — Canonical Agent Docs (Start Here)
+For any task involving **ZoomPhant TSDB** (telemetry ingestion, ZQL queries, MCP server orchestration, dashboards, alerts, or declarative bundles), **`https://tsdb.zoomphant.com`** is the canonical public source of truth for **all** ZoomPhant TSDB deployments (both hosted and self-hosted BYOC `*.workers.dev` or custom-domain instances).
+
+> When connected to a specific BYOC TSDB instance URL, you can also inspect `<instance>/llms.txt`, `<instance>/api/v1/discover`, and `<instance>/api/v1/tools` for live, version-matched schema and tool availability.
+
+- [TSDB Agent Index (`llms.txt`)](https://tsdb.zoomphant.com/llms.txt): Concise ~1.5K-token entry point with the 5-step autonomous playbook, ZQL v3 cheat sheet, common mistakes to avoid, and REST/MCP endpoint index.
+- [TSDB Full Agent Documentation (`llms-full.txt`)](https://tsdb.zoomphant.com/llms-full.txt): Complete bundled TSDB reference (Quickstart, API Reference, ZQL v3, Agent BI Guide, Best Practices, Grafana) for single-fetch ingestion.
+- [TSDB OpenAPI 3.0 Specification](https://tsdb.zoomphant.com/openapi.yaml): Complete machine-readable REST API specification.
+- [AI Agent BI & Autonomous Operations Guide](https://tsdb.zoomphant.com/docs/agent-bi-guide.md): Handbook for autonomous telemetry instrumentation, `# @gadget` pragmas, ZQL queries, and bundle apply workflows.
+- [ZQL v3 Unified Query Language Reference](https://tsdb.zoomphant.com/docs/zql.md): Pipe syntax, aggregations, correlation (`around`), funnels, and functions across `metrics`, `events`, and `logs`.
+- [TSDB REST API Guide](https://tsdb.zoomphant.com/docs/api.md): Endpoint patterns, authentication, scoping, and payload examples.
+- [TSDB 5-Minute Quickstart](https://tsdb.zoomphant.com/docs/quickstart.md): End-to-end setup from deployment to first push and query.
+- [TSDB Documentation Home](https://tsdb.zoomphant.com/docs): Human-browsable TSDB documentation portal.
+
+---
 
 ## 1. ZoomPhant TSDB (Serverless Cloudflare BYOC)
 An AI-native unified metrics, logs, and structured events database deployed in 60 seconds into the user's own Cloudflare account.
@@ -11,8 +25,7 @@ An AI-native unified metrics, logs, and structured events database deployed in 6
 - **Declarative GitOps Apply (`POST /api/v1/apply`)**: Idempotent, all-or-nothing pre-validated apply for `{ schemas, summaries, extract, sketches, dashboards, rules }` with `?dryRun=true` (read-only PR checks), `scope` label injection, and `onConflict: "skip"`.
 - **Least-Privilege Agent Scopes**: `read`, `write` (ingest + declare schema), `config` (dashboards, accelerators, alerts, templates, schema — no token/tenant admin access), and `admin`. Tokens support up to 4 scope tags (e.g. `env="prod"`, `dept="core"`).
 - **ZQL v3 Unified Query Language**: Pipe-based query language across `| metrics`, `| events`, and `| logs` with `# @gadget {...}` visual metadata pragmas and `<10ms` zero-scan Event Summary acceleration.
-- **Pricing**: First BYOC TSDB instance is 100% free and runs on Cloudflare Free Tier ($0/mo for light workloads) or Cloudflare Workers Paid ($5/mo for 10K–100K+ events/day).
-- **Live TSDB Docs & Spec**: https://tsdb.zoomphant.com/docs · https://tsdb.zoomphant.com/llms.txt
+- **Pricing**: First BYOC TSDB instance is 100% free and runs on Cloudflare Free Tier (\$0/mo for light workloads) or Cloudflare Workers Paid (\$5/mo for 10K–100K+ events/day).
 
 ### Quick MCP Client Configuration
 ```json
@@ -33,16 +46,19 @@ A single-image, all-in-one infrastructure and application monitoring platform fo
 - **Pricing**: Free for personal use and registered startups/SMBs (community business tier); enterprise licensing and complimentary pre-implementation consulting available.
 
 ## Key Solution & Documentation Pages
-- Home: https://www.zoomphant.com/
-- AI Agent Observability & Hosted MCP: https://www.zoomphant.com/solutions/ai-agent-observability/
-- Serverless TSDB on Cloudflare Workers (BYOC): https://www.zoomphant.com/solutions/cloudflare-tsdb/
-- Self-Hosted NVIDIA GPU Monitoring: https://www.zoomphant.com/solutions/gpu-monitoring/
-- Compare vs. Datadog, LogicMonitor, Splunk & Prometheus: https://www.zoomphant.com/compare/
-- UI Gadgets & ZQL Recipes Hub: https://www.zoomphant.com/gadgets/
-- Documentation Hub: https://www.zoomphant.com/docs/
-- Enterprise Quick Start: https://www.zoomphant.com/docs/start/
-- Enterprise Reference Manual: https://www.zoomphant.com/docs/manual/
-- About ZoomPhant: https://www.zoomphant.com/about/
-- Free Trial / 1-Click Deploy: https://www.zoomphant.com/trial/
-- Sitemap: https://www.zoomphant.com/sitemap.xml
-- Contact: mailto:info@zoomphant.com
+- [TSDB Canonical Agent Index](https://tsdb.zoomphant.com/llms.txt): Canonical agent instructions and ZQL/API quick reference
+- [TSDB Full Documentation Bundle](https://tsdb.zoomphant.com/llms-full.txt): Single-file complete TSDB agent documentation
+- [TSDB Interactive Docs Hub](https://tsdb.zoomphant.com/docs): Canonical TSDB documentation portal
+- [ZoomPhant Home](https://www.zoomphant.com/): Product overview and entry hub
+- [AI Agent Observability & Hosted MCP](https://www.zoomphant.com/solutions/ai-agent-observability/): Hosted MCP server, GitOps apply, and agent-first workflow overview
+- [Serverless TSDB on Cloudflare Workers (BYOC)](https://www.zoomphant.com/solutions/cloudflare-tsdb/): BYOC serverless architecture and 60-second Cloudflare deployment
+- [Self-Hosted NVIDIA GPU Monitoring](https://www.zoomphant.com/solutions/gpu-monitoring/): GPU utilization, VRAM, temperature, power, and ECC monitoring
+- [Compare vs. Datadog, LogicMonitor, Splunk & Prometheus](https://www.zoomphant.com/compare/): Feature and TCO comparison
+- [UI Gadgets & ZQL Recipes Hub](https://www.zoomphant.com/gadgets/): Visual gadget metadata pragmas and copy-ready ZQL recipes
+- [Documentation Hub](https://www.zoomphant.com/docs/): Unified docs gateway routing to TSDB docs and Enterprise Monitoring manual
+- [Enterprise Quick Start](https://www.zoomphant.com/docs/start/): 1-command self-hosted Enterprise Monitoring installation
+- [Enterprise Reference Manual](https://www.zoomphant.com/docs/manual/): Collectors, alerting, log parsing, and 15+ platform plugins
+- [About ZoomPhant](https://www.zoomphant.com/about/): Architecture and company background
+- [Free Trial / 1-Click BYOC Deploy](https://www.zoomphant.com/trial/): Deploy a free BYOC TSDB instance to Cloudflare
+- [Sitemap](https://www.zoomphant.com/sitemap.xml): XML sitemap for all `www.zoomphant.com` pages
+- [Contact](mailto:info@zoomphant.com): Reach the ZoomPhant team
