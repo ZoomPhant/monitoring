@@ -6,6 +6,8 @@
  *   - Production (zoomphant.com): https://api.zoomphant.com
  */
 
+import { getPendingReferral } from '@contentgrowth/content-auth/referral/client';
+
 export function getApiBaseUrl(): string {
   if (typeof window === 'undefined') {
     return 'https://api.zoomphant.com';
@@ -42,6 +44,15 @@ export function getOAuthUrl(provider: 'google' | 'github' | 'cloudflare', return
   const params = new URLSearchParams();
   if (appOrigin) params.set('redirect_origin', appOrigin);
   if (returnTo) params.set('return_to', returnTo);
+  if (typeof window !== 'undefined' && (provider === 'google' || provider === 'github')) {
+    const isAuthenticated = Boolean(localStorage.getItem('zp_token'));
+    const pendingRef = getPendingReferral({ isAuthenticated });
+    if (pendingRef?.code) {
+      params.set('ref', pendingRef.code);
+      if (pendingRef.source) params.set('ref_src', pendingRef.source);
+      if (pendingRef.landingPath) params.set('ref_landing', pendingRef.landingPath);
+    }
+  }
   const queryStr = params.toString() ? `?${params.toString()}` : '';
   return `${getApiBaseUrl()}/api/auth/oauth/${provider}${queryStr}`;
 }

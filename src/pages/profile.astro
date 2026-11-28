@@ -284,6 +284,127 @@ import '../styles/global.css';
         </div>
       </div>
 
+      <!-- 4. Referral Program (Opt-In) -->
+      <div class="bg-white rounded-3xl border border-gray-200 shadow-xs overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-2.5">
+            <div class="h-8 w-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-gray-900">Referral Program</h3>
+              <p class="text-xs text-gray-500">Opt in to share a 6-character code and track friend signups &amp; BYOC TSDB deployments</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="referralToggleBtn"
+            disabled
+            class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+          >
+            Loading...
+          </button>
+        </div>
+
+        <div class="p-6 space-y-5">
+          <div id="referralAlert" class="hidden rounded-xl p-3 text-xs font-medium border"></div>
+
+          <!-- Disabled State -->
+          <div id="referralDisabledState" class="rounded-2xl border border-dashed border-gray-200 bg-gray-50/70 p-5 text-xs text-gray-600">
+            <p class="font-semibold text-gray-800 mb-1">Referral tracking is currently disabled</p>
+            <p>Enable your personal referral code above to generate shareable links with optional channel tracking (LinkedIn, Reddit, X, or custom).</p>
+          </div>
+
+          <!-- Enabled State -->
+          <div id="referralEnabledState" class="hidden space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+              <div>
+                <span class="text-[11px] font-semibold uppercase tracking-wider text-indigo-600 block">Your 6-Character Referral Code</span>
+                <div class="flex items-center gap-2.5 mt-1">
+                  <span id="referralCodeBadge" class="text-lg font-black font-mono tracking-widest text-gray-900 bg-white border border-indigo-200 rounded-xl px-3.5 py-1.5 shadow-xs">
+                    ------
+                  </span>
+                  <button
+                    type="button"
+                    id="copyRefCodeBtn"
+                    class="rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    Copy Code
+                  </button>
+                </div>
+              </div>
+
+              <div class="text-[11px] text-gray-500 max-w-xs">
+                Only guests who sign up and verify their email via your link are attributed. Signed-in users ignore referral links.
+              </div>
+            </div>
+
+            <!-- Channel / Source Builder -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <label class="text-xs font-semibold text-gray-700">Shareable Link &amp; Channel Source</label>
+                <div class="flex items-center gap-1.5 flex-wrap" id="referralSourceButtons">
+                  <button type="button" data-ref-src="" class="ref-src-btn rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-brand-600 text-white cursor-pointer">Direct</button>
+                  <button type="button" data-ref-src="linkedin" class="ref-src-btn rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer">LinkedIn</button>
+                  <button type="button" data-ref-src="reddit" class="ref-src-btn rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer">Reddit</button>
+                  <button type="button" data-ref-src="x" class="ref-src-btn rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer">X</button>
+                  <button type="button" data-ref-src="__custom__" class="ref-src-btn rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer">Custom</button>
+                </div>
+              </div>
+
+              <div id="customSourceRow" class="hidden">
+                <input
+                  type="text"
+                  id="customSourceInput"
+                  maxlength="32"
+                  placeholder="Enter custom source (e.g. newsletter, discord)"
+                  class="w-full sm:w-72 rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-900 shadow-xs focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  id="referralShareUrlInput"
+                  readonly
+                  class="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-xs font-mono text-gray-700 select-all"
+                />
+                <button
+                  type="button"
+                  id="copyRefLinkBtn"
+                  class="rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-brand-700 transition-colors cursor-pointer shrink-0"
+                >
+                  Copy Link
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Stats -->
+          <div id="referralSummarySection" class="hidden pt-2 border-t border-gray-100 space-y-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div class="rounded-2xl border border-gray-200 bg-gray-50/50 p-3.5">
+                <p class="text-[11px] font-medium text-gray-500">Verified Signups</p>
+                <p id="refStatSignups" class="text-xl font-extrabold text-gray-900 mt-0.5">0</p>
+              </div>
+              <div class="rounded-2xl border border-gray-200 bg-gray-50/50 p-3.5">
+                <p class="text-[11px] font-medium text-gray-500">BYOC TSDB Deploys</p>
+                <p id="refStatDeploys" class="text-xl font-extrabold text-gray-900 mt-0.5">0</p>
+              </div>
+              <div class="rounded-2xl border border-gray-200 bg-gray-50/50 p-3.5 col-span-2 sm:col-span-1">
+                <p class="text-[11px] font-medium text-gray-500 mb-1.5">By Source</p>
+                <div id="refStatSources" class="flex flex-wrap gap-1.5 text-[11px] text-gray-500">
+                  <span>None yet</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -291,6 +412,7 @@ import '../styles/global.css';
 
   <script>
     import { apiClient } from '../utils/apiClient';
+    import { buildReferralUrl } from '@contentgrowth/content-auth/referral/client';
 
     // 1. Guard route: Verify User Authentication
     const token = localStorage.getItem('zp_token');
@@ -330,6 +452,157 @@ import '../styles/global.css';
     const providerGithubStatus = document.getElementById('providerGithubStatus');
     const providerGoogleStatus = document.getElementById('providerGoogleStatus');
     const profileSignOutBtn = document.getElementById('profileSignOutBtn');
+
+    // Referral DOM Elements
+    const referralToggleBtn = document.getElementById('referralToggleBtn') as HTMLButtonElement;
+    const referralAlert = document.getElementById('referralAlert');
+    const referralDisabledState = document.getElementById('referralDisabledState');
+    const referralEnabledState = document.getElementById('referralEnabledState');
+    const referralCodeBadge = document.getElementById('referralCodeBadge');
+    const copyRefCodeBtn = document.getElementById('copyRefCodeBtn');
+    const referralSourceButtons = document.querySelectorAll('.ref-src-btn');
+    const customSourceRow = document.getElementById('customSourceRow');
+    const customSourceInput = document.getElementById('customSourceInput') as HTMLInputElement;
+    const referralShareUrlInput = document.getElementById('referralShareUrlInput') as HTMLInputElement;
+    const copyRefLinkBtn = document.getElementById('copyRefLinkBtn');
+    const referralSummarySection = document.getElementById('referralSummarySection');
+    const refStatSignups = document.getElementById('refStatSignups');
+    const refStatDeploys = document.getElementById('refStatDeploys');
+    const refStatSources = document.getElementById('refStatSources');
+
+    let referralProfile: any = null;
+    let selectedRefSource = '';
+    let usingCustomRefSource = false;
+
+    function updateReferralShareUrl() {
+      if (!referralShareUrlInput || !referralProfile?.code) return;
+      const source = usingCustomRefSource ? (customSourceInput?.value || '') : selectedRefSource;
+      referralShareUrlInput.value = buildReferralUrl(window.location.origin, referralProfile.code, source || null);
+    }
+
+    function renderReferralProfile(profile: any) {
+      referralProfile = profile;
+      if (!referralToggleBtn) return;
+
+      const enabled = Boolean(profile?.enabled);
+      referralToggleBtn.removeAttribute('disabled');
+      if (enabled) {
+        referralToggleBtn.textContent = 'Disable Referral';
+        referralToggleBtn.className = 'inline-flex items-center justify-center rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-100 transition-colors shadow-xs cursor-pointer';
+        referralDisabledState?.classList.add('hidden');
+        referralEnabledState?.classList.remove('hidden');
+      } else {
+        referralToggleBtn.textContent = 'Enable Referral';
+        referralToggleBtn.className = 'inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2 text-xs font-bold text-white hover:bg-brand-700 transition-colors shadow-xs cursor-pointer';
+        referralDisabledState?.classList.remove('hidden');
+        referralEnabledState?.classList.add('hidden');
+      }
+
+      if (referralCodeBadge) {
+        referralCodeBadge.textContent = profile?.code || '------';
+      }
+      updateReferralShareUrl();
+
+      const summary = profile?.summary || { totalReferred: 0, eventsByType: {}, bySource: {} };
+      const showSummary = enabled || (summary.totalReferred || 0) > 0;
+      if (referralSummarySection) {
+        if (showSummary) referralSummarySection.classList.remove('hidden');
+        else referralSummarySection.classList.add('hidden');
+      }
+      if (refStatSignups) refStatSignups.textContent = String(summary.totalReferred || 0);
+      if (refStatDeploys) refStatDeploys.textContent = String(summary.eventsByType?.byoc_tsdb_deployed || 0);
+      if (refStatSources) {
+        const entries = Object.entries(summary.bySource || {});
+        if (entries.length === 0) {
+          refStatSources.innerHTML = '<span>None yet</span>';
+        } else {
+          refStatSources.innerHTML = '';
+          for (const [src, cnt] of entries) {
+            const pill = document.createElement('span');
+            pill.className = 'inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-2 py-0.5 text-[11px] font-semibold text-gray-700';
+            pill.textContent = `${src}: ${cnt}`;
+            refStatSources.appendChild(pill);
+          }
+        }
+      }
+    }
+
+    async function loadReferralProfile() {
+      try {
+        const res = await apiClient('/api/referral/me', { token });
+        if (res?.referral) {
+          renderReferralProfile(res.referral);
+        }
+      } catch (err) {
+        if (referralToggleBtn) {
+          referralToggleBtn.textContent = 'Enable Referral';
+          referralToggleBtn.removeAttribute('disabled');
+        }
+        console.warn('Could not load referral profile:', err);
+      }
+    }
+
+    referralToggleBtn?.addEventListener('click', async () => {
+      if (referralAlert) referralAlert.className = 'hidden';
+      const nextEnabled = !Boolean(referralProfile?.enabled);
+      referralToggleBtn.setAttribute('disabled', 'true');
+      referralToggleBtn.textContent = nextEnabled ? 'Enabling...' : 'Disabling...';
+      try {
+        const res = await apiClient('/api/referral/toggle', {
+          method: 'POST',
+          token,
+          body: JSON.stringify({ enabled: nextEnabled }),
+        });
+        if (res?.referral) {
+          renderReferralProfile(res.referral);
+        }
+      } catch (err: any) {
+        if (referralAlert) {
+          referralAlert.textContent = err.message || 'Failed to update referral setting.';
+          referralAlert.className = 'rounded-xl p-3 text-xs font-medium border bg-red-50 text-red-700 border-red-200 block';
+        }
+        renderReferralProfile(referralProfile || { enabled: false });
+      }
+    });
+
+    referralSourceButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const val = btn.getAttribute('data-ref-src') || '';
+        usingCustomRefSource = val === '__custom__';
+        if (!usingCustomRefSource) selectedRefSource = val;
+
+        referralSourceButtons.forEach((b) => {
+          const isActive = b === btn;
+          b.className = isActive
+            ? 'ref-src-btn rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-brand-600 text-white cursor-pointer'
+            : 'ref-src-btn rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer';
+        });
+
+        if (customSourceRow) {
+          if (usingCustomRefSource) customSourceRow.classList.remove('hidden');
+          else customSourceRow.classList.add('hidden');
+        }
+        updateReferralShareUrl();
+      });
+    });
+
+    customSourceInput?.addEventListener('input', () => {
+      updateReferralShareUrl();
+    });
+
+    copyRefCodeBtn?.addEventListener('click', async () => {
+      if (!referralProfile?.code) return;
+      await navigator.clipboard?.writeText(referralProfile.code).catch(() => {});
+      copyRefCodeBtn.textContent = 'Copied!';
+      setTimeout(() => { copyRefCodeBtn.textContent = 'Copy Code'; }, 1500);
+    });
+
+    copyRefLinkBtn?.addEventListener('click', async () => {
+      if (!referralShareUrlInput?.value) return;
+      await navigator.clipboard?.writeText(referralShareUrlInput.value).catch(() => {});
+      copyRefLinkBtn.textContent = 'Copied!';
+      setTimeout(() => { copyRefLinkBtn.textContent = 'Copy Link'; }, 1500);
+    });
 
     // Populate initial UI from cached user
     function renderUser(u: any) {
@@ -414,6 +687,7 @@ import '../styles/global.css';
       }
     }
     loadFreshProfile();
+    loadReferralProfile();
 
     // 2. Profile Info Form Submit
     profileInfoForm?.addEventListener('submit', async (e) => {

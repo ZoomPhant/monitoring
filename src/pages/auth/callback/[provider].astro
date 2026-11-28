@@ -20,7 +20,7 @@ const displayProvider = providerNames[provider.toLowerCase()] || 'OAuth Provider
 ---
 
 <BaseLayout title={`Connecting with ${displayProvider} — ZoomPhant`}>
-  <main class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  <main id="oauthCallbackRoot" data-provider={provider} class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-white p-8 rounded-3xl border border-gray-200/80 shadow-xl shadow-gray-100/50 text-center">
       
       <!-- Brand Logo -->
@@ -75,8 +75,12 @@ const displayProvider = providerNames[provider.toLowerCase()] || 'OAuth Provider
     </div>
   </main>
 
-  <script define:vars={{ provider }}>
+  <script>
+    import { clearPendingReferral } from '@contentgrowth/content-auth/referral/client';
+
     async function handleOAuthExchange() {
+      const rootEl = document.getElementById('oauthCallbackRoot');
+      const provider = rootEl?.getAttribute('data-provider') || 'github';
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
       const state = urlParams.get('state');
@@ -86,7 +90,7 @@ const displayProvider = providerNames[provider.toLowerCase()] || 'OAuth Provider
       const errorState = document.getElementById('errorState');
       const errorMessage = document.getElementById('errorMessage');
 
-      function showError(msg) {
+      function showError(msg: string) {
         if (processingState) processingState.classList.add('hidden');
         if (errorState) errorState.classList.remove('hidden');
         if (errorMessage) errorMessage.textContent = msg;
@@ -149,6 +153,7 @@ const displayProvider = providerNames[provider.toLowerCase()] || 'OAuth Provider
         if (data.token && data.user) {
           localStorage.setItem('zp_token', data.token);
           localStorage.setItem('zp_user', JSON.stringify(data.user));
+          clearPendingReferral();
 
           const destination = data.returnTo && data.returnTo !== '/'
             ? data.returnTo
@@ -160,7 +165,7 @@ const displayProvider = providerNames[provider.toLowerCase()] || 'OAuth Provider
 
         throw new Error('Unexpected response format from auth service.');
 
-      } catch (err) {
+      } catch (err: any) {
         console.error('OAuth Callback Wrapper Error:', err);
         showError(err.message || 'An error occurred during authentication.');
       }

@@ -67,5 +67,12 @@ const ogImageUrl = ogImage
   </head>
   <body class="bg-white text-gray-900 antialiased">
     <slot />
+    <script>
+      import { captureReferral } from '@contentgrowth/content-auth/referral/client';
+
+      captureReferral({
+        isAuthenticated: Boolean(localStorage.getItem('zp_token')),
+      });
+    </script>
   </body>
 </html>

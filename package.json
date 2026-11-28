@@ -11,6 +11,7 @@
     "publish:blogs": "node scripts/publish-blogs.mjs"
   },
   "dependencies": {
+    "@contentgrowth/content-auth": "^0.7.0",
     "astro": "^5.0.0"
   },
   "devDependencies": {

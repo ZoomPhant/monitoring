@@ -314,6 +314,7 @@ import '../styles/global.css';
 
   <script>
     import { apiClient, getOAuthUrl } from '../utils/apiClient';
+    import { getPendingReferral, clearPendingReferral } from '@contentgrowth/content-auth/referral/client';
 
     const authTabsContainer = document.getElementById('authTabsContainer');
     const tabSignIn = document.getElementById('tabSignIn');
@@ -428,6 +429,7 @@ import '../styles/global.css';
 
         localStorage.setItem('zp_token', data.token);
         localStorage.setItem('zp_user', JSON.stringify(data.user));
+        clearPendingReferral();
         showAlert('Sign in successful! Redirecting...', false);
 
         setTimeout(() => {
@@ -456,9 +458,10 @@ import '../styles/global.css';
       const password = (document.getElementById('signUpPassword') as HTMLInputElement).value;
 
       try {
+        const referral = getPendingReferral({ isAuthenticated: false });
         const data = await apiClient('/api/auth/sign-up', {
           method: 'POST',
-          body: JSON.stringify({ name, email, company, password }),
+          body: JSON.stringify({ name, email, company, password, referral }),
         });
 
         if (data.requiresVerification) {
@@ -479,13 +482,15 @@ import '../styles/global.css';
 
       const code = verifyCodeInput.value.trim();
       try {
+        const referral = getPendingReferral({ isAuthenticated: false });
         const data = await apiClient('/api/auth/verify-email', {
           method: 'POST',
-          body: JSON.stringify({ email: pendingVerifyEmail, code }),
+          body: JSON.stringify({ email: pendingVerifyEmail, code, referral }),
         });
 
         localStorage.setItem('zp_token', data.token);
         localStorage.setItem('zp_user', JSON.stringify(data.user));
+        clearPendingReferral();
         showAlert('Email verified successfully! Loading your dashboard...', false);
 
         setTimeout(() => {
